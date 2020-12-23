@@ -8,6 +8,9 @@
 
 *.iml
 .idea/
+**/gradle.properties
+**/build/
+**/.gradle/
 
 # BlueJ files
 *.ctxt
