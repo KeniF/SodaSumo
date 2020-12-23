@@ -1,0 +1,6 @@
+SodaSumo - An extension to SodaConstructor
+(original project name: Sodarace)
+
+by Pak Kiu Lam, Kenneth
+Supervised by Dr Mary McGee Wood
+29 April 2008
