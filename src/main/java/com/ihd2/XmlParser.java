@@ -1,3 +1,9 @@
+package com.ihd2;
+
+import com.ihd2.model.Mass;
+import com.ihd2.model.Model;
+import com.ihd2.model.Muscle;
+import com.ihd2.model.Spring;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -6,12 +12,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;  //create an XMLReader from system defaults
 
-import java.io.File;
 
 public class XmlParser implements ContentHandler {
 
     private static InputSource source;
-    // Different states for different actions MODE_NONE: do nothing
     private final int MODE_NONE = -1,
             MODE_GRAVITY = 0,
             MODE_FRICTION = 1,
@@ -46,22 +50,11 @@ public class XmlParser implements ContentHandler {
     public XmlParser(String path) throws java.io.IOException, SAXException {
         mode = MODE_NONE;
         newModel = new Model();
-        source = new InputSource(new java.io.FileInputStream(new java.io.File(path)));
-        XMLReader reader = XMLReaderFactory.createXMLReader();//(parserClass)now using default
+        source = new InputSource(new java.io.FileInputStream(path));
+        XMLReader reader = XMLReaderFactory.createXMLReader();
         reader.setContentHandler(this);
         reader.parse(source);
     }
-
-    //Allows downloaded File object to be used(no need for files in directory)
-    public XmlParser(File file) throws java.io.IOException, SAXException {
-        mode = MODE_NONE;
-        newModel = new Model();
-        source = new InputSource(new java.io.FileInputStream(file));
-        XMLReader reader = XMLReaderFactory.createXMLReader();//(parserClass)now using default
-        reader.setContentHandler(this);
-        reader.parse(source);
-    }
-
 
     public Model getModel() {
         return newModel;
@@ -132,10 +125,6 @@ public class XmlParser implements ContentHandler {
                         break;
                     }
                     case MODE_W_DIRECTION: {
-                        if (readCh.equals("forward"))
-                            newModel.setWaveDirection(1);
-                        else
-                            newModel.setWaveDirection(0);
                         mode = MODE_NONE;
                         break;
                     }
@@ -316,8 +305,7 @@ public class XmlParser implements ContentHandler {
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new NullPointerException();
         }
     }

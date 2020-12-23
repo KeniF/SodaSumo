@@ -1,3 +1,9 @@
+package com.ihd2;
+
+import com.ihd2.model.Mass;
+import com.ihd2.model.Model;
+import com.ihd2.model.Spring;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -16,11 +22,10 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private static final Font font = new Font("Arial", Font.PLAIN, 12);
     private static final Font rFont = new Font("Arial", Font.PLAIN, 20);
     private static final double MASS_SIZE = 4.0;
-    private static final float LINE_WIDTH = 0.4f;//float
+    private static final float LINE_WIDTH = 0.4f;
     private static final double SHIFT = MASS_SIZE / 2.0; //Shift needed because specified point is ellipse's top-left
     private static boolean run = false;
     private final double HEIGHT = 298.0;//need to invert height as top-left is (0,0)
-    private final double[][] modelValues = new double[2][6];
     private final Line2D.Double horizontalLine = new Line2D.Double();
     private final Line2D.Double lineOld = new Line2D.Double();
     private final Line2D.Double lineNew = new Line2D.Double();
@@ -36,8 +41,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private Graphics2D gfx2d;
     private double[][] m1Acceleration, m2Acceleration;
     private boolean invertM1 = false, invertM2 = false;
-    private boolean needToDrawMass = false, needToDrawSpring = false,
-            needToDrawMuscle = false;
     private double firstContactPoint = 0;
     private boolean touched = false;
     private String resultMessage = "";
@@ -87,56 +90,45 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         gfx2d.drawString(resultMessage, (int) Sodasumo.GAME_WIDTH / 2 - 150, 50);
     }
 
-    private void drawModel(Model m) {
-        //VERY INEFFICIENT, TO BE ENHANCED
-        double massNo = m.totalNoOfMass();
-        double springNo = m.totalNoOfSpring();
-        double muscleNo = m.totalNoOfMuscle();
-        double biggest = 0.0;
-        //find biggest amount among mass/spring/muscle
-        biggest = Math.max(Math.max(massNo, springNo), muscleNo);
-        for (int i = 1; i <= biggest; i++) {
-            if (needToDrawMass && massNo < i) needToDrawMass = false;
-            if (needToDrawSpring && springNo < i) needToDrawSpring = false;
-            if (needToDrawMuscle && muscleNo < i) needToDrawMuscle = false;
-            Mass drawMass1;
-            if (needToDrawMass) {
-                drawMass1 = m.getMass(i);
-                g2dEllipse.setFrame(drawMass1.getX() - SHIFT,
-                        HEIGHT - (drawMass1.getY() + SHIFT), MASS_SIZE, MASS_SIZE);
-                gfx2d.fill(g2dEllipse);
-            }
+    private void drawModel(Model model) {
+        drawMasses(model);
+        drawSprings(model);
+        drawMuscles(model);
+    }
 
-            Mass drawMass2;
-            if (needToDrawSpring) {
-                //for drawing
-                Spring getSpring = m.getSpring(i);
-                drawMass1 = getSpring.getMass1();
-                drawMass2 = getSpring.getMass2();
-                g2dLine.setLine(drawMass1.getX(), HEIGHT - drawMass1.getY(),
-                        drawMass2.getX(), HEIGHT - drawMass2.getY());
-                gfx2d.draw(g2dLine);
-            }
-            if (needToDrawMuscle) {
-                Muscle getMuscle = m.getMuscle(i);
-                drawMass1 = getMuscle.getMass1();
-                drawMass2 = getMuscle.getMass2();
-                double dMass1X = drawMass1.getX();
-                double dMass1Y = drawMass1.getY();
-                double dMass2X = drawMass2.getX();
-                //for drawing
-                double dMass2Y = drawMass2.getY();
-                g2dLine.setLine(dMass1X, HEIGHT - dMass1Y,
-                        dMass2X, HEIGHT - dMass2Y);
-                gfx2d.draw(g2dLine);
-                g2dEllipse.setFrame((dMass1X + dMass2X) / 2.0 - 1.5,
-                        HEIGHT - ((dMass1Y + dMass2Y) / 2.0 + 1.5), 3.0, 3.0);
-                gfx2d.fill(g2dEllipse);
-            }
+    private void drawMasses(final Model model) {
+        for (final Mass mass : model.getMassMap().values()) {
+            g2dEllipse.setFrame(mass.getX() - SHIFT,
+                    HEIGHT - (mass.getY() + SHIFT), MASS_SIZE, MASS_SIZE);
+            gfx2d.fill(g2dEllipse);
         }
-        needToDrawMuscle = true;
-        needToDrawMass = true;
-        needToDrawSpring = true;
+    }
+
+    private void drawSprings(final Model model) {
+        for (final Spring spring: model.getSpringMap().values()) {
+            final Mass mass1 = spring.getMass1();
+            final Mass mass2 = spring.getMass2();
+            g2dLine.setLine(mass1.getX(), HEIGHT - mass1.getY(),
+                    mass2.getX(), HEIGHT - mass2.getY());
+            gfx2d.draw(g2dLine);
+        }
+    }
+
+    private void drawMuscles(final Model model) {
+        for (final Spring muscle: model.getMuscleMap().values()) {
+            final Mass mass1 = muscle.getMass1();
+            final Mass mass2 = muscle.getMass2();
+            double dMass1X = mass1.getX();
+            double dMass1Y = mass1.getY();
+            double dMass2X = mass2.getX();
+            double dMass2Y = mass2.getY();
+            g2dLine.setLine(dMass1X, HEIGHT - dMass1Y,
+                    dMass2X, HEIGHT - dMass2Y);
+            gfx2d.draw(g2dLine);
+            g2dEllipse.setFrame((dMass1X + dMass2X) / 2.0 - 1.5,
+                    HEIGHT - ((dMass1Y + dMass2Y) / 2.0 + 1.5), 3.0, 3.0);
+            gfx2d.fill(g2dEllipse);
+        }
     }
 
     public void init() {
@@ -144,8 +136,8 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         noOfFrames1 = 0.0;
         noOfFrames2 = 0.0;
         gameFrames = 0.0;
-        m1Acceleration = new double[model1.totalNoOfMass()][2];
-        m2Acceleration = new double[model2.totalNoOfMass()][2];
+        m1Acceleration = new double[model1.getMassMap().size()][2];
+        m2Acceleration = new double[model2.getMassMap().size()][2];
         touched = false;
         resultMessage = "";
     }
@@ -156,16 +148,9 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         model1 = model;
         double[] br = model1.getBoundingRectangle();
         double shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[3] - 10.0;//-Math.random()*10;
-        for (int i = 1; i <= model1.totalNoOfMass(); i++) {
+        for (int i = 1; i <= model1.getMassMap().size(); i++) {
             model1.getMass(i).setX(model1.getMass(i).getX() + shiftRight);
         }
-        //obtain model values
-        modelValues[0][0] = model1.getFriction();
-        modelValues[0][1] = model1.getSpringyness();
-        modelValues[0][2] = model1.getWavePhase();
-        modelValues[0][3] = model1.getWaveSpeed();
-        modelValues[0][4] = model1.getWaveAmplitude();
-        modelValues[0][5] = model1.getGravity();
     }
 
     public void provideModel2(Model model) {
@@ -174,15 +159,9 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         model2 = model;
         double[] br = model2.getBoundingRectangle();
         double shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[2] + 10.0;//+Math.random()*10;
-        for (int i = 1; i <= model2.totalNoOfMass(); i++) {
+        for (int i = 1; i <= model2.getMassMap().size(); i++) {
             model2.getMass(i).setX(model2.getMass(i).getX() + shiftRight);
         }
-        modelValues[1][0] = model2.getFriction();
-        modelValues[1][1] = model2.getSpringyness();
-        modelValues[1][2] = model2.getWavePhase();
-        modelValues[1][3] = model2.getWaveSpeed();
-        modelValues[1][4] = model2.getWaveAmplitude();
-        modelValues[1][5] = model2.getGravity();
     }
 
     public void startDraw() {
@@ -245,8 +224,8 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             //create an acceleration array for all masses
             //adds up all accleration to calculate new velocity hence position
             //java automatically sets array values to 0.0
-            m1Acceleration = new double[model1.totalNoOfMass()][2];
-            m2Acceleration = new double[model2.totalNoOfMass()][2];
+            m1Acceleration = new double[model1.getMassMap().size()][2];
+            m2Acceleration = new double[model2.getMassMap().size()][2];
             accelerateSprings(model1, 1, false);
             accelerateSprings(model1, 1, true);
             newPositions(1);
@@ -268,9 +247,9 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private void accelerateSprings(Model m, int input, boolean isMuscle) {
         int totalNo;
         if (isMuscle)
-            totalNo = m.totalNoOfMuscle();
+            totalNo = m.getMuscleMap().size();
         else
-            totalNo = m.totalNoOfSpring();
+            totalNo = m.getSpringMap().size();
         for (int i = 1; i <= totalNo; i++) {
             double newRLength;
             double mass1Y;
@@ -285,13 +264,12 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 double phase = m.getMuscle(i).getPhase();
                 double rLength = m.getMuscle(i).getRestLength();
                 //new=old*(1.0+ waveAmplitude*muscleAmplitude*sine())
-                //*2 pi to convert to radians | -wavePhase to set correct restLength of Muscle
+                //*2 pi to convert to radians | -wavePhase to set correct restLength of com.ihd2.model.Muscle
                 //don't do the period already done
                 //One for each model, allows reversing
                 final double noOfFrames = (input == 1) ? noOfFrames1 : noOfFrames2;
-                newRLength = rLength * (1.0 + modelValues[input - 1][4] * amp *
-                        Math.sin(
-                                (modelValues[input - 1][3] * noOfFrames + phase - modelValues[input - 1][2]) * 2.0 * Math.PI));
+                newRLength = rLength * (1.0 + m.getWaveAmplitude() * amp *
+                        Math.sin((m.getWaveSpeed() * noOfFrames + phase - m.getWavePhase()) * 2.0 * Math.PI));
                 mass1X = m.getMuscle(i).getMass1().getX();
                 mass1Y = m.getMuscle(i).getMass1().getY();
                 mass2X = m.getMuscle(i).getMass2().getX();
@@ -313,7 +291,7 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             double length = Math.sqrt(lengthX * lengthX + lengthY * lengthY); //Pythagoras'
             double extension = (length - newRLength);
             //Frictional force affects velocity only!!
-            double resultantAcceleration = Math.abs(modelValues[input - 1][1] * extension);//F=kx=ma where m=1.0
+            double resultantAcceleration = Math.abs(m.getSpringyness() * extension);//F=kx=ma where m=1.0
             //gets the masses connected to the current muscle
             //Mass#109 --> 109
             double angle = Math.atan(lengthY / lengthX);//in radians
@@ -423,20 +401,19 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         double oldVelocityY;
         double oldVelocityX;
         double oldPositionX;
-        //newPositions
         double oldPositionY;
         if (model == 1) {
             model1.resetBoundRect();
-            for (int i = 1; i <= model1.totalNoOfMass(); i++) {
+            for (int i = 1; i <= model1.getMassMap().size(); i++) {
                 //damping for F=-fv
                 model1.getMass(i).finallyRevert();
                 oldVelocityX = model1.getMass(i).getVx();
                 oldVelocityY = model1.getMass(i).getVy();
                 newVelocityX = oldVelocityX + m1Acceleration[i - 1][0];
-                newVelocityX = newVelocityX - newVelocityX * modelValues[0][0];
-                newVelocityY = oldVelocityY + m1Acceleration[i - 1][1];//-modelValues[0][5];
-                newVelocityY = newVelocityY - newVelocityY * modelValues[0][0];
-                newVelocityY -= modelValues[0][5];//gravity(not damped!)
+                newVelocityX = newVelocityX - newVelocityX * model1.getFriction();
+                newVelocityY = oldVelocityY + m1Acceleration[i - 1][1];//-model1.getGravity();
+                newVelocityY = newVelocityY - newVelocityY * model1.getFriction();
+                newVelocityY -= model1.getGravity();//gravity(not damped!)
                 if (Math.abs(newVelocityY) > SPEED_LIMIT) {
                     if (newVelocityY > 0)
                         newVelocityY = SPEED_LIMIT;
@@ -465,22 +442,21 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 model1Mass.setVy(newVelocityY);
                 model1Mass.setX(newPositionX);
                 model1Mass.setY(newPositionY);
-                //double oldBoundRight=model1.getBoundRight();
                 model1.adjustBoundRect(model1Mass);
             }
         }
         if (model == 2) {
             model2.resetBoundRect();
-            for (int i = 1; i <= model2.totalNoOfMass(); i++) {
+            for (int i = 1; i <= model2.getMassMap().size(); i++) {
                 //damping for F=-fv
                 model2.getMass(i).finallyRevert();
                 oldVelocityX = model2.getMass(i).getVx();
                 oldVelocityY = model2.getMass(i).getVy();
                 newVelocityX = oldVelocityX + m2Acceleration[i - 1][0];
-                newVelocityX = newVelocityX - newVelocityX * modelValues[1][0];
+                newVelocityX = newVelocityX - newVelocityX * model2.getFriction();
                 newVelocityY = oldVelocityY + m2Acceleration[i - 1][1];
-                newVelocityY = newVelocityY - newVelocityY * modelValues[1][0];
-                newVelocityY -= modelValues[1][5];
+                newVelocityY = newVelocityY - newVelocityY * model2.getFriction();
+                newVelocityY -= model2.getGravity();
                 if (Math.abs(newVelocityY) > SPEED_LIMIT) {
                     if (newVelocityY > 0)
                         newVelocityY = SPEED_LIMIT;
@@ -508,7 +484,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 model2Mass.setVy(newVelocityY);
                 model2Mass.setX(newPositionX);
                 model2Mass.setY(newPositionY);
-                //double oldBoundLeft=model2.getBoundLeft();
                 model2.adjustBoundRect(model2Mass);
             }
         }
@@ -536,11 +511,11 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             Mass currentMass;
             Mass cmass1;
             Mass cmass2;
-            for (int j = 1; j <= model1.totalNoOfMass(); j++) {
+            for (int j = 1; j <= model1.getMassMap().size(); j++) {
                 currentMass = model1.getMass(j);
                 currentMassX = currentMass.getX();
                 currentMassY = currentMass.getY();
-                for (int i = 1; i <= model2.totalNoOfSpring(); i++) {
+                for (int i = 1; i <= model2.getSpringMap().size(); i++) {
                     cmass1 = model2.getSpring(i).getMass1();
                     cmass2 = model2.getSpring(i).getMass2();
                     cmass1X = cmass1.getX();
@@ -665,7 +640,7 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                     }
                 }
 
-                for (int i = 1; i <= model2.totalNoOfMuscle(); i++) {
+                for (int i = 1; i <= model2.getMuscleMap().size(); i++) {
                     cmass1 = model2.getMuscle(i).getMass1();
                     cmass2 = model2.getMuscle(i).getMass2();
                     cmass1X = cmass1.getX();
@@ -792,11 +767,11 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
 
             /*REFERENCE MASS OF MODEL2
              ****************************************************************************************************************************************/
-            for (int j = 1; j <= model2.totalNoOfMass(); j++) {
+            for (int j = 1; j <= model2.getMassMap().size(); j++) {
                 currentMass = model2.getMass(j);
                 currentMassX = currentMass.getX();
                 currentMassY = currentMass.getY();
-                for (int i = 1; i <= model1.totalNoOfSpring(); i++) {//can be optimised by using 1 loop only
+                for (int i = 1; i <= model1.getSpringMap().size(); i++) {//can be optimised by using 1 loop only
                     cmass1 = model1.getSpring(i).getMass1();
                     cmass2 = model1.getSpring(i).getMass2();
                     cmass1X = cmass1.getX();
@@ -924,7 +899,7 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                     }
                 }
 
-                for (int i = 1; i <= model1.totalNoOfMuscle(); i++) {//can be optimised by using 1 loop only
+                for (int i = 1; i <= model1.getMuscleMap().size(); i++) {//can be optimised by using 1 loop only
                     cmass1 = model1.getMuscle(i).getMass1();
                     cmass2 = model1.getMuscle(i).getMass2();
                     cmass1X = cmass1.getX();

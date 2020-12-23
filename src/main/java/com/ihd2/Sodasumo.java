@@ -1,3 +1,6 @@
+package com.ihd2;
+
+import com.ihd2.model.Model;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
@@ -61,7 +64,6 @@ public class Sodasumo extends JFrame implements MouseListener, ItemListener, Act
         box1.setSelectedItem("daintywalker");
         box1.setEditable(true);
         box1.addActionListener(this);
-        box1.setToolTipText("Load from Sodaplay: username/modelname then hit enter");
         cPanel.add(box1);
 
         invertM1Button = new JCheckBox("Invert Direction", false);
@@ -75,7 +77,6 @@ public class Sodasumo extends JFrame implements MouseListener, ItemListener, Act
         box2.setSelectedItem("KeniF_triangle");
         box2.setEditable(true);
         box2.addActionListener(this);
-        box2.setToolTipText("Load from Sodaplay: username/modelname then hit enter");
         cPanel.add(box2);
 
         invertM2Button = new JCheckBox("Invert Direction", false);
@@ -130,7 +131,7 @@ public class Sodasumo extends JFrame implements MouseListener, ItemListener, Act
     private void loadDirectory() {
         try {
             String currentDir = System.getProperty("user.dir");
-            File dir = new File(currentDir + "/../xml");
+            File dir = new File(currentDir);
             FilenameFilter filter = (dir1, name) -> name.endsWith(".xml");
             xmlFiles = dir.list(filter);
             if (xmlFiles.length == 0) throw new Exception();
@@ -285,10 +286,10 @@ public class Sodasumo extends JFrame implements MouseListener, ItemListener, Act
             } else if (e.getSource() == aboutItemAuthor) {
                 JOptionPane.showMessageDialog(newGameDraw,
                         "<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>\n\n" +
-                                "(C) 2008, 2020 Kenneth \"KeniF\" Lam | kenif.lam@gmail.com\n" +
-                                "Supervised by Dr. Mary McGee Wood\n\n" +
+                                "(C) 2008, 2020 Kenneth \"KeniF\" Lam | kenif.lam@gmail.com\n\n" +
                                 "This program was started as my third year project\n" +
-                                "at the University of Manchester, United Kingdom.",
+                                "at the University of Manchester, United Kingdom.\n" +
+                                "Supervised by Dr. Mary McGee Wood",
                         "About", JOptionPane.INFORMATION_MESSAGE);
             }
 
