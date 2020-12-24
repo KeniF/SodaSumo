@@ -13,16 +13,16 @@ import com.ihd2.model.Model
 import java.lang.InterruptedException
 import java.awt.RenderingHints
 import java.awt.Font
+import kotlin.math.sqrt
 
 class GameDraw : JComponent() {
-    private val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
+    private var timeLimitMs = 15000.0
     private val horizontalLine = Line2D.Double()
     private val lineOld = Line2D.Double()
     private val lineNew = Line2D.Double()
     private val massLine = Line2D.Double()
     private val g2dEllipse = Ellipse2D.Double()
     private val g2dLine = Line2D.Double()
-    private var TIME_LIMIT_MS = 15000.0
     private var testThread: Thread? = null
     private var gameFrames = 0.0
     private var model1: Model? = null
@@ -62,7 +62,7 @@ class GameDraw : JComponent() {
     }
 
     fun setTimeLimit(milliseconds: Double) {
-        TIME_LIMIT_MS = milliseconds
+        timeLimitMs = milliseconds
     }
 
     private fun drawVerticalLine() {
@@ -161,7 +161,7 @@ class GameDraw : JComponent() {
             val curThread = Thread.currentThread()
             var beforeRun = System.currentTimeMillis()
             while (curThread === testThread && run) {
-                if (gameFrames > TIME_LIMIT_MS / FRAME_DELAY) {
+                if (gameFrames > timeLimitMs / FRAME_DELAY) {
                     gameEnds()
                 } else {
                     physics()
@@ -261,7 +261,7 @@ class GameDraw : JComponent() {
             mass2Y = mass2.getY()
             val lengthX = Math.abs(mass1X - mass2X) //absolute value, so angle is always +
             val lengthY = Math.abs(mass1Y - mass2Y)
-            val length = Math.sqrt(lengthX * lengthX + lengthY * lengthY) //Pythagoras'
+            val length = sqrt(lengthX * lengthX + lengthY * lengthY) //Pythagoras'
             val extension = length - newRLength
             //Frictional force affects velocity only!!
             var resultantAcceleration = Math.abs(m.springyness * extension) //F=kx=ma where m=1.0
@@ -457,9 +457,9 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             val kineticEnergyX =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             val kineticEnergyY =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(0 - kineticEnergyX)
                             a.setVx(kineticEnergyX)
                             b.setVx(kineticEnergyX)
@@ -503,7 +503,7 @@ class GameDraw : JComponent() {
                             val bVx = b.oldVx
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(0 - kineticEnergyX1)
                             a.setVx(kineticEnergyX1)
                             b.setVx(kineticEnergyX1)
@@ -527,7 +527,7 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVy(kineticEnergyY1)
                             a.setVy(0 - kineticEnergyY1)
                             b.setVy(0 - kineticEnergyY1)
@@ -585,9 +585,9 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(0 - kineticEnergyX1)
                             a.setVx(kineticEnergyX1)
                             b.setVx(kineticEnergyX1)
@@ -630,7 +630,7 @@ class GameDraw : JComponent() {
                             val bVx = b.oldVx
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(0 - kineticEnergyX1)
                             a.setVx(kineticEnergyX1)
                             b.setVx(kineticEnergyX1)
@@ -653,7 +653,7 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVy(kineticEnergyY1)
                             a.setVy(0 - kineticEnergyY1)
                             b.setVy(0 - kineticEnergyY1)
@@ -718,9 +718,9 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(kineticEnergyX1)
                             a.setVx(0 - kineticEnergyX1)
                             b.setVx(0 - kineticEnergyX1)
@@ -764,7 +764,7 @@ class GameDraw : JComponent() {
                             val bVx = b.oldVx
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(kineticEnergyX1)
                             a.setVx(0 - kineticEnergyX1)
                             b.setVx(0 - kineticEnergyX1)
@@ -788,7 +788,7 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVy(kineticEnergyY1)
                             a.setVy(0 - kineticEnergyY1)
                             b.setVy(0 - kineticEnergyY1)
@@ -846,9 +846,9 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(kineticEnergyX1)
                             a.setVx(0 - kineticEnergyX1)
                             b.setVx(0 - kineticEnergyX1)
@@ -892,7 +892,7 @@ class GameDraw : JComponent() {
                             val bVx = b.oldVx
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyX1 =
-                                Math.sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
                             currentMass.setVx(kineticEnergyX1)
                             a.setVx(0 - kineticEnergyX1)
                             b.setVx(0 - kineticEnergyX1)
@@ -916,7 +916,7 @@ class GameDraw : JComponent() {
                             val bVy = b.oldVy
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                             kineticEnergyY1 =
-                                Math.sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                                sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
                             currentMass.setVy(kineticEnergyY1)
                             a.setVy(0 - kineticEnergyY1)
                             b.setVy(0 - kineticEnergyY1)
@@ -957,6 +957,7 @@ class GameDraw : JComponent() {
         private const val MASS_SIZE = 4.0
         private const val LINE_WIDTH = 0.4f
         private const val SHIFT = MASS_SIZE / 2.0 //Shift needed because specified point is ellipse's top-left
+        private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
 
         @Volatile
         private var run = false

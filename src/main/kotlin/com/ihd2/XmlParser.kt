@@ -46,8 +46,7 @@ class XmlParser(path: String?) : ContentHandler {
     private var createWave = false
     private var source: InputSource
 
-    val model // World for holding masses and springs
-            : Model
+    val model: Model
     var verified = 0 // to count the no. of strings verified
     override fun characters(ch: CharArray, start: Int, length: Int) {
         try {

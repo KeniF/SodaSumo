@@ -59,22 +59,16 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
     }
 
     override fun actionPerformed(e: ActionEvent) {
-        if (e.source === box1) {
-            val b = box1.selectedItem
-            if (box1.selectedIndex == -1 && b.toString().contains("/")) {
-                box1.addItem(b)
-                box2.addItem(b)
+        when {
+            e.source === box1 -> {
+                box1.showPopup()
             }
-            box1.showPopup()
-        } else if (e.source === box2) {
-            val a = box2.selectedItem
-            if (box2.selectedIndex == -1 && a.toString().contains("/")) {
-                box2.addItem(a)
-                box1.addItem(a)
+            e.source === box2 -> {
+                box2.showPopup()
             }
-            box2.showPopup()
-        } else if (e.source === boxTime) {
-            newGameDraw.setTimeLimit(boxTime.selectedItem.toString().toDouble() * 1000.0)
+            e.source === boxTime -> {
+                newGameDraw.setTimeLimit((boxTime.selectedItem?.toString()?.toDouble() ?: 0.0) * 1000.0)
+            }
         }
     }
 
@@ -87,18 +81,16 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
             if ((e.keyCode == KeyEvent.VK_ENTER ||
                         e.keyCode == KeyEvent.VK_SPACE) && loadButton.isVisible
             ) {
-                val xmlFile1: String
-                val xmlFile2: String
-                xmlFile1 = box1.selectedItem.toString()
+                val xmlFile1 = box1.selectedItem?.toString() ?: ""
                 xp1 = XmlParser("$xmlFile1.xml")
                 if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
-                xmlFile2 = box2.selectedItem.toString()
+                val xmlFile2 = box2.selectedItem?.toString() ?: ""
                 xp2 = XmlParser("$xmlFile2.xml")
                 if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
                 val model1 = xp1!!.model
-                model1.name = box1.selectedItem.toString()
+                model1.name = box1.selectedItem?.toString() ?: ""
                 val model2 = xp2!!.model
-                model2.name = box2.selectedItem.toString()
+                model2.name = box2.selectedItem?.toString() ?: ""
                 newGameDraw.provideModel1(model1)
                 newGameDraw.provideModel2(model2)
                 loadButton.isVisible = false
@@ -146,61 +138,66 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         try {
             val xmlFile1: String
             val xmlFile2: String
-            if (e.source === loadButton) {
-                xmlFile1 = box1.selectedItem.toString()
-                xp1 = XmlParser("$xmlFile1.xml")
-                if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
-                xmlFile2 = box2.selectedItem.toString()
-                xp2 = XmlParser("$xmlFile2.xml")
-                if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
-                val model1 = xp1!!.model
-                model1.name = box1.selectedItem.toString()
-                val model2 = xp2!!.model
-                model2.name = box2.selectedItem.toString()
-                newGameDraw.provideModel1(model1)
-                newGameDraw.provideModel2(model2)
-                loadButton.isVisible = false
-                stopButton.isVisible = true
-                box1.isEnabled = false
-                box2.isEnabled = false
-                newGameDraw.startDraw()
-                newGameDraw.init()
-            } else if (e.source === stopButton) {
-                newGameDraw.pause()
-                loadButton.isVisible = true
-                stopButton.isVisible = false
-                box1.isEnabled = true
-                box2.setEnabled(true)
-            } else if (e.source === aboutItemSoda) {
-                JOptionPane.showMessageDialog(
-                    newGameDraw,
-                    """
-                        <html><font size=5 color=blue><b><u>$VERSION</u></b></font></html>
-                        
-                        SodaSumo is a clone/extension to the physics game SodaRace.
-                        While SodaRace allows users to import several models designed
-                        in SodaConstructor for a competition in moving speed,
-                        SodaSumo replicates the SodaConstructor physics engine
-                        and takes the game further by implementing collision detection
-                        between two models.
-                        
-                        More information at
-                        <html><a href="http://sodaplay.com">www.sodaplay.com</a></html>
-                        """.trimIndent(),
-                    "About", JOptionPane.INFORMATION_MESSAGE
-                )
-            } else if (e.source === aboutItemAuthor) {
-                JOptionPane.showMessageDialog(
-                    newGameDraw,
-                    """<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>
-
-(C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
-
-This program was started as my third year project
-at the University of Manchester, United Kingdom.
-Supervised by Dr. Mary McGee Wood""",
-                    "About", JOptionPane.INFORMATION_MESSAGE
-                )
+            when {
+                e.source === loadButton -> {
+                    xmlFile1 = box1.selectedItem?.toString() ?: ""
+                    xp1 = XmlParser("$xmlFile1.xml")
+                    if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
+                    xmlFile2 = box2.selectedItem?.toString() ?: ""
+                    xp2 = XmlParser("$xmlFile2.xml")
+                    if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
+                    val model1 = xp1!!.model
+                    model1.name = box1.selectedItem?.toString() ?: ""
+                    val model2 = xp2!!.model
+                    model2.name = box2.selectedItem?.toString() ?: ""
+                    newGameDraw.provideModel1(model1)
+                    newGameDraw.provideModel2(model2)
+                    loadButton.isVisible = false
+                    stopButton.isVisible = true
+                    box1.isEnabled = false
+                    box2.isEnabled = false
+                    newGameDraw.startDraw()
+                    newGameDraw.init()
+                }
+                e.source === stopButton -> {
+                    newGameDraw.pause()
+                    loadButton.isVisible = true
+                    stopButton.isVisible = false
+                    box1.isEnabled = true
+                    box2.setEnabled(true)
+                }
+                e.source === aboutItemSoda -> {
+                    JOptionPane.showMessageDialog(
+                        newGameDraw,
+                        """
+                                <html><font size=5 color=blue><b><u>$VERSION</u></b></font></html>
+                                
+                                SodaSumo is a clone/extension to the physics game SodaRace.
+                                While SodaRace allows users to import several models designed
+                                in SodaConstructor for a competition in moving speed,
+                                SodaSumo replicates the SodaConstructor physics engine
+                                and takes the game further by implementing collision detection
+                                between two models.
+                                
+                                More information at
+                                <html><a href="http://sodaplay.com">www.sodaplay.com</a></html>
+                                """.trimIndent(),
+                        "About", JOptionPane.INFORMATION_MESSAGE
+                    )
+                }
+                e.source === aboutItemAuthor -> {
+                    JOptionPane.showMessageDialog(
+                        newGameDraw,
+                        """<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>
+        
+        (C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
+        
+        This program was started as my third year project
+        at the University of Manchester, United Kingdom.
+        Supervised by Dr. Mary McGee Wood""",
+                        "About", JOptionPane.INFORMATION_MESSAGE
+                    )
+                }
             }
         } catch (f: IOException) {
             JOptionPane.showMessageDialog(
