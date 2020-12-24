@@ -36,7 +36,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private double gameFrames = 0.0;
     private Model model1, model2;
     private Graphics2D gfx2d;
-    private double[][] m1Acceleration, m2Acceleration;
     private static volatile boolean run = false;
     private volatile boolean invertM1 = false, invertM2 = false;
     private double firstContactPoint = 0;
@@ -134,15 +133,12 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         model1.setNoOfFrames(0);
         model2.setNoOfFrames(0);
         gameFrames = 0.0;
-        m1Acceleration = new double[model1.getMassMap().size()][2];
-        m2Acceleration = new double[model2.getMassMap().size()][2];
         touched = false;
         resultMessage = "";
     }
 
     public void provideModel1(Model model) {
         run = false;
-        model1 = null;
         model1 = model;
         double[] br = model1.getBoundingRectangle();
         double shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[3] - 10.0;//-Math.random()*10;
@@ -153,7 +149,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
 
     public void provideModel2(Model model) {
         run = false;
-        model2 = null;
         model2 = model;
         double[] br = model2.getBoundingRectangle();
         double shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[2] + 10.0;//+Math.random()*10;
@@ -166,21 +161,19 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         testThread = new Thread(() -> {
             Thread curThread = Thread.currentThread();
             long beforeRun = System.currentTimeMillis();
-            while (curThread == testThread) {
-                if (run) {
-                    if (gameFrames > TIME_LIMIT_MS / FRAME_DELAY) {
-                        gameEnds();
-                    } else {
-                        physics();
-                        repaint();
-                        gameFrames += 1.0;
-                        if (!invertM1)
-                            model1.setNoOfFrames(model1.getNoOfFrames() + 1);
-                        else model1.setNoOfFrames(model1.getNoOfFrames() - 1);
-                        if (!invertM2)
-                            model2.setNoOfFrames(model2.getNoOfFrames() + 1);
-                        else model2.setNoOfFrames(model2.getNoOfFrames() - 1);
-                    }
+            while (curThread == testThread && run) {
+                if (gameFrames > TIME_LIMIT_MS / FRAME_DELAY) {
+                    gameEnds();
+                } else {
+                    physics();
+                    repaint();
+                    gameFrames += 1.0;
+                    if (!invertM1)
+                        model1.setNoOfFrames(model1.getNoOfFrames() + 1);
+                    else model1.setNoOfFrames(model1.getNoOfFrames() - 1);
+                    if (!invertM2)
+                        model2.setNoOfFrames(model2.getNoOfFrames() + 1);
+                    else model2.setNoOfFrames(model2.getNoOfFrames() - 1);
                 }
                 try {
                     //to keep a constant framerate depending on how far we are behind :D
@@ -219,17 +212,10 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
 
     private void physics() {
         if (isRunnable()) {
-            //create an acceleration array for all masses
-            //adds up all accleration to calculate new velocity hence position
-            //java automatically sets array values to 0.0
-            m1Acceleration = new double[model1.getMassMap().size()][2];
-            m2Acceleration = new double[model2.getMassMap().size()][2];
-            accelerateSprings(model1, 1, false);
-            accelerateSprings(model1, 1, true);
-            newPositions(1);
-            accelerateSprings(model2, 2, true);
-            accelerateSprings(model2, 2, false);
-            newPositions(2);
+            accelerateSpringsAndMuscles(model1);
+            newPositions(model1);
+            accelerateSpringsAndMuscles(model2);
+            newPositions(model2);
             doCollision();
         }
     }
@@ -242,20 +228,23 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         return b;
     }
 
-    private void accelerateSprings(Model m, int input, boolean isMuscle) {
+    private void accelerateSpringsAndMuscles(Model model) {
+        accelerateSprings(model, false);
+        accelerateSprings(model, true);
+    }
+
+    private void accelerateSprings(Model m, boolean isMuscle) {
         int totalNo;
-        if (isMuscle)
-            totalNo = m.getMuscleMap().size();
-        else
-            totalNo = m.getSpringMap().size();
+        if (isMuscle) totalNo = m.getMuscleMap().size();
+        else totalNo = m.getSpringMap().size();
         for (int i = 1; i <= totalNo; i++) {
             double newRLength;
             double mass1Y;
             double mass1X;
             double mass2X;
             double mass2Y;
-            int loadMass1;
-            int loadMass2;
+            Mass mass1;
+            Mass mass2;
             if (isMuscle) {
                 double amp = Math.abs(m.getMuscle(i).getAmplitude());
                 double phase = m.getMuscle(i).getPhase();
@@ -266,21 +255,18 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 //One for each model, allows reversing
                 newRLength = rLength * (1.0 + m.getWaveAmplitude() * amp *
                         Math.sin((m.getWaveSpeed() * m.getNoOfFrames() + phase - m.getWavePhase()) * 2.0 * Math.PI));
-                mass1X = m.getMuscle(i).getMass1().getX();
-                mass1Y = m.getMuscle(i).getMass1().getY();
-                mass2X = m.getMuscle(i).getMass2().getX();
-                mass2Y = m.getMuscle(i).getMass2().getY();
-                loadMass1 = m.getMuscle(i).getMass1().getId() - 1;
-                loadMass2 = m.getMuscle(i).getMass2().getId() - 1;
+                mass1 = m.getMuscle(i).getMass1();
+                mass2 = m.getMuscle(i).getMass2();
             } else {
                 newRLength = m.getSpring(i).getRestLength();
-                mass1X = m.getSpring(i).getMass1().getX();
-                mass1Y = m.getSpring(i).getMass1().getY();
-                mass2X = m.getSpring(i).getMass2().getX();
-                mass2Y = m.getSpring(i).getMass2().getY();
-                loadMass1 = m.getSpring(i).getMass1().getId() - 1;
-                loadMass2 = m.getSpring(i).getMass2().getId() - 1;
+                mass1 = m.getSpring(i).getMass1();
+                mass2 = m.getSpring(i).getMass2();
             }
+
+            mass1X = mass1.getX();
+            mass1Y = mass1.getY();
+            mass2X = mass2.getX();
+            mass2Y = mass2.getY();
 
             double lengthX = Math.abs(mass1X - mass2X);//absolute value, so angle is always +
             double lengthY = Math.abs(mass1Y - mass2Y);
@@ -298,96 +284,56 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                     resultantAcceleration *= -1;
                 if (mass1X > mass2X) {
                     if (mass2Y > mass1Y) {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
-                        } else {
-                            m2Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
-                        }
+                        mass1.accelerate(
+                                -(resultantAcceleration * Math.cos(angle)),
+                                resultantAcceleration * Math.sin(angle));
+                        mass2.accelerate(resultantAcceleration * Math.cos(angle),
+                                -(resultantAcceleration * Math.sin(angle)));
                     } else if (mass2Y < mass1Y) {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
-                        } else {
-                            m2Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
-                        }
+                        mass1.accelerate(
+                                -(resultantAcceleration * Math.cos(angle)),
+                                -(resultantAcceleration * Math.sin(angle)));
+                        mass2.accelerate(
+                                resultantAcceleration * Math.cos(angle),
+                                resultantAcceleration * Math.sin(angle));
                     } else {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][0] -= resultantAcceleration;
-                            m1Acceleration[loadMass2][0] += resultantAcceleration;
-                        } else {
-                            m2Acceleration[loadMass1][0] -= resultantAcceleration;
-                            m2Acceleration[loadMass2][0] += resultantAcceleration;
-                        }
+                        mass1.accelerate(-resultantAcceleration, 0);
+                        mass2.accelerate(resultantAcceleration, 0);
                     }
                 } else if (mass1X < mass2X) {
                     if (mass2Y > mass1Y) {
-                        if (input == 1) {//model1
-                            m1Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
-                        } else {
-                            m2Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
-                        }
+                        mass1.accelerate(
+                                resultantAcceleration * Math.cos(angle),
+                                resultantAcceleration * Math.sin(angle));
+                        mass2.accelerate(
+                                -(resultantAcceleration * Math.cos(angle)),
+                                -(resultantAcceleration * Math.sin(angle)));
+
                     } else if (mass2Y < mass1Y) {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
-                        } else {
-                            m2Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
-                        }
+                        mass1.accelerate(
+                                resultantAcceleration * Math.cos(angle),
+                                -(resultantAcceleration * Math.sin(angle)));
+                        mass2.accelerate(
+                                -(resultantAcceleration * Math.cos(angle)),
+                                resultantAcceleration * Math.sin(angle));
                     } else {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][0] += resultantAcceleration;//x
-                            m1Acceleration[loadMass2][0] -= resultantAcceleration;//x
-                        } else {
-                            m2Acceleration[loadMass1][0] += resultantAcceleration;//x
-                            m2Acceleration[loadMass2][0] -= resultantAcceleration;//x
-                        }
+                        mass1.accelerate(resultantAcceleration, 0);//x
+                        mass2.accelerate(-resultantAcceleration, 0);//x
                     }
                 } else {
                     if (mass1Y > mass2Y) {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][1] -= resultantAcceleration;//y
-                            m1Acceleration[loadMass2][1] += resultantAcceleration;
-                        } else {
-                            m2Acceleration[loadMass1][1] -= resultantAcceleration;//y
-                            m2Acceleration[loadMass2][1] += resultantAcceleration;
-                        }
+                        mass1.accelerate(0, -resultantAcceleration);
+                        mass2.accelerate(0, resultantAcceleration);
                     } else if (mass1Y < mass2Y) {
-                        if (input == 1) {
-                            m1Acceleration[loadMass1][1] += resultantAcceleration;
-                            m1Acceleration[loadMass2][1] -= resultantAcceleration;
-                        } else {
-                            m2Acceleration[loadMass1][1] += resultantAcceleration;
-                            m2Acceleration[loadMass2][1] -= resultantAcceleration;
-                        }
+                        mass1.accelerate(0, resultantAcceleration);
+                        mass2.accelerate(0, -resultantAcceleration);
                     }
                 }
             }
         }
     }
 
-    private void newPositions(int model) {
+    private void newPositions(Model model) {
         double newVelocityX;
         double newVelocityY;
         double newPositionX;
@@ -396,88 +342,46 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
         double oldVelocityX;
         double oldPositionX;
         double oldPositionY;
-        if (model == 1) {
-            model1.resetBoundRect();
-            for (int i = 1; i <= model1.getMassMap().size(); i++) {
-                //damping for F=-fv
-                oldVelocityX = model1.getMass(i).getVx();
-                oldVelocityY = model1.getMass(i).getVy();
-                newVelocityX = oldVelocityX + m1Acceleration[i - 1][0];
-                newVelocityX = newVelocityX - newVelocityX * model1.getFriction();
-                newVelocityY = oldVelocityY + m1Acceleration[i - 1][1];//-model1.getGravity();
-                newVelocityY = newVelocityY - newVelocityY * model1.getFriction();
-                newVelocityY -= model1.getGravity();//gravity(not damped!)
-                if (Math.abs(newVelocityY) > SPEED_LIMIT) {
-                    if (newVelocityY > 0)
-                        newVelocityY = SPEED_LIMIT;
-                    else newVelocityY = 0 - SPEED_LIMIT;
-                }
-                if (Math.abs(newVelocityX) > SPEED_LIMIT) {
-                    if (newVelocityX > 0)
-                        newVelocityX = SPEED_LIMIT;
-                    else newVelocityX = 0 - SPEED_LIMIT;
-                }
-
-                oldPositionX = model1.getMass(i).getX();
-                oldPositionY = model1.getMass(i).getY();
-                newPositionX = oldPositionX + newVelocityX;
-                newPositionY = oldPositionY + newVelocityY;
-
-                //if goes through ground
-                if (newPositionY <= GROUND_HEIGHT) {
-                    if (newVelocityY < 0)
-                        newVelocityY = newVelocityY * SURFACE_REFLECTION;
-                    newPositionY = GROUND_HEIGHT;
-                    newVelocityX *= SURFACE_FRICTION;
-                }
-                Mass model1Mass = model1.getMass(i);
-                model1Mass.setVx(newVelocityX);
-                model1Mass.setVy(newVelocityY);
-                model1Mass.setX(newPositionX);
-                model1Mass.setY(newPositionY);
-                model1.adjustBoundRect(model1Mass);
+        model.resetBoundRect();
+        for (int i = 1; i <= model.getMassMap().size(); i++) {
+            //damping for F=-fv
+            final Mass mass = model.getMass(i);
+            oldVelocityX = mass.getVx();
+            oldVelocityY = mass.getVy();
+            newVelocityX = oldVelocityX + mass.getAx();
+            newVelocityX = newVelocityX - newVelocityX * model.getFriction();
+            newVelocityY = oldVelocityY + mass.getAy();
+            newVelocityY = newVelocityY - newVelocityY * model.getFriction();
+            newVelocityY -= model.getGravity();//gravity(not damped!)
+            model.getMass(i).clearAccelerations();
+            if (Math.abs(newVelocityY) > SPEED_LIMIT) {
+                if (newVelocityY > 0)
+                    newVelocityY = SPEED_LIMIT;
+                else newVelocityY = 0 - SPEED_LIMIT;
             }
-        }
-        if (model == 2) {
-            model2.resetBoundRect();
-            for (int i = 1; i <= model2.getMassMap().size(); i++) {
-                //damping for F=-fv
-                oldVelocityX = model2.getMass(i).getVx();
-                oldVelocityY = model2.getMass(i).getVy();
-                newVelocityX = oldVelocityX + m2Acceleration[i - 1][0];
-                newVelocityX = newVelocityX - newVelocityX * model2.getFriction();
-                newVelocityY = oldVelocityY + m2Acceleration[i - 1][1];
-                newVelocityY = newVelocityY - newVelocityY * model2.getFriction();
-                newVelocityY -= model2.getGravity();
-                if (Math.abs(newVelocityY) > SPEED_LIMIT) {
-                    if (newVelocityY > 0)
-                        newVelocityY = SPEED_LIMIT;
-                    else newVelocityY = 0 - SPEED_LIMIT;
-                }
-                if (Math.abs(newVelocityX) > SPEED_LIMIT) {
-                    if (newVelocityX > 0)
-                        newVelocityX = SPEED_LIMIT;
-                    else newVelocityX = 0 - SPEED_LIMIT;
-                }
-                oldPositionX = model2.getMass(i).getX();
-                oldPositionY = model2.getMass(i).getY();
-                newPositionX = oldPositionX + newVelocityX;
-                newPositionY = oldPositionY + newVelocityY;
-
-                //if goes through ground
-                if (newPositionY <= GROUND_HEIGHT) {
-                    if (newVelocityY < 0)
-                        newVelocityY = newVelocityY * SURFACE_REFLECTION;
-                    newPositionY = GROUND_HEIGHT;
-                    newVelocityX *= SURFACE_FRICTION;
-                }
-                Mass model2Mass = model2.getMass(i);
-                model2Mass.setVx(newVelocityX);
-                model2Mass.setVy(newVelocityY);
-                model2Mass.setX(newPositionX);
-                model2Mass.setY(newPositionY);
-                model2.adjustBoundRect(model2Mass);
+            if (Math.abs(newVelocityX) > SPEED_LIMIT) {
+                if (newVelocityX > 0)
+                    newVelocityX = SPEED_LIMIT;
+                else newVelocityX = 0 - SPEED_LIMIT;
             }
+
+            oldPositionX = mass.getX();
+            oldPositionY = mass.getY();
+            newPositionX = oldPositionX + newVelocityX;
+            newPositionY = oldPositionY + newVelocityY;
+
+            //if goes through ground
+            if (newPositionY <= GROUND_HEIGHT) {
+                if (newVelocityY < 0)
+                    newVelocityY = newVelocityY * SURFACE_REFLECTION;
+                newPositionY = GROUND_HEIGHT;
+                newVelocityX *= SURFACE_FRICTION;
+            }
+            mass.setVx(newVelocityX);
+            mass.setVy(newVelocityY);
+            mass.setX(newPositionX);
+            mass.setY(newPositionY);
+            model.adjustBoundRect(mass);
         }
     }
 

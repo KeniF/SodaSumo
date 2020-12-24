@@ -1,6 +1,10 @@
 package com.ihd2.model
 
 class Mass(val id: Int) {
+    var ax = 0.0
+        private set
+    var ay = 0.0
+        private set
     private var vx = 0.0
     private var vy = 0.0
     private var x = 0.0
@@ -14,6 +18,7 @@ class Mass(val id: Int) {
         private set
     var oldY = 0.0
         private set
+
     fun getX(): Double {
         return x
     }
@@ -56,6 +61,16 @@ class Mass(val id: Int) {
 
     fun revertY() {
         y = oldY
+    }
+
+    fun accelerate(x: Double, y: Double) {
+        ax += x
+        ay += y
+    }
+
+    fun clearAccelerations() {
+        ax = 0.0
+        ay = 0.0
     }
 
     override fun toString(): String {
