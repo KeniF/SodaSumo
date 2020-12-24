@@ -5,6 +5,7 @@ class Mass(val id: Int) {
     private var vy = 0.0
     private var x = 0.0
     private var y = 0.0
+
     var oldVx = 0.0
         private set
     var oldVy = 0.0

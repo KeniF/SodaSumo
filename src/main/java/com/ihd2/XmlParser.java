@@ -73,7 +73,6 @@ public class XmlParser implements ContentHandler {
                     case MODE_NONE:
                     case MODE_NODE:
                         break;
-
                     case MODE_FRICTION: {
                         newModel.setFriction(Double.parseDouble(readCh));
                         mode = MODE_NONE;

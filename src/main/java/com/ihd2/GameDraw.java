@@ -33,8 +33,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private final Line2D.Double g2dLine = new Line2D.Double();
     private double TIME_LIMIT_MS = 15000.0;
     private Thread testThread;
-    private double noOfFrames1 = 0.0;
-    private double noOfFrames2 = 0.0;
     private double gameFrames = 0.0;
     private Model model1, model2;
     private Graphics2D gfx2d;
@@ -133,8 +131,8 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
 
     public void init() {
         run = true;
-        noOfFrames1 = 0.0;
-        noOfFrames2 = 0.0;
+        model1.setNoOfFrames(0);
+        model2.setNoOfFrames(0);
         gameFrames = 0.0;
         m1Acceleration = new double[model1.getMassMap().size()][2];
         m2Acceleration = new double[model2.getMassMap().size()][2];
@@ -177,11 +175,11 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                         repaint();
                         gameFrames += 1.0;
                         if (!invertM1)
-                            noOfFrames1 += 1.0;
-                        else noOfFrames1 -= 1.0;
+                            model1.setNoOfFrames(model1.getNoOfFrames() + 1.0);
+                        else model1.setNoOfFrames(model1.getNoOfFrames() - 1.0);
                         if (!invertM2)
-                            noOfFrames2 += 1.0;
-                        else noOfFrames2 -= 1.0;
+                            model2.setNoOfFrames(model2.getNoOfFrames() + 1.0);
+                        else model2.setNoOfFrames(model2.getNoOfFrames() - 1.0);
                     }
                 }
                 try {
@@ -266,23 +264,22 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 //*2 pi to convert to radians | -wavePhase to set correct restLength of com.ihd2.model.Muscle
                 //don't do the period already done
                 //One for each model, allows reversing
-                final double noOfFrames = (input == 1) ? noOfFrames1 : noOfFrames2;
                 newRLength = rLength * (1.0 + m.getWaveAmplitude() * amp *
-                        Math.sin((m.getWaveSpeed() * noOfFrames + phase - m.getWavePhase()) * 2.0 * Math.PI));
+                        Math.sin((m.getWaveSpeed() * m.getNoOfFrames() + phase - m.getWavePhase()) * 2.0 * Math.PI));
                 mass1X = m.getMuscle(i).getMass1().getX();
                 mass1Y = m.getMuscle(i).getMass1().getY();
                 mass2X = m.getMuscle(i).getMass2().getX();
                 mass2Y = m.getMuscle(i).getMass2().getY();
-                loadMass1 = m.getMuscle(i).getMass1().getId();
-                loadMass2 = m.getMuscle(i).getMass2().getId();
+                loadMass1 = m.getMuscle(i).getMass1().getId() - 1;
+                loadMass2 = m.getMuscle(i).getMass2().getId() - 1;
             } else {
                 newRLength = m.getSpring(i).getRestLength();
                 mass1X = m.getSpring(i).getMass1().getX();
                 mass1Y = m.getSpring(i).getMass1().getY();
                 mass2X = m.getSpring(i).getMass2().getX();
                 mass2Y = m.getSpring(i).getMass2().getY();
-                loadMass1 = m.getSpring(i).getMass1().getId();
-                loadMass2 = m.getSpring(i).getMass2().getId();
+                loadMass1 = m.getSpring(i).getMass1().getId() - 1;
+                loadMass2 = m.getSpring(i).getMass2().getId() - 1;
             }
 
             double lengthX = Math.abs(mass1X - mass2X);//absolute value, so angle is always +
@@ -302,90 +299,88 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 if (mass1X > mass2X) {
                     if (mass2Y > mass1Y) {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1 - 1][1] += resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2 - 1][1] -= resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1 - 1][1] += resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2 - 1][1] -= resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
                         }
                     } else if (mass2Y < mass1Y) {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1 - 1][1] -= resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2 - 1][1] += resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1 - 1][1] -= resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2 - 1][1] += resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass1][0] -= resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass2][0] += resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
                         }
                     } else {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][0] -= resultantAcceleration;
-                            m1Acceleration[loadMass2 - 1][0] += resultantAcceleration;
+                            m1Acceleration[loadMass1][0] -= resultantAcceleration;
+                            m1Acceleration[loadMass2][0] += resultantAcceleration;
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] -= resultantAcceleration;
-                            m2Acceleration[loadMass2 - 1][0] += resultantAcceleration;
+                            m2Acceleration[loadMass1][0] -= resultantAcceleration;
+                            m2Acceleration[loadMass2][0] += resultantAcceleration;
                         }
                     }
                 } else if (mass1X < mass2X) {
                     if (mass2Y > mass1Y) {
                         if (input == 1) {//model1
-                            m1Acceleration[loadMass1 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1 - 1][1] += resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2 - 1][1] -= resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1 - 1][1] += resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2 - 1][1] -= resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass1][1] += resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass2][1] -= resultantAcceleration * Math.sin(angle);
                         }
                     } else if (mass2Y < mass1Y) {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass1 - 1][1] -= resultantAcceleration * Math.sin(angle);
-                            m1Acceleration[loadMass2 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m1Acceleration[loadMass2 - 1][1] += resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
+                            m1Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
+                            m1Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] += resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass1 - 1][1] -= resultantAcceleration * Math.sin(angle);
-                            m2Acceleration[loadMass2 - 1][0] -= resultantAcceleration * Math.cos(angle);
-                            m2Acceleration[loadMass2 - 1][1] += resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass1][0] += resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass1][1] -= resultantAcceleration * Math.sin(angle);
+                            m2Acceleration[loadMass2][0] -= resultantAcceleration * Math.cos(angle);
+                            m2Acceleration[loadMass2][1] += resultantAcceleration * Math.sin(angle);
                         }
                     } else {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][0] += resultantAcceleration;//x
-                            m1Acceleration[loadMass2 - 1][0] -= resultantAcceleration;//x
+                            m1Acceleration[loadMass1][0] += resultantAcceleration;//x
+                            m1Acceleration[loadMass2][0] -= resultantAcceleration;//x
                         } else {
-                            m2Acceleration[loadMass1 - 1][0] += resultantAcceleration;//x
-                            m2Acceleration[loadMass2 - 1][0] -= resultantAcceleration;//x
+                            m2Acceleration[loadMass1][0] += resultantAcceleration;//x
+                            m2Acceleration[loadMass2][0] -= resultantAcceleration;//x
                         }
                     }
                 } else {
                     if (mass1Y > mass2Y) {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][1] -= resultantAcceleration;//y
-                            m1Acceleration[loadMass2 - 1][1] += resultantAcceleration;
+                            m1Acceleration[loadMass1][1] -= resultantAcceleration;//y
+                            m1Acceleration[loadMass2][1] += resultantAcceleration;
                         } else {
-                            m2Acceleration[loadMass1 - 1][1] -= resultantAcceleration;//y
-                            m2Acceleration[loadMass2 - 1][1] += resultantAcceleration;
+                            m2Acceleration[loadMass1][1] -= resultantAcceleration;//y
+                            m2Acceleration[loadMass2][1] += resultantAcceleration;
                         }
                     } else if (mass1Y < mass2Y) {
                         if (input == 1) {
-                            m1Acceleration[loadMass1 - 1][1] += resultantAcceleration;
-                            m1Acceleration[loadMass2 - 1][1] -= resultantAcceleration;
+                            m1Acceleration[loadMass1][1] += resultantAcceleration;
+                            m1Acceleration[loadMass2][1] -= resultantAcceleration;
                         } else {
-                            m2Acceleration[loadMass1 - 1][1] += resultantAcceleration;
-                            m2Acceleration[loadMass2 - 1][1] -= resultantAcceleration;
+                            m2Acceleration[loadMass1][1] += resultantAcceleration;
+                            m2Acceleration[loadMass2][1] -= resultantAcceleration;
                         }
-                    } else {
-                        System.out.println("Error: Spring without extension!");
                     }
                 }
             }

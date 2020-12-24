@@ -14,6 +14,7 @@ class Model {
     var wavePhase = 0.0
     var waveSpeed = 0.0
     var waveAmplitude = 0.0
+    var noOfFrames = 0.0
     private var boundTop = -10000.0
     private var boundBottom = 10000.0
     var boundRight = -10000.0
