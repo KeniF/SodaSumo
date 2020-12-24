@@ -29,8 +29,8 @@ class Model {
     }
 
     fun adjustBoundRect(mass: Mass) {
-        boundLeft = min(boundLeft, mass.x)
-        boundRight = max(boundRight, mass.x)
+        boundLeft = min(boundLeft, mass.getX())
+        boundRight = max(boundRight, mass.getX())
         boundTop = max(boundTop, mass.getY())
         boundBottom = min(boundBottom, mass.getY())
     }
