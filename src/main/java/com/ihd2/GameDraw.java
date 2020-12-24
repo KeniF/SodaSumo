@@ -20,11 +20,10 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private static final RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
     private static final Font font = new Font("Arial", Font.PLAIN, 12);
-    private static final Font rFont = new Font("Arial", Font.PLAIN, 20);
+    private static final Font resultFont = new Font("Arial", Font.PLAIN, 20);
     private static final double MASS_SIZE = 4.0;
     private static final float LINE_WIDTH = 0.4f;
     private static final double SHIFT = MASS_SIZE / 2.0; //Shift needed because specified point is ellipse's top-left
-    private static boolean run = false;
     private final double HEIGHT = 298.0;//need to invert height as top-left is (0,0)
     private final Line2D.Double horizontalLine = new Line2D.Double();
     private final Line2D.Double lineOld = new Line2D.Double();
@@ -40,7 +39,8 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
     private Model model1, model2;
     private Graphics2D gfx2d;
     private double[][] m1Acceleration, m2Acceleration;
-    private boolean invertM1 = false, invertM2 = false;
+    private static volatile boolean run = false;
+    private volatile boolean invertM1 = false, invertM2 = false;
     private double firstContactPoint = 0;
     private boolean touched = false;
     private String resultMessage = "";
@@ -86,7 +86,7 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
 
     private void drawResult() {
         gfx2d.setColor(Color.BLUE.darker());
-        gfx2d.setFont(rFont);
+        gfx2d.setFont(resultFont);
         gfx2d.drawString(resultMessage, (int) Sodasumo.GAME_WIDTH / 2 - 150, 50);
     }
 
@@ -255,7 +255,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             double mass1Y;
             double mass1X;
             double mass2X;
-            //Accelerate springs
             double mass2Y;
             int loadMass1;
             int loadMass2;
@@ -274,16 +273,16 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                 mass1Y = m.getMuscle(i).getMass1().getY();
                 mass2X = m.getMuscle(i).getMass2().getX();
                 mass2Y = m.getMuscle(i).getMass2().getY();
-                loadMass1 = m.getMuscle(i).getMass1().getName();
-                loadMass2 = m.getMuscle(i).getMass2().getName();
+                loadMass1 = m.getMuscle(i).getMass1().getId();
+                loadMass2 = m.getMuscle(i).getMass2().getId();
             } else {
                 newRLength = m.getSpring(i).getRestLength();
                 mass1X = m.getSpring(i).getMass1().getX();
                 mass1Y = m.getSpring(i).getMass1().getY();
                 mass2X = m.getSpring(i).getMass2().getX();
                 mass2Y = m.getSpring(i).getMass2().getY();
-                loadMass1 = m.getSpring(i).getMass1().getName();
-                loadMass2 = m.getSpring(i).getMass2().getName();
+                loadMass1 = m.getSpring(i).getMass1().getId();
+                loadMass2 = m.getSpring(i).getMass2().getId();
             }
 
             double lengthX = Math.abs(mass1X - mass2X);//absolute value, so angle is always +
@@ -406,7 +405,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             model1.resetBoundRect();
             for (int i = 1; i <= model1.getMassMap().size(); i++) {
                 //damping for F=-fv
-                model1.getMass(i).finallyRevert();
                 oldVelocityX = model1.getMass(i).getVx();
                 oldVelocityY = model1.getMass(i).getVy();
                 newVelocityX = oldVelocityX + m1Acceleration[i - 1][0];
@@ -449,7 +447,6 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
             model2.resetBoundRect();
             for (int i = 1; i <= model2.getMassMap().size(); i++) {
                 //damping for F=-fv
-                model2.getMass(i).finallyRevert();
                 oldVelocityX = model2.getMass(i).getVx();
                 oldVelocityY = model2.getMass(i).getVy();
                 newVelocityX = oldVelocityX + m2Acceleration[i - 1][0];

@@ -1,14 +1,14 @@
 package com.ihd2.model
 
-class Muscle(name: Int) : Spring(name) {
+class Muscle(id: Int) : Spring(id) {
     var amplitude = 0.0
     var phase = 0.0
 
-    override fun toString(): String {
-        return "$name a:$mass1 b:$mass2 amp:$amplitude phase:$phase restLeng:$restLength"
+    init {
+        super.id = id
     }
 
-    init {
-        super.name = name
+    override fun toString(): String {
+        return "$id a:$mass1 b:$mass2 amp:$amplitude phase:$phase restLeng:$restLength"
     }
 }

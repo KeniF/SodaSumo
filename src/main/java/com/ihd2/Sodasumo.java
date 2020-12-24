@@ -11,7 +11,7 @@ import java.io.FilenameFilter;
 
 public class Sodasumo extends JFrame implements MouseListener, ItemListener, ActionListener, KeyListener {
 
-    private static final String VERSION = "SodaSumo Beta 1.51";
+    private static final String VERSION = "SodaSumo 1.6";
 
     private static final Dimension GAME_DIMENSION = new Dimension(1000, 350);
     private static final Dimension CP_DIMENSION = new Dimension(150, 320);

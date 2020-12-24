@@ -23,15 +23,15 @@ class Model {
     var name: String? = null
 
     fun addMass(m: Mass) {
-        massMap[m.name] = m
+        massMap[m.id] = m
         adjustBoundRect(m)
     }
 
     fun adjustBoundRect(mass: Mass) {
-        boundLeft = min(boundLeft, mass.getX())
-        boundRight = max(boundRight, mass.getX())
-        boundTop = min(boundTop, mass.getY())
-        boundBottom = max(boundBottom, mass.getY())
+        boundLeft = min(boundLeft, mass.x)
+        boundRight = max(boundRight, mass.x)
+        boundTop = max(boundTop, mass.y)
+        boundBottom = min(boundBottom, mass.y)
     }
 
     fun resetBoundRect() {
@@ -64,11 +64,11 @@ class Model {
     }
 
     fun addSpring(s: Spring) {
-        springMap[s.name] = s
+        springMap[s.id] = s
     }
 
     fun addMuscle(m: Muscle) {
-        muscleMap[m.name] = m
+        muscleMap[m.id] = m
     }
 
     override fun toString(): String {
