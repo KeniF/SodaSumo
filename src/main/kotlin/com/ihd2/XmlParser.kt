@@ -15,25 +15,28 @@ import java.lang.Exception
 
 //create an XMLReader from system defaults
 class XmlParser(path: String?) : ContentHandler {
-    private val MODE_NONE = -1
-    private val MODE_GRAVITY = 0
-    private val MODE_FRICTION = 1
-    private val MODE_VX = 3
-    private val MODE_VY = 4
-    private val MODE_X = 5
-    private val MODE_Y = 6
-    private val MODE_MASS1 = 8
-    private val MODE_REST_LENGTH = 7
-    private val MODE_W_AMPLITUDE = 11
-    private val MODE_MASS2 = 9
-    private val MODE_M_AMPLITUDE = 10
-    private val MODE_M_PHASE = 15
-    private val MODE_SPRINGYNESS = 16
-    private val MODE_W_DIRECTION = 12
-    private val MODE_W_PHASE = 13
-    private val MODE_W_SPEED = 14
-    private val MODE_NODE = 17
-    private var mode: Int
+    
+    enum class ParseMode {
+        NONE,
+        GRAVITY,
+        FRICTION,
+        VX,
+        VY,
+        X,
+        Y,
+        MASS1,
+        REST_LENGTH,
+        W_AMPLITUDE,
+        MASS2,
+        M_AMPLITUDE,
+        M_PHASE,
+        SPRINGYNESS,
+        W_DIRECTION,
+        W_PHASE,
+        W_SPEED,
+        NODE
+    }
+    private var mode: ParseMode
     private var mass1 = 0
     private var mass2 = 0
     private var currentMass: Mass? = null
@@ -52,57 +55,57 @@ class XmlParser(path: String?) : ContentHandler {
             readCh = readCh.trim { it <= ' ' }
             if (readCh.compareTo("") != 0) {
                 when (mode) {
-                    MODE_NONE, MODE_NODE -> {
+                    ParseMode.NONE, ParseMode.NODE -> {
                     }
-                    MODE_FRICTION -> {
+                    ParseMode.FRICTION -> {
                         model.friction = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_GRAVITY -> {
+                    ParseMode.GRAVITY -> {
                         model.gravity = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_VX, MODE_VY -> {
-                        mode = MODE_NONE
+                    ParseMode.VX, ParseMode.VY -> {
+                        mode = ParseMode.NONE
                     }
-                    MODE_M_AMPLITUDE -> {
+                    ParseMode.M_AMPLITUDE -> {
                         currentMuscle!!.amplitude = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_W_AMPLITUDE -> {
+                    ParseMode.W_AMPLITUDE -> {
                         model.waveAmplitude = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_W_PHASE -> {
+                    ParseMode.W_PHASE -> {
                         model.wavePhase = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_M_PHASE -> {
+                    ParseMode.M_PHASE -> {
                         currentMuscle!!.phase = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_W_SPEED -> {
+                    ParseMode.W_SPEED -> {
                         model.waveSpeed = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_X -> {
+                    ParseMode.X -> {
                         currentMass!!.setX(readCh.toDouble())
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_W_DIRECTION -> {
-                        mode = MODE_NONE
+                    ParseMode.W_DIRECTION -> {
+                        mode = ParseMode.NONE
                     }
-                    MODE_SPRINGYNESS -> {
+                    ParseMode.SPRINGYNESS -> {
                         model.springyness = readCh.toDouble()
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_Y -> {
+                    ParseMode.Y -> {
                         currentMass!!.setY(readCh.toDouble())
                         model.addMass(currentMass!!) //IMPORTANT: adds new mass to model
                         currentMass = null //all masses created and saved to Model
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
-                    MODE_REST_LENGTH -> {
+                    ParseMode.REST_LENGTH -> {
                         if (!createMuscle) {
                             currentSpring!!.restLength = readCh.toDouble()
                             currentSpring!!.mass1 = model.getMass(mass1)
@@ -120,7 +123,7 @@ class XmlParser(path: String?) : ContentHandler {
                             model.addMuscle(currentMuscle!!) //adds spring to model
                             currentMuscle = null
                         }
-                        mode = MODE_NONE
+                        mode = ParseMode.NONE
                     }
                     else -> {
                         throw Exception("Unexpected error. Check XML file.") // unexpected state
@@ -154,38 +157,38 @@ class XmlParser(path: String?) : ContentHandler {
                     }
                 } else if (qName == "field") {
                     if (aQname == "name") {
-                        if (mode == MODE_NONE) {
+                        if (mode == ParseMode.NONE) {
                             when (aValue) {
-                                "friction" -> mode = MODE_FRICTION
-                                "gravity" -> mode = MODE_GRAVITY
-                                "vx" -> mode = MODE_VX
-                                "vy" -> mode = MODE_VY
-                                "x" -> mode = MODE_X
-                                "y" -> mode = MODE_Y
-                                "a" -> mode = MODE_MASS1
-                                "b" -> mode = MODE_MASS2
-                                "direction" -> mode = MODE_W_DIRECTION
+                                "friction" -> mode = ParseMode.FRICTION
+                                "gravity" -> mode = ParseMode.GRAVITY
+                                "vx" -> mode = ParseMode.VX
+                                "vy" -> mode = ParseMode.VY
+                                "x" -> mode = ParseMode.X
+                                "y" -> mode = ParseMode.Y
+                                "a" -> mode = ParseMode.MASS1
+                                "b" -> mode = ParseMode.MASS2
+                                "direction" -> mode = ParseMode.W_DIRECTION
                                 "amplitude" -> if (createMuscle && !createWave) {
-                                    mode = MODE_M_AMPLITUDE
+                                    mode = ParseMode.M_AMPLITUDE
                                 } else if (createWave && !createMuscle) {
-                                    mode = MODE_W_AMPLITUDE
+                                    mode = ParseMode.W_AMPLITUDE
                                 }
                                 "phase" -> if (!createWave && createMuscle) {
-                                    mode = MODE_M_PHASE
+                                    mode = ParseMode.M_PHASE
                                 } else if (createWave && !createMuscle) {
-                                    mode = MODE_W_PHASE
+                                    mode = ParseMode.W_PHASE
                                 }
-                                "speed" -> mode = MODE_W_SPEED
-                                "restLength" -> mode = MODE_REST_LENGTH
+                                "speed" -> mode = ParseMode.W_SPEED
+                                "restLength" -> mode = ParseMode.REST_LENGTH
                                 "wave" -> {
                                     createWave = true
                                     createMuscle = false
                                 }
-                                "springyness" -> mode = MODE_SPRINGYNESS
+                                "springyness" -> mode = ParseMode.SPRINGYNESS
                             }
-                        } else if (mode == MODE_NODE) {
+                        } else if (mode == ParseMode.NODE) {
                             if (aValue == "y") {
-                                mode = MODE_NONE
+                                mode = ParseMode.NONE
                             }
                         } else {
                             throw Exception("***************Unexpected State error in <field>***************")
@@ -201,16 +204,16 @@ class XmlParser(path: String?) : ContentHandler {
                         currentMuscle = Muscle(aValue.substring(7).toInt())
                         createMuscle = true
                     } else if (aQname == "id" && aValue.startsWith("Node")) {
-                        mode = MODE_NODE
+                        mode = ParseMode.NODE
                     }
                 } else if (qName == "ref") {
                     if (aQname == "refid" && aValue.startsWith("Mass")) {
-                        if (mode == MODE_MASS1) {
+                        if (mode == ParseMode.MASS1) {
                             mass1 = aValue.substring(5).toInt()
-                            mode = MODE_NONE
-                        } else if (mode == MODE_MASS2) {
+                            mode = ParseMode.NONE
+                        } else if (mode == ParseMode.MASS2) {
                             mass2 = aValue.substring(5).toInt()
-                            mode = MODE_NONE
+                            mode = ParseMode.NONE
                         }
                     }
                 }
@@ -231,7 +234,7 @@ class XmlParser(path: String?) : ContentHandler {
     }
 
     init {
-        mode = MODE_NONE
+        mode = ParseMode.NONE
         model = Model()
         source = InputSource(FileInputStream(path))
         val reader = XMLReaderFactory.createXMLReader()
