@@ -24,7 +24,7 @@ class GameDraw : JComponent() {
     private val g2dEllipse = Ellipse2D.Double()
     private val g2dLine = Line2D.Double()
     private var testThread: Thread? = null
-    private var gameFrames = 0.0
+    private var gameFrames = 0
     private var model1: Model? = null
     private var model2: Model? = null
     private var gfx2d: Graphics2D? = null
@@ -49,7 +49,7 @@ class GameDraw : JComponent() {
         gfx2d = g as Graphics2D
         val bs = BasicStroke(LINE_WIDTH)
         gfx2d!!.stroke = bs
-        gfx2d!!.color = Color.BLACK //color of pen
+        gfx2d!!.color = Color.BLACK
         gfx2d!!.setRenderingHints(rh) //turns on anti-aliasing
         if (model1 != null) drawModel(model1!!)
         if (model2 != null) drawModel(model2!!)
@@ -131,7 +131,7 @@ class GameDraw : JComponent() {
         run = true
         model1!!.noOfFrames = 0
         model2!!.noOfFrames = 0
-        gameFrames = 0.0
+        gameFrames = 0
         touched = false
         resultMessage = ""
     }
@@ -166,7 +166,7 @@ class GameDraw : JComponent() {
                 } else {
                     physics()
                     repaint()
-                    gameFrames += 1.0
+                    gameFrames += 1
                     if (!invertM1) model1!!.noOfFrames = model1!!.noOfFrames + 1 else model1!!.noOfFrames =
                         model1!!.noOfFrames - 1
                     if (!invertM2) model2!!.noOfFrames = model2!!.noOfFrames + 1 else model2!!.noOfFrames =
@@ -940,7 +940,6 @@ class GameDraw : JComponent() {
     }
 
     companion object {
-        //so it can be added like a "window"
         private const val FRAME_DELAY = 20 //ms 30ms~33.33fps
         private const val GROUND_HEIGHT = 0.0
         private const val SURFACE_FRICTION = 0.1
