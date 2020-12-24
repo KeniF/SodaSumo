@@ -14,7 +14,7 @@ class Model {
     var wavePhase = 0.0
     var waveSpeed = 0.0
     var waveAmplitude = 0.0
-    var noOfFrames = 0.0
+    var noOfFrames = 0
     private var boundTop = -10000.0
     private var boundBottom = 10000.0
     var boundRight = -10000.0
@@ -29,8 +29,8 @@ class Model {
     }
 
     fun adjustBoundRect(mass: Mass) {
-        boundLeft = min(boundLeft, mass.getX())
-        boundRight = max(boundRight, mass.getX())
+        boundLeft = min(boundLeft, mass.x)
+        boundRight = max(boundRight, mass.x)
         boundTop = max(boundTop, mass.getY())
         boundBottom = min(boundBottom, mass.getY())
     }

@@ -175,11 +175,11 @@ public class GameDraw extends JComponent { //so it can be added like a "window"
                         repaint();
                         gameFrames += 1.0;
                         if (!invertM1)
-                            model1.setNoOfFrames(model1.getNoOfFrames() + 1.0);
-                        else model1.setNoOfFrames(model1.getNoOfFrames() - 1.0);
+                            model1.setNoOfFrames(model1.getNoOfFrames() + 1);
+                        else model1.setNoOfFrames(model1.getNoOfFrames() - 1);
                         if (!invertM2)
-                            model2.setNoOfFrames(model2.getNoOfFrames() + 1.0);
-                        else model2.setNoOfFrames(model2.getNoOfFrames() - 1.0);
+                            model2.setNoOfFrames(model2.getNoOfFrames() + 1);
+                        else model2.setNoOfFrames(model2.getNoOfFrames() - 1);
                     }
                 }
                 try {
