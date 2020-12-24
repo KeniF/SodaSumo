@@ -84,13 +84,8 @@ public class XmlParser implements ContentHandler {
                         mode = MODE_NONE;
                         break;
                     }
-                    case MODE_VX: {
-                        currentMass.setVx(Double.parseDouble(readCh));
-                        mode = MODE_NONE;
-                        break;
-                    }
+                    case MODE_VX:
                     case MODE_VY: {
-                        currentMass.setVy(Double.parseDouble(readCh));
                         mode = MODE_NONE;
                         break;
                     }
