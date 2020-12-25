@@ -1,0 +1,1431 @@
+<object id="ConstructorApplication#1" type="com.sodaplay.soda.constructor2.ConstructorApplication">
+  <field name="model">
+    <object id="Model#1" type="com.sodaplay.soda.constructor2.model.Model">
+      <field name="autoReverse">
+        <boolean>true</boolean>
+      </field>
+      <field name="comment">
+        <string />
+      </field>
+      <field name="friction">
+        <double>0.0256</double>
+      </field>
+      <field name="gravity">
+        <double>0.014400000000000026</double>
+      </field>
+      <field name="gravityDirection">
+        <int>1</int>
+      </field>
+      <field name="height">
+        <int>430</int>
+      </field>
+      <field name="metadata">
+        <object id="Metadata#1" type="com.sodaplay.soda.constructor2.model.Metadata">
+          <field name="pairs">
+            <list class="java.util.Vector" />
+          </field>
+        </object>
+      </field>
+      <field name="name">
+        <string>model</string>
+      </field>
+      <field name="nodes">
+        <list class="java.util.Vector">
+          <object id="Mass#1" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.06278589485675974</double>
+            </field>
+            <field name="vy">
+              <double>-6.265534506042364E-5</double>
+            </field>
+            <field name="x">
+              <double>417.65875374119344</double>
+            </field>
+            <field name="y">
+              <double>125.748564700892</double>
+            </field>
+          </object>
+          <object id="Mass#2" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.04273920982367296</double>
+            </field>
+            <field name="vy">
+              <double>-0.007904052082466405</double>
+            </field>
+            <field name="x">
+              <double>394.62130491291236</double>
+            </field>
+            <field name="y">
+              <double>183.12595464661638</double>
+            </field>
+          </object>
+          <object id="Mass#3" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>-0.003676638782278995</double>
+            </field>
+            <field name="vy">
+              <double>-0.014928313988147634</double>
+            </field>
+            <field name="x">
+              <double>431.0822588519023</double>
+            </field>
+            <field name="y">
+              <double>65.14827210386228</double>
+            </field>
+          </object>
+          <object id="Mass#4" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.05883698333858515</double>
+            </field>
+            <field name="vy">
+              <double>0.0036501573311221425</double>
+            </field>
+            <field name="x">
+              <double>392.5563955968924</double>
+            </field>
+            <field name="y">
+              <double>69.40146027730363</double>
+            </field>
+          </object>
+          <object id="Mass#5" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.05183294823327412</double>
+            </field>
+            <field name="vy">
+              <double>0.007779777764437651</double>
+            </field>
+            <field name="x">
+              <double>456.48239271602637</double>
+            </field>
+            <field name="y">
+              <double>173.73858738192428</double>
+            </field>
+          </object>
+          <object id="Mass#6" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.13206895202978028</double>
+            </field>
+            <field name="vy">
+              <double>-0.0012564146171944138</double>
+            </field>
+            <field name="x">
+              <double>417.7876781737637</double>
+            </field>
+            <field name="y">
+              <double>187.80793050183973</double>
+            </field>
+          </object>
+          <object id="Mass#7" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.19883266216538723</double>
+            </field>
+            <field name="vy">
+              <double>0.04304278916374961</double>
+            </field>
+            <field name="x">
+              <double>436.4770228070288</double>
+            </field>
+            <field name="y">
+              <double>66.46147082344876</double>
+            </field>
+          </object>
+          <object id="Mass#8" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.05493353490157854</double>
+            </field>
+            <field name="vy">
+              <double>0.020419399259696058</double>
+            </field>
+            <field name="x">
+              <double>475.4233094552058</double>
+            </field>
+            <field name="y">
+              <double>147.96376962019872</double>
+            </field>
+          </object>
+          <object id="Mass#9" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.0711480492880204</double>
+            </field>
+            <field name="vy">
+              <double>0.00961712544492096</double>
+            </field>
+            <field name="x">
+              <double>465.32259502871875</double>
+            </field>
+            <field name="y">
+              <double>86.09386483422904</double>
+            </field>
+          </object>
+          <object id="Mass#10" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.061167220365108244</double>
+            </field>
+            <field name="vy">
+              <double>-0.07306188043413914</double>
+            </field>
+            <field name="x">
+              <double>479.75141940683443</double>
+            </field>
+            <field name="y">
+              <double>125.43811009717443</double>
+            </field>
+          </object>
+          <object id="Mass#11" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.0581345823396698</double>
+            </field>
+            <field name="vy">
+              <double>-0.07260562869931454</double>
+            </field>
+            <field name="x">
+              <double>454.6111700345166</double>
+            </field>
+            <field name="y">
+              <double>68.87021202652807</double>
+            </field>
+          </object>
+          <object id="Mass#12" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.2065321380165155</double>
+            </field>
+            <field name="vy">
+              <double>0.05250316312254442</double>
+            </field>
+            <field name="x">
+              <double>484.2698130381799</double>
+            </field>
+            <field name="y">
+              <double>27.001352889305544</double>
+            </field>
+          </object>
+          <object id="Mass#13" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>-0.011567382077181781</double>
+            </field>
+            <field name="vy">
+              <double>0.005769024706684351</double>
+            </field>
+            <field name="x">
+              <double>488.93156926590717</double>
+            </field>
+            <field name="y">
+              <double>87.39952350325107</double>
+            </field>
+          </object>
+          <object id="Mass#14" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>-0.003053441912299247</double>
+            </field>
+            <field name="vy">
+              <double>0.10306361776022123</double>
+            </field>
+            <field name="x">
+              <double>396.9151046584602</double>
+            </field>
+            <field name="y">
+              <double>0.0</double>
+            </field>
+          </object>
+          <object id="Mass#15" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.2100357466379991</double>
+            </field>
+            <field name="vy">
+              <double>0.0351832690194001</double>
+            </field>
+            <field name="x">
+              <double>396.052982891889</double>
+            </field>
+            <field name="y">
+              <double>9.251306915780424</double>
+            </field>
+          </object>
+          <object id="Mass#16" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.01819108570319934</double>
+            </field>
+            <field name="vy">
+              <double>-0.004074488833285877</double>
+            </field>
+            <field name="x">
+              <double>460.96517004001464</double>
+            </field>
+            <field name="y">
+              <double>1.8304835637822778</double>
+            </field>
+          </object>
+          <object id="Mass#17" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.06273006306349707</double>
+            </field>
+            <field name="vy">
+              <double>-0.002795621483252146</double>
+            </field>
+            <field name="x">
+              <double>284.26600549858495</double>
+            </field>
+            <field name="y">
+              <double>124.63744459196279</double>
+            </field>
+          </object>
+          <object id="Mass#18" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.06108825707862395</double>
+            </field>
+            <field name="vy">
+              <double>-0.0019498758602971363</double>
+            </field>
+            <field name="x">
+              <double>350.16333191504566</double>
+            </field>
+            <field name="y">
+              <double>199.667374959622</double>
+            </field>
+          </object>
+          <object id="Mass#19" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.06300550202839371</double>
+            </field>
+            <field name="vy">
+              <double>-8.995055587769556E-4</double>
+            </field>
+            <field name="x">
+              <double>351.0405277439639</double>
+            </field>
+            <field name="y">
+              <double>125.48311301017173</double>
+            </field>
+          </object>
+          <object id="Mass#20" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.10832366319383745</double>
+            </field>
+            <field name="vy">
+              <double>0.04042968251520613</double>
+            </field>
+            <field name="x">
+              <double>336.26375790769924</double>
+            </field>
+            <field name="y">
+              <double>143.21309098674624</double>
+            </field>
+          </object>
+          <object id="Mass#21" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.08603969788021121</double>
+            </field>
+            <field name="vy">
+              <double>-0.06573921399106042</double>
+            </field>
+            <field name="x">
+              <double>372.3725455899836</double>
+            </field>
+            <field name="y">
+              <double>133.59737831493382</double>
+            </field>
+          </object>
+          <object id="Mass#22" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.008544051045909166</double>
+            </field>
+            <field name="vy">
+              <double>0.012992136124567753</double>
+            </field>
+            <field name="x">
+              <double>346.39236065084026</double>
+            </field>
+            <field name="y">
+              <double>103.50873102155639</double>
+            </field>
+          </object>
+          <object id="Mass#23" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.12249895118840591</double>
+            </field>
+            <field name="vy">
+              <double>-0.012549260302734865</double>
+            </field>
+            <field name="x">
+              <double>295.26732854098833</double>
+            </field>
+            <field name="y">
+              <double>185.6088344794537</double>
+            </field>
+          </object>
+          <object id="Mass#24" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.03440437955714749</double>
+            </field>
+            <field name="vy">
+              <double>-0.016229589483756086</double>
+            </field>
+            <field name="x">
+              <double>307.4268667535507</double>
+            </field>
+            <field name="y">
+              <double>67.51824326217739</double>
+            </field>
+          </object>
+          <object id="Mass#25" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.16664313688457494</double>
+            </field>
+            <field name="vy">
+              <double>0.006474377240567478</double>
+            </field>
+            <field name="x">
+              <double>289.4335604790887</double>
+            </field>
+            <field name="y">
+              <double>62.79375573665839</double>
+            </field>
+          </object>
+          <object id="Mass#26" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.005325449769423824</double>
+            </field>
+            <field name="vy">
+              <double>0.02004851767640349</double>
+            </field>
+            <field name="x">
+              <double>260.86332315887876</double>
+            </field>
+            <field name="y">
+              <double>67.11827006213065</double>
+            </field>
+          </object>
+          <object id="Mass#27" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.10265509137625643</double>
+            </field>
+            <field name="vy">
+              <double>0.024903181346104458</double>
+            </field>
+            <field name="x">
+              <double>248.89353924132104</double>
+            </field>
+            <field name="y">
+              <double>175.38103680653145</double>
+            </field>
+          </object>
+          <object id="Mass#28" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.00673835812069642</double>
+            </field>
+            <field name="vy">
+              <double>0.011912760540993486</double>
+            </field>
+            <field name="x">
+              <double>300.2625539633218</double>
+            </field>
+            <field name="y">
+              <double>184.36236170337799</double>
+            </field>
+          </object>
+          <object id="Mass#29" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.07299721141050611</double>
+            </field>
+            <field name="vy">
+              <double>0.06014441514016466</double>
+            </field>
+            <field name="x">
+              <double>223.1515807236819</double>
+            </field>
+            <field name="y">
+              <double>135.1652776753871</double>
+            </field>
+          </object>
+          <object id="Mass#30" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.03480933888226156</double>
+            </field>
+            <field name="vy">
+              <double>0.03629273093853612</double>
+            </field>
+            <field name="x">
+              <double>233.79474543370745</double>
+            </field>
+            <field name="y">
+              <double>88.64056022862415</double>
+            </field>
+          </object>
+          <object id="Mass#31" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.048198275914056884</double>
+            </field>
+            <field name="vy">
+              <double>-0.05836572241957888</double>
+            </field>
+            <field name="x">
+              <double>224.23436115981346</double>
+            </field>
+            <field name="y">
+              <double>139.8480826181433</double>
+            </field>
+          </object>
+          <object id="Mass#32" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>-0.008693443403400128</double>
+            </field>
+            <field name="vy">
+              <double>-0.03527813199278818</double>
+            </field>
+            <field name="x">
+              <double>200.79848681543817</double>
+            </field>
+            <field name="y">
+              <double>82.40454766941458</double>
+            </field>
+          </object>
+          <object id="Mass#33" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.13914032331370602</double>
+            </field>
+            <field name="vy">
+              <double>0.044862061150368476</double>
+            </field>
+            <field name="x">
+              <double>238.85529760498767</double>
+            </field>
+            <field name="y">
+              <double>26.84647451180904</double>
+            </field>
+          </object>
+          <object id="Mass#34" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.044695426205098004</double>
+            </field>
+            <field name="vy">
+              <double>0.04929069281224578</double>
+            </field>
+            <field name="x">
+              <double>246.22484430335155</double>
+            </field>
+            <field name="y">
+              <double>77.66280660322047</double>
+            </field>
+          </object>
+          <object id="Mass#35" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.06682572154459282</double>
+            </field>
+            <field name="vy">
+              <double>-5.343306374201421E-4</double>
+            </field>
+            <field name="x">
+              <double>238.60599678415105</double>
+            </field>
+            <field name="y">
+              <double>0.7203411796479867</double>
+            </field>
+          </object>
+          <object id="Mass#36" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>0.12110398049582657</double>
+            </field>
+            <field name="vy">
+              <double>-0.021473467621900312</double>
+            </field>
+            <field name="x">
+              <double>325.5367422174115</double>
+            </field>
+            <field name="y">
+              <double>2.7618929628793047</double>
+            </field>
+          </object>
+          <object id="Mass#37" type="com.sodaplay.soda.constructor2.model.Mass">
+            <field name="vx">
+              <double>-0.004108790916686594</double>
+            </field>
+            <field name="vy">
+              <double>0.12299348725644957</double>
+            </field>
+            <field name="x">
+              <double>291.5136664053003</double>
+            </field>
+            <field name="y">
+              <double>0.0</double>
+            </field>
+          </object>
+        </list>
+      </field>
+      <field name="springs">
+        <list class="java.util.Vector">
+          <object id="Spring#1" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#3" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#2" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#2" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#3" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#7" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#4" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#4" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#5" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#5" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#6" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#6" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#7" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#8" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#2" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#8" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#9" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#5" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#9" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#10" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#6" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#10" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#10" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#11" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#9" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#12" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#8" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#13" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#11" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#4" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#14" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#10" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#11" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#15" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#12" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#7" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#16" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#9" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#12" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#17" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#13" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#8" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#18" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#3" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#13" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#19" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#14" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#11" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#20" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#4" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#14" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#21" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#15" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#12" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#22" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#7" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#15" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#23" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#16" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#13" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#24" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#3" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#16" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#25" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="restLength">
+              <double>100.0</double>
+            </field>
+          </object>
+          <object id="Spring#26" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="restLength">
+              <double>0.0</double>
+            </field>
+          </object>
+          <object id="Spring#27" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="restLength">
+              <double>74.53559373595634</double>
+            </field>
+          </object>
+          <object id="Muscle#1" type="com.sodaplay.soda.constructor2.model.Muscle">
+            <field name="a">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="amplitude">
+              <double>1.0</double>
+            </field>
+            <field name="b">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="phase">
+              <double>0.2496194824961948</double>
+            </field>
+            <field name="restLength">
+              <double>74.536</double>
+            </field>
+          </object>
+          <object id="Muscle#2" type="com.sodaplay.soda.constructor2.model.Muscle">
+            <field name="a">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="amplitude">
+              <double>1.0</double>
+            </field>
+            <field name="b">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="phase">
+              <double>0.5814307458143074</double>
+            </field>
+            <field name="restLength">
+              <double>74.536</double>
+            </field>
+          </object>
+          <object id="Spring#28" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="restLength">
+              <double>40.0</double>
+            </field>
+          </object>
+          <object id="Spring#29" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="restLength">
+              <double>40.0</double>
+            </field>
+          </object>
+          <object id="Spring#30" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="restLength">
+              <double>40.0</double>
+            </field>
+          </object>
+          <object id="Muscle#3" type="com.sodaplay.soda.constructor2.model.Muscle">
+            <field name="a">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="amplitude">
+              <double>1.0</double>
+            </field>
+            <field name="b">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="phase">
+              <double>0.9112125824454591</double>
+            </field>
+            <field name="restLength">
+              <double>74.536</double>
+            </field>
+          </object>
+          <object id="Spring#31" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="restLength">
+              <double>20.0</double>
+            </field>
+          </object>
+          <object id="Spring#32" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="restLength">
+              <double>20.0</double>
+            </field>
+          </object>
+          <object id="Spring#33" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="restLength">
+              <double>20.0</double>
+            </field>
+          </object>
+          <object id="Spring#34" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#23" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#35" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#24" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#36" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#24" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#37" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#23" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#38" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#25" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#39" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#26" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#40" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#27" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#41" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#28" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#42" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#26" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#43" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#27" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#44" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#28" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#45" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#25" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#46" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#29" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#23" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#47" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#30" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#27" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#48" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#31" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#28" />
+            </field>
+            <field name="restLength">
+              <double>88.0</double>
+            </field>
+          </object>
+          <object id="Spring#49" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#31" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#50" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#30" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#51" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#29" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#52" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#32" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#26" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#53" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#31" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#32" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#54" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#33" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#25" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#55" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#30" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#33" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#56" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#34" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#29" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#57" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#24" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#34" />
+            </field>
+            <field name="restLength">
+              <double>62.0</double>
+            </field>
+          </object>
+          <object id="Spring#58" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#35" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#32" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#59" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#26" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#35" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#60" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#36" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#33" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#61" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#25" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#36" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#62" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#37" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#34" />
+            </field>
+            <field name="restLength">
+              <double>90.0</double>
+            </field>
+          </object>
+          <object id="Spring#63" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#24" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#37" />
+            </field>
+            <field name="restLength">
+              <double>70.0</double>
+            </field>
+          </object>
+          <object id="Spring#64" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#19" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="restLength">
+              <double>0.0</double>
+            </field>
+          </object>
+          <object id="Spring#65" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#17" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="restLength">
+              <double>200.0</double>
+            </field>
+          </object>
+          <object id="Spring#66" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#18" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#1" />
+            </field>
+            <field name="restLength">
+              <double>100.0</double>
+            </field>
+          </object>
+          <object id="Spring#67" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#2" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#68" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#5" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#69" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#6" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#70" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#4" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#20" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#71" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#22" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#3" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+          <object id="Spring#72" type="com.sodaplay.soda.constructor2.model.Spring">
+            <field name="a">
+              <ref refid="Mass#21" />
+            </field>
+            <field name="b">
+              <ref refid="Mass#7" />
+            </field>
+            <field name="restLength">
+              <double>93.0</double>
+            </field>
+          </object>
+        </list>
+      </field>
+      <field name="springyness">
+        <double>0.39605</double>
+      </field>
+      <field name="surfaceFriction">
+        <double>0.1</double>
+      </field>
+      <field name="surfaceReflection">
+        <double>-0.75</double>
+      </field>
+      <field name="wave">
+        <object id="Wave#1" type="com.sodaplay.soda.constructor2.model.Wave">
+          <field name="amplitude">
+            <double>0.34809999999999997</double>
+          </field>
+          <field name="direction">
+            <string>reverse</string>
+          </field>
+          <field name="phase">
+            <double>0.6187711785143968</double>
+          </field>
+          <field name="speed">
+            <double>4.900000073015691E-4</double>
+          </field>
+        </object>
+      </field>
+      <field name="width">
+        <int>657</int>
+      </field>
+    </object>
+  </field>
+</object>
