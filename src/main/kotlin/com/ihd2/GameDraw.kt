@@ -16,14 +16,14 @@ import java.awt.Font
 import kotlin.math.*
 
 class GameDraw : JComponent() {
-    private var timeLimitMs = 15000.0
+    private var timeLimitMs = 15000L
     private val horizontalLine = Line2D.Double()
     private val lineOld = Line2D.Double()
     private val lineNew = Line2D.Double()
     private val massLine = Line2D.Double()
     private val g2dEllipse = Ellipse2D.Double()
     private val g2dLine = Line2D.Double()
-    private var testThread: Thread? = null
+    private var physicsThread: Thread? = null
     private var gameFrames = 0
     private var model1: Model? = null
     private var model2: Model? = null
@@ -35,7 +35,7 @@ class GameDraw : JComponent() {
     @Volatile
     private var invertM2 = false
     private var firstContactPoint = 0.0
-    private var touched = false
+    private var collided = false
     private var resultMessage = ""
     fun invertM1() {
         invertM1 = !invertM1
@@ -53,7 +53,7 @@ class GameDraw : JComponent() {
         gfx2d!!.setRenderingHints(rh) //turns on anti-aliasing
         if (model1 != null) drawModel(model1!!)
         if (model2 != null) drawModel(model2!!)
-        if (touched) drawVerticalLine()
+        if (collided) drawVerticalLine()
         if (resultMessage != "") drawResult()
     }
 
@@ -61,7 +61,7 @@ class GameDraw : JComponent() {
         run = false
     }
 
-    fun setTimeLimit(milliseconds: Double) {
+    fun setTimeLimit(milliseconds: Long) {
         timeLimitMs = milliseconds
     }
 
@@ -142,7 +142,7 @@ class GameDraw : JComponent() {
     fun init() {
         run = true
         gameFrames = 0
-        touched = false
+        collided = false
         resultMessage = ""
     }
 
@@ -150,7 +150,7 @@ class GameDraw : JComponent() {
         run = false
         model1 = model
         val br = model1!!.boundingRectangle
-        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[3] - 10.0 //-Math.random()*10;
+        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[3] - 10.0
         for (i in 1..model1!!.massMap.size) {
             model1!!.getMass(i)!!.setX(model1!!.getMass(i)!!.getX() + shiftRight)
         }
@@ -160,17 +160,17 @@ class GameDraw : JComponent() {
         run = false
         model2 = model
         val br = model2!!.boundingRectangle
-        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[2] + 10.0 //+Math.random()*10;
+        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[2] + 10.0
         for (i in 1..model2!!.massMap.size) {
             model2!!.getMass(i)!!.setX(model2!!.getMass(i)!!.getX() + shiftRight)
         }
     }
 
     fun startDraw() {
-        testThread = Thread {
+        physicsThread = Thread {
             val curThread = Thread.currentThread()
             var beforeRun = System.currentTimeMillis()
-            while (curThread === testThread && run) {
+            while (curThread === physicsThread && run) {
                 if (gameFrames > timeLimitMs / FRAME_DELAY) {
                     gameEnds()
                 } else {
@@ -191,7 +191,7 @@ class GameDraw : JComponent() {
                 }
             }
         }
-        testThread!!.start()
+        physicsThread!!.start()
     }
 
     //happens when 1 model gets pushed out of the ring / timeout
@@ -455,8 +455,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model2!!.getSpring(i)!!.mass1
                             val b = model2!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertX()
@@ -508,8 +508,8 @@ class GameDraw : JComponent() {
                                 //currentMass.revertY();
                                 val a = model2!!.getSpring(i)!!.mass1
                                 val b = model2!!.getSpring(i)!!.mass2
-                                if (!touched) {
-                                    touched = true
+                                if (!collided) {
+                                    collided = true
                                     firstContactPoint = currentMassX
                                 }
                                 a!!.revertX()
@@ -533,8 +533,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model2!!.getSpring(i)!!.mass1
                             val b = model2!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertY()
@@ -586,8 +586,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model2!!.getMuscle(i)!!.mass1
                             val b = model2!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertX()
@@ -638,8 +638,8 @@ class GameDraw : JComponent() {
                                 currentMass.revertX()
                                 val a = model2!!.getMuscle(i)!!.mass1
                                 val b = model2!!.getMuscle(i)!!.mass2
-                                if (!touched) {
-                                    touched = true
+                                if (!collided) {
+                                    collided = true
                                     firstContactPoint = currentMassX
                                 }
                                 a!!.revertX()
@@ -662,8 +662,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model2!!.getMuscle(i)!!.mass1
                             val b = model2!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertY()
@@ -722,8 +722,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model1!!.getSpring(i)!!.mass1
                             val b = model1!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertX()
@@ -775,8 +775,8 @@ class GameDraw : JComponent() {
                                 //currentMass.revertY();
                                 val a = model1!!.getSpring(i)!!.mass1
                                 val b = model1!!.getSpring(i)!!.mass2
-                                if (!touched) {
-                                    touched = true
+                                if (!collided) {
+                                    collided = true
                                     firstContactPoint = currentMassX
                                 }
                                 a!!.revertX()
@@ -800,8 +800,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model1!!.getSpring(i)!!.mass1
                             val b = model1!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertY()
@@ -853,8 +853,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model1!!.getMuscle(i)!!.mass1
                             val b = model1!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertX()
@@ -906,8 +906,8 @@ class GameDraw : JComponent() {
                                 //currentMass.revertY();
                                 val a = model1!!.getMuscle(i)!!.mass1
                                 val b = model1!!.getMuscle(i)!!.mass2
-                                if (!touched) {
-                                    touched = true
+                                if (!collided) {
+                                    collided = true
                                     firstContactPoint = currentMassX
                                 }
                                 a!!.revertX()
@@ -931,8 +931,8 @@ class GameDraw : JComponent() {
                             currentMass.revertY()
                             val a = model1!!.getMuscle(i)!!.mass1
                             val b = model1!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
+                            if (!collided) {
+                                collided = true
                                 firstContactPoint = currentMassX
                             }
                             a!!.revertY()

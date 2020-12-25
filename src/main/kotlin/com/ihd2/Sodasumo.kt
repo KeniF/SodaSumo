@@ -67,7 +67,7 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
                 box2.showPopup()
             }
             e.source === boxTime -> {
-                newGameDraw.setTimeLimit((boxTime.selectedItem?.toString()?.toDouble() ?: 0.0) * 1000.0)
+                newGameDraw.setTimeLimit((boxTime.selectedItem?.toString()?.toLong() ?: 0) * 1000L)
             }
         }
     }
