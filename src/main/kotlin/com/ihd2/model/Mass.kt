@@ -5,11 +5,6 @@ class Mass(val id: Int) {
         private set
     var ay = 0.0
         private set
-    private var vx = 0.0
-    private var vy = 0.0
-    private var x = 0.0
-    private var y = 0.0
-
     var oldVx = 0.0
         private set
     var oldVy = 0.0
@@ -18,6 +13,10 @@ class Mass(val id: Int) {
         private set
     var oldY = 0.0
         private set
+    private var vx = 0.0
+    private var vy = 0.0
+    private var x = 0.0
+    private var y = 0.0
 
     fun getX(): Double {
         return x
