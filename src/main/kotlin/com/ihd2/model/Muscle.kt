@@ -4,10 +4,6 @@ class Muscle(id: Int) : Spring(id) {
     var amplitude = 0.0
     var phase = 0.0
 
-    init {
-        super.id = id
-    }
-
     override fun toString(): String {
         return "$id a:$mass1 b:$mass2 amp:$amplitude phase:$phase restLeng:$restLength"
     }

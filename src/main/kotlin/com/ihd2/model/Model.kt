@@ -15,11 +15,11 @@ class Model {
     var waveSpeed = 0.0
     var waveAmplitude = 0.0
     var noOfFrames = 0
-    private var boundTop = -10000.0
-    private var boundBottom = 10000.0
-    var boundRight = -10000.0
+    private var boundTop = Double.NEGATIVE_INFINITY
+    private var boundBottom = Double.POSITIVE_INFINITY
+    var boundRight = Double.NEGATIVE_INFINITY
         private set
-    var boundLeft = 10000.0
+    var boundLeft = Double.POSITIVE_INFINITY
         private set
     var name: String? = null
 
@@ -36,10 +36,10 @@ class Model {
     }
 
     fun resetBoundRect() {
-        boundTop = -10000.0
-        boundBottom = 10000.0
-        boundRight = -10000.0
-        boundLeft = 10000.0
+        boundTop = Double.NEGATIVE_INFINITY
+        boundBottom = Double.POSITIVE_INFINITY
+        boundRight = Double.NEGATIVE_INFINITY
+        boundLeft = Double.POSITIVE_INFINITY
     }
 
     val boundingRectangle: DoubleArray

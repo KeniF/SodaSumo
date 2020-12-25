@@ -170,7 +170,7 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
                     JOptionPane.showMessageDialog(
                         newGameDraw,
                         """
-                                <html><font size=5 color=blue><b><u>$VERSION</u></b></font></html>
+                                <html><font size=5 color=blue><b><u>$APP_NAME $VERSION</u></b></font></html>
                                 
                                 SodaSumo is a clone/extension to the physics game SodaRace.
                                 While SodaRace allows users to import several models designed
@@ -225,7 +225,6 @@ Supervised by Dr. Mary McGee Wood""",
     override fun mouseReleased(e: MouseEvent) {}
 
     companion object {
-        private const val VERSION = "SodaSumo 1.6"
         private val GAME_DIMENSION = Dimension(1000, 350)
         private val CP_DIMENSION = Dimension(150, 320)
         var GAME_WIDTH = GAME_DIMENSION.getWidth() - CP_DIMENSION.getWidth()
@@ -241,10 +240,10 @@ Supervised by Dr. Mary McGee Wood""",
         val menuBar = JMenuBar()
         this.jMenuBar = menuBar
         menuBar.background = Color.GRAY.brighter().brighter()
-        title = VERSION
+        title = "$APP_NAME $MAJOR_VERSION"
         val aboutMenu = JMenu("About")
         menuBar.add(aboutMenu)
-        aboutItemSoda = JMenuItem(VERSION)
+        aboutItemSoda = JMenuItem("$APP_NAME $VERSION")
         aboutMenu.add(aboutItemSoda)
         aboutItemSoda.addMouseListener(this)
         aboutItemAuthor = JMenuItem("Author")
