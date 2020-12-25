@@ -190,11 +190,11 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
                         newGameDraw,
                         """<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>
         
-        (C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
+(C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
         
-        This program was started as my third year project
-        at the University of Manchester, United Kingdom.
-        Supervised by Dr. Mary McGee Wood""",
+This program was started as my third year project
+at the University of Manchester, United Kingdom.
+Supervised by Dr. Mary McGee Wood""",
                         "About", JOptionPane.INFORMATION_MESSAGE
                     )
                 }

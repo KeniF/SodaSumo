@@ -13,7 +13,7 @@ import com.ihd2.model.Model
 import java.lang.InterruptedException
 import java.awt.RenderingHints
 import java.awt.Font
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class GameDraw : JComponent() {
     private var timeLimitMs = 15000.0
@@ -185,7 +185,7 @@ class GameDraw : JComponent() {
                 try {
                     //to keep a constant framerate depending on how far we are behind :D
                     beforeRun += FRAME_DELAY.toLong()
-                    Thread.sleep(Math.max(0, beforeRun - System.currentTimeMillis()))
+                    Thread.sleep(max(0, beforeRun - System.currentTimeMillis()))
                 } catch (e: InterruptedException) {
                     println(e)
                 }
@@ -202,12 +202,16 @@ class GameDraw : JComponent() {
     }
 
     private fun resultMessage(score: Int): String {
-        resultMessage = if (score == 0) {
-            "Draw - They are equally good!"
-        } else if (score > 0) {
-            model1!!.name + " wins! Score:" + score
-        } else {
-            model2!!.name + " wins! Score:" + -score
+        resultMessage = when {
+            score == 0 -> {
+                "Draw - They are equally good!"
+            }
+            score > 0 -> {
+                model1!!.name + " wins! Score:" + score
+            }
+            else -> {
+                model2!!.name + " wins! Score:" + -score
+            }
         }
         return resultMessage
     }
@@ -249,7 +253,7 @@ class GameDraw : JComponent() {
             var mass1: Mass?
             var mass2: Mass?
             if (isMuscle) {
-                val amp = Math.abs(m.getMuscle(i)!!.amplitude)
+                val amp = abs(m.getMuscle(i)!!.amplitude)
                 val phase = m.getMuscle(i)!!.phase
                 val rLength = m.getMuscle(i)!!.restLength
                 //new=old*(1.0+ waveAmplitude*muscleAmplitude*sine())
@@ -257,7 +261,7 @@ class GameDraw : JComponent() {
                 //don't do the period already done
                 //One for each model, allows reversing
                 newRLength = rLength * (1.0 + m.waveAmplitude * amp *
-                        Math.sin((m.waveSpeed * m.noOfFrames + phase - m.wavePhase) * 2.0 * Math.PI))
+                        sin((m.waveSpeed * m.noOfFrames + phase - m.wavePhase) * 2.0 * Math.PI))
                 mass1 = m.getMuscle(i)!!.mass1
                 mass2 = m.getMuscle(i)!!.mass2
             } else {
@@ -269,15 +273,15 @@ class GameDraw : JComponent() {
             mass1Y = mass1.getY()
             mass2X = mass2!!.getX()
             mass2Y = mass2.getY()
-            val lengthX = Math.abs(mass1X - mass2X) //absolute value, so angle is always +
-            val lengthY = Math.abs(mass1Y - mass2Y)
+            val lengthX = abs(mass1X - mass2X) //absolute value, so angle is always +
+            val lengthY = abs(mass1Y - mass2Y)
             val length = sqrt(lengthX * lengthX + lengthY * lengthY) //Pythagoras'
             val extension = length - newRLength
             //Frictional force affects velocity only!!
-            var resultantAcceleration = Math.abs(m.springyness * extension) //F=kx=ma where m=1.0
+            var resultantAcceleration = abs(m.springyness * extension) //F=kx=ma where m=1.0
             //gets the masses connected to the current muscle
             //Mass#109 --> 109
-            val angle = Math.atan(lengthY / lengthX) //in radians
+            val angle = atan(lengthY / lengthX) //in radians
             if (extension != 0.0) { //if springs are pulled/pushed
                 //if extension>0.0, spring pulled, resultantAcceleration is correct
                 //if extension<0.0, spring pushed, resultantAcceleration needs to be inverted
@@ -286,22 +290,22 @@ class GameDraw : JComponent() {
                     when {
                         mass2Y > mass1Y -> {
                             mass1.accelerate(
-                                -(resultantAcceleration * Math.cos(angle)),
-                                resultantAcceleration * Math.sin(angle)
+                                -(resultantAcceleration * cos(angle)),
+                                resultantAcceleration * sin(angle)
                             )
                             mass2.accelerate(
-                                resultantAcceleration * Math.cos(angle),
-                                -(resultantAcceleration * Math.sin(angle))
+                                resultantAcceleration * cos(angle),
+                                -(resultantAcceleration * sin(angle))
                             )
                         }
                         mass2Y < mass1Y -> {
                             mass1.accelerate(
-                                -(resultantAcceleration * Math.cos(angle)),
-                                -(resultantAcceleration * Math.sin(angle))
+                                -(resultantAcceleration * cos(angle)),
+                                -(resultantAcceleration * sin(angle))
                             )
                             mass2.accelerate(
-                                resultantAcceleration * Math.cos(angle),
-                                resultantAcceleration * Math.sin(angle)
+                                resultantAcceleration * cos(angle),
+                                resultantAcceleration * sin(angle)
                             )
                         }
                         else -> {
@@ -313,22 +317,22 @@ class GameDraw : JComponent() {
                     when {
                         mass2Y > mass1Y -> {
                             mass1.accelerate(
-                                resultantAcceleration * Math.cos(angle),
-                                resultantAcceleration * Math.sin(angle)
+                                resultantAcceleration * cos(angle),
+                                resultantAcceleration * sin(angle)
                             )
                             mass2.accelerate(
-                                -(resultantAcceleration * Math.cos(angle)),
-                                -(resultantAcceleration * Math.sin(angle))
+                                -(resultantAcceleration * cos(angle)),
+                                -(resultantAcceleration * sin(angle))
                             )
                         }
                         mass2Y < mass1Y -> {
                             mass1.accelerate(
-                                resultantAcceleration * Math.cos(angle),
-                                -(resultantAcceleration * Math.sin(angle))
+                                resultantAcceleration * cos(angle),
+                                -(resultantAcceleration * sin(angle))
                             )
                             mass2.accelerate(
-                                -(resultantAcceleration * Math.cos(angle)),
-                                resultantAcceleration * Math.sin(angle)
+                                -(resultantAcceleration * cos(angle)),
+                                resultantAcceleration * sin(angle)
                             )
                         }
                         else -> {
@@ -370,8 +374,8 @@ class GameDraw : JComponent() {
             newVelocityY -= newVelocityY * model.friction
             newVelocityY -= model.gravity //gravity(not damped!)
             model.getMass(i)!!.clearAccelerations()
-            newVelocityY = Math.max(-SPEED_LIMIT, Math.min(SPEED_LIMIT, newVelocityY))
-            newVelocityX = Math.max(-SPEED_LIMIT, Math.min(SPEED_LIMIT, newVelocityX))
+            newVelocityY = newVelocityY.coerceIn(-SPEED_LIMIT, SPEED_LIMIT)
+            newVelocityX = newVelocityX.coerceIn(-SPEED_LIMIT, SPEED_LIMIT)
             oldPositionX = mass.getX()
             oldPositionY = mass.getY()
             newPositionX = oldPositionX + newVelocityX
@@ -496,27 +500,30 @@ class GameDraw : JComponent() {
                             }
                         }
                     } else if (cmass1X == cmass2X) {
-                        if (currentMassX < cmass1X) {
-                        } else if (currentMassX < cmass1X + SPEED_LIMIT) {
-                            currentMass.revertX()
-                            //currentMass.revertY();
-                            val a = model2!!.getSpring(i)!!.mass1
-                            val b = model2!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
-                                firstContactPoint = currentMassX
+                        when {
+                            currentMassX < cmass1X -> {
                             }
-                            a!!.revertX()
-                            b!!.revertX()
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(0 - kineticEnergyX1)
-                            a.setVx(kineticEnergyX1)
-                            b.setVx(kineticEnergyX1)
+                            currentMassX < cmass1X + SPEED_LIMIT -> {
+                                currentMass.revertX()
+                                //currentMass.revertY();
+                                val a = model2!!.getSpring(i)!!.mass1
+                                val b = model2!!.getSpring(i)!!.mass2
+                                if (!touched) {
+                                    touched = true
+                                    firstContactPoint = currentMassX
+                                }
+                                a!!.revertX()
+                                b!!.revertX()
+                                currentMassVx = currentMass.oldVx
+                                val aVx = a.oldVx
+                                val bVx = b.oldVx
+                                //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                                kineticEnergyX1 =
+                                    sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                currentMass.setVx(0 - kineticEnergyX1)
+                                a.setVx(kineticEnergyX1)
+                                b.setVx(kineticEnergyX1)
+                            }
                         }
                     } else if (cmass1Y == cmass2Y) {
                         if (currentMassY > cmass1Y) {
@@ -624,26 +631,29 @@ class GameDraw : JComponent() {
                             }
                         }
                     } else if (cmass1X == cmass2X) {
-                        if (currentMassX < cmass1X) {
-                        } else if (currentMassX <= cmass1X + SPEED_LIMIT) {
-                            currentMass.revertX()
-                            val a = model2!!.getMuscle(i)!!.mass1
-                            val b = model2!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
-                                firstContactPoint = currentMassX
+                        when {
+                            currentMassX < cmass1X -> {
                             }
-                            a!!.revertX()
-                            b!!.revertX()
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(0 - kineticEnergyX1)
-                            a.setVx(kineticEnergyX1)
-                            b.setVx(kineticEnergyX1)
+                            currentMassX <= cmass1X + SPEED_LIMIT -> {
+                                currentMass.revertX()
+                                val a = model2!!.getMuscle(i)!!.mass1
+                                val b = model2!!.getMuscle(i)!!.mass2
+                                if (!touched) {
+                                    touched = true
+                                    firstContactPoint = currentMassX
+                                }
+                                a!!.revertX()
+                                b!!.revertX()
+                                currentMassVx = currentMass.oldVx
+                                val aVx = a.oldVx
+                                val bVx = b.oldVx
+                                //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                                kineticEnergyX1 =
+                                    sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                currentMass.setVx(0 - kineticEnergyX1)
+                                a.setVx(kineticEnergyX1)
+                                b.setVx(kineticEnergyX1)
+                            }
                         }
                     } else if (cmass1Y == cmass2Y) {
                         if (currentMassY > cmass1Y) {
@@ -757,27 +767,30 @@ class GameDraw : JComponent() {
                             }
                         }
                     } else if (cmass1X == cmass2X) { //cmass1X==cmass2X
-                        if (currentMassX > cmass1X) {
-                        } else if (currentMassX > cmass1X - SPEED_LIMIT) {
-                            currentMass.revertX()
-                            //currentMass.revertY();
-                            val a = model1!!.getSpring(i)!!.mass1
-                            val b = model1!!.getSpring(i)!!.mass2
-                            if (!touched) {
-                                touched = true
-                                firstContactPoint = currentMassX
+                        when {
+                            currentMassX > cmass1X -> {
                             }
-                            a!!.revertX()
-                            b!!.revertX()
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(kineticEnergyX1)
-                            a.setVx(0 - kineticEnergyX1)
-                            b.setVx(0 - kineticEnergyX1)
+                            currentMassX > cmass1X - SPEED_LIMIT -> {
+                                currentMass.revertX()
+                                //currentMass.revertY();
+                                val a = model1!!.getSpring(i)!!.mass1
+                                val b = model1!!.getSpring(i)!!.mass2
+                                if (!touched) {
+                                    touched = true
+                                    firstContactPoint = currentMassX
+                                }
+                                a!!.revertX()
+                                b!!.revertX()
+                                currentMassVx = currentMass.oldVx
+                                val aVx = a.oldVx
+                                val bVx = b.oldVx
+                                //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                                kineticEnergyX1 =
+                                    sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                currentMass.setVx(kineticEnergyX1)
+                                a.setVx(0 - kineticEnergyX1)
+                                b.setVx(0 - kineticEnergyX1)
+                            }
                         }
                     } else if (cmass1Y == cmass2Y) {
                         if (currentMassY > cmass1Y) {
@@ -885,27 +898,30 @@ class GameDraw : JComponent() {
                             }
                         }
                     } else if (cmass1X == cmass2X) {
-                        if (currentMassX > cmass1X) {
-                        } else if (currentMassX > cmass1X - SPEED_LIMIT) {
-                            currentMass.revertX()
-                            //currentMass.revertY();
-                            val a = model1!!.getMuscle(i)!!.mass1
-                            val b = model1!!.getMuscle(i)!!.mass2
-                            if (!touched) {
-                                touched = true
-                                firstContactPoint = currentMassX
+                        when {
+                            currentMassX > cmass1X -> {
                             }
-                            a!!.revertX()
-                            b!!.revertX()
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(kineticEnergyX1)
-                            a.setVx(0 - kineticEnergyX1)
-                            b.setVx(0 - kineticEnergyX1)
+                            currentMassX > cmass1X - SPEED_LIMIT -> {
+                                currentMass.revertX()
+                                //currentMass.revertY();
+                                val a = model1!!.getMuscle(i)!!.mass1
+                                val b = model1!!.getMuscle(i)!!.mass2
+                                if (!touched) {
+                                    touched = true
+                                    firstContactPoint = currentMassX
+                                }
+                                a!!.revertX()
+                                b!!.revertX()
+                                currentMassVx = currentMass.oldVx
+                                val aVx = a.oldVx
+                                val bVx = b.oldVx
+                                //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                                kineticEnergyX1 =
+                                    sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                                currentMass.setVx(kineticEnergyX1)
+                                a.setVx(0 - kineticEnergyX1)
+                                b.setVx(0 - kineticEnergyX1)
+                            }
                         }
                     } else if (cmass1Y == cmass2Y) {
                         if (currentMassY > cmass1Y) {
@@ -953,8 +969,8 @@ class GameDraw : JComponent() {
         private const val FRAME_DELAY = 20 //ms 30ms~33.33fps
         private const val GROUND_HEIGHT = 0.0
         private const val SURFACE_FRICTION = 0.1
-        private const val SURFACE_REFLECTION = -0.75 // x velocity left when hitting ground
-        private const val MODEL_REFLECTION = -0.75 //y velocity left when hitting ground
+        private const val SURFACE_REFLECTION = -0.75 // y velocity left when hitting ground
+        private const val MODEL_REFLECTION = -0.75 // x velocity left when hitting ground
         private const val SPEED_LIMIT = 10.0 //solves model explosion problem!!
         private const val ENERGY_LEFT = 0.95
         private val rh = RenderingHints(
