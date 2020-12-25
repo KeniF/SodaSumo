@@ -49,14 +49,13 @@ class GameDraw : JComponent() {
 
     override fun paint(g: Graphics) {
         gfx2d = g as Graphics2D
-        val bs = BasicStroke(LINE_WIDTH)
-        gfx2d.stroke = bs
+        gfx2d.stroke = BasicStroke(LINE_WIDTH)
         gfx2d.color = Color.BLACK
         gfx2d.setRenderingHints(renderingHints) //turns on anti-aliasing
         drawModel(model1)
         drawModel(model2)
-        if (collided) drawVerticalLine()
-        if (resultMessage != "") drawResult()
+        drawVerticalLine()
+        drawResult()
     }
 
     fun pause() {
@@ -68,6 +67,8 @@ class GameDraw : JComponent() {
     }
 
     private fun drawVerticalLine() {
+        if (!collided) return
+
         gfx2d.color = Color.GRAY
         g2dLine.setLine(firstContactPoint, HEIGHT + 10.0, firstContactPoint, HEIGHT - 1000.0)
         gfx2d.draw(g2dLine)
@@ -75,6 +76,8 @@ class GameDraw : JComponent() {
     }
 
     private fun drawResult() {
+        if (resultMessage == "") return
+
         gfx2d.color = Color.BLUE.darker().darker()
         gfx2d.font = resultFont
         gfx2d.drawString(resultMessage, Sodasumo.GAME_WIDTH.toInt() / 2 - 150, 50)
@@ -176,7 +179,7 @@ class GameDraw : JComponent() {
                 if (gameFrames > timeLimitMs / FRAME_DELAY) {
                     gameEnds()
                 } else {
-                    physics()
+                    animate()
                     repaint()
                     gameFrames++
                     if (!invertM1)
@@ -200,7 +203,7 @@ class GameDraw : JComponent() {
     }
 
     //happens when 1 model gets pushed out of the ring / timeout
-    private fun gameEnds() { //returns integer value telling result of model1
+    private fun gameEnds() {
         run = false
         resultMessage(currentScore())
         repaint()
@@ -226,7 +229,7 @@ class GameDraw : JComponent() {
                 model2.boundLeft - firstContactPoint) / 20).toInt()
     }
 
-    private fun physics() {
+    private fun animate() {
         accelerateSpringsAndMuscles(model1)
         moveMasses(model1)
         accelerateSpringsAndMuscles(model2)
@@ -283,8 +286,6 @@ class GameDraw : JComponent() {
             val angle = atan(lengthY / lengthX) //in radians
             val cosineAngle = cos(angle)
             val sineAngle = sin(angle)
-            //if extension>0.0, spring pulled, resultantAcceleration is correct
-            //if extension<0.0, spring pushed, resultantAcceleration needs to be inverted
             if (mass1X > mass2X) {
                 when {
                     mass2Y > mass1Y -> {

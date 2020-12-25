@@ -39,9 +39,9 @@ class XmlParser(path: String?) : ContentHandler {
     private var mode: ParseMode
     private var mass1 = 0
     private var mass2 = 0
-    private var currentMass: Mass? = null
-    private var currentSpring: Spring? = null
-    private var currentMuscle: Muscle? = null
+    private lateinit var currentMass: Mass
+    private lateinit var currentSpring: Spring
+    private lateinit var currentMuscle: Muscle
     private var createMuscle = false
     private var createWave = false
     private var source: InputSource
@@ -68,7 +68,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.M_AMPLITUDE -> {
-                        currentMuscle!!.amplitude = readCh.toDouble()
+                        currentMuscle.amplitude = readCh.toDouble()
                         mode = ParseMode.NONE
                     }
                     ParseMode.W_AMPLITUDE -> {
@@ -80,7 +80,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.M_PHASE -> {
-                        currentMuscle!!.phase = readCh.toDouble()
+                        currentMuscle.phase = readCh.toDouble()
                         mode = ParseMode.NONE
                     }
                     ParseMode.W_SPEED -> {
@@ -88,7 +88,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.X -> {
-                        currentMass!!.setX(readCh.toDouble())
+                        currentMass.setX(readCh.toDouble())
                         mode = ParseMode.NONE
                     }
                     ParseMode.W_DIRECTION -> {
@@ -99,28 +99,21 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.Y -> {
-                        currentMass!!.setY(readCh.toDouble())
-                        model.addMass(currentMass!!) //IMPORTANT: adds new mass to model
-                        currentMass = null //all masses created and saved to Model
+                        currentMass.setY(readCh.toDouble())
+                        model.addMass(currentMass)
                         mode = ParseMode.NONE
                     }
                     ParseMode.REST_LENGTH -> {
                         if (!createMuscle) {
-                            currentSpring!!.restLength = readCh.toDouble()
-                            currentSpring!!.mass1 = model.getMass(mass1)
-                            mass1 = -1
-                            currentSpring!!.mass2 = model.getMass(mass2)
-                            mass2 = -1
-                            model.addSpring(currentSpring!!)
-                            currentSpring = null
+                            currentSpring.restLength = readCh.toDouble()
+                            currentSpring.mass1 = model.getMass(mass1)
+                            currentSpring.mass2 = model.getMass(mass2)
+                            model.addSpring(currentSpring)
                         } else {
-                            currentMuscle!!.restLength = readCh.toDouble()
-                            currentMuscle!!.mass1 = model.getMass(mass1)
-                            mass1 = -1
-                            currentMuscle!!.mass2 = model.getMass(mass2)
-                            mass2 = -1
-                            model.addMuscle(currentMuscle!!) //adds spring to model
-                            currentMuscle = null
+                            currentMuscle.restLength = readCh.toDouble()
+                            currentMuscle.mass1 = model.getMass(mass1)
+                            currentMuscle.mass2 = model.getMass(mass2)
+                            model.addMuscle(currentMuscle)
                         }
                         mode = ParseMode.NONE
                     }
