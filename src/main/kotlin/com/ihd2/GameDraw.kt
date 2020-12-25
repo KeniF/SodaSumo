@@ -224,9 +224,9 @@ class GameDraw : JComponent() {
     private fun physics() {
         if (isRunnable) {
             accelerateSpringsAndMuscles(model1)
-            newPositions(model1)
+            moveMasses(model1)
             accelerateSpringsAndMuscles(model2)
-            newPositions(model2)
+            moveMasses(model2)
             doCollision()
         }
     }
@@ -353,7 +353,7 @@ class GameDraw : JComponent() {
         }
     }
 
-    private fun newPositions(model: Model?) {
+    private fun moveMasses(model: Model?) {
         var newVelocityX: Double
         var newVelocityY: Double
         var newPositionX: Double
