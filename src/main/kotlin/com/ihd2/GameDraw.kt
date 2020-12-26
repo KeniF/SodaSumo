@@ -56,6 +56,7 @@ class GameDraw : JComponent() {
         drawModel(model2)
         drawVerticalLine()
         drawResult()
+        drawDebugStats()
     }
 
     fun pause() {
@@ -88,13 +89,13 @@ class GameDraw : JComponent() {
     }
 
     private fun drawSprings(model: Model) {
-        gfx2d.color = Color.BLACK
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
             drawMass(mass1)
             drawMass(mass2)
 
+            gfx2d.color = Color.BLACK
             g2dLine.setLine(
                 mass1.getX(), HEIGHT - mass1.getY(),
                 mass2.getX(), HEIGHT - mass2.getY()
@@ -132,16 +133,29 @@ class GameDraw : JComponent() {
     }
 
     private fun drawMass(mass: Mass) {
-        gfx2d.color = Color.BLACK
+        gfx2d.color = when(DEBUG) {
+            true -> Color.GRAY
+            false -> Color.BLACK
+        }
         g2dEllipse.setFrame(
             mass.getX() - MASS_SHIFT,
             HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
         )
         gfx2d.fill(g2dEllipse)
-
         if (DEBUG) {
+            gfx2d.color = Color.BLACK
             gfx2d.font = debugFont
             gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
+        }
+    }
+
+    private fun drawDebugStats() {
+        if (DEBUG) {
+            gfx2d.color = Color.GRAY
+            gfx2d.font = debugFont
+            val string =
+                "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}"
+            gfx2d.drawString(string, 2, 10)
         }
     }
 
@@ -825,7 +839,7 @@ class GameDraw : JComponent() {
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON
         )
-        private val debugFont = Font("Arial", Font.PLAIN, 10)
+        private val debugFont = Font("Arial", Font.PLAIN, 9)
         private val resultFont = Font("Arial", Font.PLAIN, 20)
         private const val MASS_SIZE = 4.0
         private const val MUSCLE_MARKER_SIZE = 3.0

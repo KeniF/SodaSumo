@@ -2,3 +2,4 @@ v2.0.0
 - Stopped reading mass velocities from XML
 - Forces Gravity to be the same for all models
 - Improved collision detection algorithm
+- Added debug mode
