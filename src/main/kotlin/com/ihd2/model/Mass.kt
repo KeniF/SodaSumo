@@ -54,11 +54,8 @@ class Mass(val id: Int) {
         this.vy = vy
     }
 
-    fun revertX() {
+    fun revertPoints() {
         x = oldX
-    }
-
-    fun revertY() {
         y = oldY
     }
 
