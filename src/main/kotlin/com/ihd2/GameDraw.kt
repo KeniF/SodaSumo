@@ -51,7 +51,6 @@ class GameDraw : JComponent() {
     override fun paint(g: Graphics) {
         gfx2d = g as Graphics2D
         gfx2d.stroke = BasicStroke(LINE_WIDTH)
-        gfx2d.color = Color.BLACK
         gfx2d.setRenderingHints(renderingHints) //turns on anti-aliasing
         drawModel(model1)
         drawModel(model2)
@@ -73,7 +72,6 @@ class GameDraw : JComponent() {
         gfx2d.color = Color.GRAY
         g2dLine.setLine(firstContactPoint, HEIGHT + 10.0, firstContactPoint, HEIGHT - 1000.0)
         gfx2d.draw(g2dLine)
-        gfx2d.font = Companion.font
     }
 
     private fun drawResult() {
@@ -90,6 +88,7 @@ class GameDraw : JComponent() {
     }
 
     private fun drawSprings(model: Model) {
+        gfx2d.color = Color.BLACK
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
@@ -115,6 +114,7 @@ class GameDraw : JComponent() {
             val mass1Y = mass1.getY()
             val mass2X = mass2.getX()
             val mass2Y = mass2.getY()
+            gfx2d.color = Color.BLACK
             g2dLine.setLine(
                 mass1X, HEIGHT - mass1Y,
                 mass2X, HEIGHT - mass2Y
@@ -132,11 +132,17 @@ class GameDraw : JComponent() {
     }
 
     private fun drawMass(mass: Mass) {
+        gfx2d.color = Color.BLACK
         g2dEllipse.setFrame(
             mass.getX() - MASS_SHIFT,
             HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
         )
         gfx2d.fill(g2dEllipse)
+
+        if (DEBUG) {
+            gfx2d.font = debugFont
+            gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
+        }
     }
 
     fun init() {
@@ -488,7 +494,7 @@ class GameDraw : JComponent() {
                             }
                         }
                     }
-                } else if (cmass1X == cmass2X) { //cmass1X==cmass2X
+                } else if (cmass1X == cmass2X) {
                     when {
                         currentMassX > cmass1X -> {
                         }
@@ -819,13 +825,15 @@ class GameDraw : JComponent() {
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON
         )
-        private val font = Font("Arial", Font.PLAIN, 12)
+        private val debugFont = Font("Arial", Font.PLAIN, 10)
         private val resultFont = Font("Arial", Font.PLAIN, 20)
         private const val MASS_SIZE = 4.0
         private const val MUSCLE_MARKER_SIZE = 3.0
         private const val LINE_WIDTH = 0.4f
         private const val MASS_SHIFT = MASS_SIZE / 2.0 //Shift needed because specified point is ellipse's top-left
         private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
+
+        private const val DEBUG = true
 
         @Volatile
         private var run = false
