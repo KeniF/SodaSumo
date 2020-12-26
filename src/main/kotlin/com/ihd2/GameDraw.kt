@@ -676,39 +676,32 @@ class GameDraw : JComponent() {
     }
 
     private fun checkForSpringCollisions(currentMass: Mass, springMap: Map<Int, Spring>) {
-        var kineticEnergyX1: Double
-        var kineticEnergyY1: Double
-        var currentMassOldX: Double
-        var currentMassOldY: Double
-        var currentMassVx: Double
-        var currentMassVy: Double
-
         val currentMassX = currentMass.getX()
         val currentMassY = currentMass.getY()
         for (spring: Spring in springMap.values) {
-            val cmass1 = spring.mass1
-            val cmass2 = spring.mass2
-            val cmass1X = cmass1.getX()
-            val cmass2X = cmass2.getX()
-            val cmass1Y = cmass1.getY()
-            val cmass2Y = cmass2.getY()
-            if (currentMassX < cmass1X && currentMassX < cmass2X) {
+            val springMass1 = spring.mass1
+            val springMass2 = spring.mass2
+            val springMass1x = springMass1.getX()
+            val springMass2x = springMass2.getX()
+            val springMass1y = springMass1.getY()
+            val springMass2y = springMass2.getY()
+            if (currentMassX < springMass1x && currentMassX < springMass2x) {
                 //prune
-            } else if (cmass1X != cmass2X && cmass1Y != cmass2Y) {
-                var slopeOfLine = (cmass1Y - cmass2Y) / (cmass1X - cmass2X)
-                currentMassOldX = currentMass.oldX
-                currentMassOldY = currentMass.oldY
-                var yIntercept = cmass1Y - slopeOfLine * cmass1X
-                val resultNew = throwPointInLine(currentMassX, currentMassY, yIntercept, slopeOfLine)
-                val mass1OldX = cmass1.oldX
-                val mass2OldX = cmass2.oldX
-                val mass1OldY = cmass1.oldY
-                val mass2OldY = cmass2.oldY
+            } else if (springMass1x != springMass2x && springMass1y != springMass2y) {
+                var slopeOfLine = (springMass1y - springMass2y) / (springMass1x - springMass2x)
+                val currentMassOldX = currentMass.oldX
+                val currentMassOldY = currentMass.oldY
+                val yInterceptNew = springMass1y - slopeOfLine * springMass1x
+                val resultNew = throwPointInLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
+                val mass1OldX = springMass1.oldX
+                val mass2OldX = springMass2.oldX
+                val mass1OldY = springMass1.oldY
+                val mass2OldY = springMass2.oldY
                 slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
-                yIntercept = mass1OldY - slopeOfLine * mass1OldX
-                val resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yIntercept, slopeOfLine)
+                val yInterceptOld = mass1OldY - slopeOfLine * mass1OldX
+                val resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
                 horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
-                lineNew.setLine(cmass1X, cmass1Y, cmass2X, cmass2Y)
+                lineNew.setLine(springMass1x, springMass1y, springMass2x, springMass2y)
                 lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
                 massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
                 var countIntersections = 0
@@ -726,17 +719,15 @@ class GameDraw : JComponent() {
                     }
                     a.revertPoints()
                     b.revertPoints()
-                    currentMassVx = currentMass.oldVx
-                    currentMassVy = currentMass.oldVy
                     val aVx = a.oldVx
                     val bVx = b.oldVx
                     val aVy = a.oldVy
                     val bVy = b.oldVy
                     //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
                     val kineticEnergyX =
-                        sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                        sqrt((aVx * aVx + bVx * bVx + currentMass.oldVx * currentMass.oldVx) / 3.0 * ENERGY_LEFT)
                     val kineticEnergyY =
-                        sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                        sqrt((aVy * aVy + bVy * bVy + currentMass.oldVy * currentMass.oldVy) / 3.0 * ENERGY_LEFT)
                     currentMass.setVx(0 - kineticEnergyX)
                     a.setVx(kineticEnergyX)
                     b.setVx(kineticEnergyX)
@@ -762,11 +753,11 @@ class GameDraw : JComponent() {
                         }
                     }
                 }
-            } else if (cmass1X == cmass2X) {
+            } else if (springMass1x == springMass2x) {
                 when {
-                    currentMassX < cmass1X -> {
+                    currentMassX < springMass1x -> {
                     }
-                    currentMassX > cmass1X + SPEED_LIMIT -> {
+                    currentMassX > springMass1x + SPEED_LIMIT -> {
                         currentMass.revertPoints()
                         val a = spring.mass1
                         val b = spring.mass2
@@ -776,21 +767,20 @@ class GameDraw : JComponent() {
                         }
                         a.revertPoints()
                         b.revertPoints()
-                        currentMassVx = currentMass.oldVx
                         val aVx = a.oldVx
                         val bVx = b.oldVx
                         //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                        kineticEnergyX1 =
-                            sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
+                        val kineticEnergyX1 =
+                            sqrt((aVx * aVx + bVx * bVx + currentMass.oldVx * currentMass.oldVx) / 3.0 * ENERGY_LEFT)
                         currentMass.setVx(0 - kineticEnergyX1)
                         a.setVx(kineticEnergyX1)
                         b.setVx(kineticEnergyX1)
                     }
                 }
-            } else if (cmass1Y == cmass2Y) {
-                if (currentMassY > cmass1Y) {
+            } else if (springMass1y == springMass2y) {
+                if (currentMassY > springMass1y) {
                     //no collision, pruned
-                } else if (currentMassY < cmass1Y + SPEED_LIMIT) {
+                } else if (currentMassY < springMass1y + SPEED_LIMIT) {
                     currentMass.revertPoints()
                     val a = spring.mass1
                     val b = spring.mass2
@@ -798,12 +788,11 @@ class GameDraw : JComponent() {
                         collided = true
                         firstContactPoint = currentMassX
                     }
-                    currentMassVy = currentMass.oldVy
                     val aVy = a.oldVy
                     val bVy = b.oldVy
                     //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    kineticEnergyY1 =
-                        sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
+                    val kineticEnergyY1 =
+                        sqrt((aVy * aVy + bVy * bVy + currentMass.oldVy * currentMass.oldVy) / 3.0 * ENERGY_LEFT)
                     currentMass.setVy(kineticEnergyY1)
                     a.setVy(0 - kineticEnergyY1)
                     b.setVy(0 - kineticEnergyY1)
