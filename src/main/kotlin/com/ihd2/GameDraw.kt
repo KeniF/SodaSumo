@@ -93,17 +93,8 @@ class GameDraw : JComponent() {
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
-            g2dEllipse.setFrame(
-                mass1.getX() - MASS_SHIFT,
-                HEIGHT - (mass1.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
-
-            g2dEllipse.setFrame(
-                mass2.getX() - MASS_SHIFT,
-                HEIGHT - (mass2.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
+            drawMass(mass1)
+            drawMass(mass2)
 
             g2dLine.setLine(
                 mass1.getX(), HEIGHT - mass1.getY(),
@@ -117,32 +108,35 @@ class GameDraw : JComponent() {
         for (muscle in model.muscleMap.values) {
             val mass1 = muscle.mass1
             val mass2 = muscle.mass2
-            val dMass1X = mass1.getX()
-            val dMass1Y = mass1.getY()
-            val dMass2X = mass2.getX()
-            val dMass2Y = mass2.getY()
+            drawMass(mass1)
+            drawMass(mass2)
+
+            val mass1X = mass1.getX()
+            val mass1Y = mass1.getY()
+            val mass2X = mass2.getX()
+            val mass2Y = mass2.getY()
             g2dLine.setLine(
-                dMass1X, HEIGHT - dMass1Y,
-                dMass2X, HEIGHT - dMass2Y
+                mass1X, HEIGHT - mass1Y,
+                mass2X, HEIGHT - mass2Y
             )
             gfx2d.draw(g2dLine)
 
             g2dEllipse.setFrame(
-                dMass1X - MASS_SHIFT,
-                HEIGHT - (dMass1Y + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
-            g2dEllipse.setFrame(
-                dMass2X - MASS_SHIFT,
-                HEIGHT - (dMass2Y + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
-            g2dEllipse.setFrame(
-                (dMass1X + dMass2X) / 2.0 - 1.5,
-                HEIGHT - ((dMass1Y + dMass2Y) / 2.0 + 1.5), 3.0, 3.0
+                (mass1X + mass2X) / 2.0 - MUSCLE_MARKER_SIZE / 2.0,
+                HEIGHT - ((mass1Y + mass2Y) / 2.0 + MUSCLE_MARKER_SIZE / 2.0),
+                MUSCLE_MARKER_SIZE,
+                MUSCLE_MARKER_SIZE
             )
             gfx2d.fill(g2dEllipse)
         }
+    }
+
+    private fun drawMass(mass: Mass) {
+        g2dEllipse.setFrame(
+            mass.getX() - MASS_SHIFT,
+            HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
+        )
+        gfx2d.fill(g2dEllipse)
     }
 
     fun init() {
@@ -828,6 +822,7 @@ class GameDraw : JComponent() {
         private val font = Font("Arial", Font.PLAIN, 12)
         private val resultFont = Font("Arial", Font.PLAIN, 20)
         private const val MASS_SIZE = 4.0
+        private const val MUSCLE_MARKER_SIZE = 3.0
         private const val LINE_WIDTH = 0.4f
         private const val MASS_SHIFT = MASS_SIZE / 2.0 //Shift needed because specified point is ellipse's top-left
         private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
