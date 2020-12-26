@@ -90,8 +90,8 @@ class GameDraw : JComponent() {
 
     private fun drawSprings(model: Model) {
         for (spring in model.springMap.values) {
-            val mass1 = spring.mass1!!
-            val mass2 = spring.mass2!!
+            val mass1 = spring.mass1
+            val mass2 = spring.mass2
             g2dEllipse.setFrame(
                 mass1.getX() - MASS_SHIFT,
                 HEIGHT - (mass1.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
@@ -114,8 +114,8 @@ class GameDraw : JComponent() {
 
     private fun drawMuscles(model: Model) {
         for (muscle in model.muscleMap.values) {
-            val mass1 = muscle.mass1!!
-            val mass2 = muscle.mass2!!
+            val mass1 = muscle.mass1
+            val mass2 = muscle.mass2
             val dMass1X = mass1.getX()
             val dMass1Y = mass1.getY()
             val dMass2X = mass2.getX()
@@ -260,13 +260,13 @@ class GameDraw : JComponent() {
                 // - wavePhase to set correct restLength of Muscle
                 restLength = rLength * (1.0 + model.waveAmplitude * amp *
                         sin((model.waveSpeed * model.noOfFrames + phase - model.wavePhase) * 2.0 * Math.PI))
-                mass1 = muscle.mass1!!
-                mass2 = muscle.mass2!!
+                mass1 = muscle.mass1
+                mass2 = muscle.mass2
             } else {
                 val spring = model.getSpring(i)!!
                 restLength = spring.restLength
-                mass1 = spring.mass1!!
-                mass2 = spring.mass2!!
+                mass1 = spring.mass1
+                mass2 = spring.mass2
             }
 
             val mass1X = mass1.getX()
@@ -416,8 +416,8 @@ class GameDraw : JComponent() {
             for (i in 1..model2.springMap.size) {
                 cmass1 = model2.getSpring(i)!!.mass1
                 cmass2 = model2.getSpring(i)!!.mass2
-                cmass1X = cmass1!!.getX()
-                cmass2X = cmass2!!.getX()
+                cmass1X = cmass1.getX()
+                cmass2X = cmass2.getX()
                 cmass1Y = cmass1.getY()
                 cmass2Y = cmass2.getY()
                 if (currentMassX < cmass1X && currentMassX < cmass2X) {
@@ -451,8 +451,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertX()
-                        b!!.revertX()
+                        a.revertX()
+                        b.revertX()
                         a.revertY()
                         b.revertY()
                         currentMassVx = currentMass.oldVx
@@ -504,8 +504,8 @@ class GameDraw : JComponent() {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a!!.revertX()
-                            b!!.revertX()
+                            a.revertX()
+                            b.revertX()
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -529,8 +529,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertY()
-                        b!!.revertY()
+                        a.revertY()
+                        b.revertY()
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy
@@ -546,8 +546,8 @@ class GameDraw : JComponent() {
             for (i in 1..model2.muscleMap.size) {
                 cmass1 = model2.getMuscle(i)!!.mass1
                 cmass2 = model2.getMuscle(i)!!.mass2
-                cmass1X = cmass1!!.getX()
-                cmass2X = cmass2!!.getX()
+                cmass1X = cmass1.getX()
+                cmass2X = cmass2.getX()
                 cmass1Y = cmass1.getY()
                 cmass2Y = cmass2.getY()
                 if (currentMassX < cmass1X && currentMassX < cmass2X) {
@@ -582,8 +582,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertX()
-                        b!!.revertX()
+                        a.revertX()
+                        b.revertX()
                         a.revertY()
                         b.revertY()
                         currentMassVx = currentMass.oldVx
@@ -634,8 +634,8 @@ class GameDraw : JComponent() {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a!!.revertX()
-                            b!!.revertX()
+                            a.revertX()
+                            b.revertX()
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -658,8 +658,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertY()
-                        b!!.revertY()
+                        a.revertY()
+                        b.revertY()
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy
@@ -682,8 +682,8 @@ class GameDraw : JComponent() {
             for (i in 1..model1.springMap.size) {
                 cmass1 = model1.getSpring(i)!!.mass1
                 cmass2 = model1.getSpring(i)!!.mass2
-                cmass1X = cmass1!!.getX()
-                cmass2X = cmass2!!.getX()
+                cmass1X = cmass1.getX()
+                cmass2X = cmass2.getX()
                 cmass1Y = cmass1.getY()
                 cmass2Y = cmass2.getY()
                 if (currentMassX > cmass1X && currentMassX > cmass2X) { //not collided
@@ -718,8 +718,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertX()
-                        b!!.revertX()
+                        a.revertX()
+                        b.revertX()
                         a.revertY()
                         b.revertY()
                         currentMassVx = currentMass.oldVx
@@ -771,8 +771,8 @@ class GameDraw : JComponent() {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a!!.revertX()
-                            b!!.revertX()
+                            a.revertX()
+                            b.revertX()
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -796,8 +796,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertY()
-                        b!!.revertY()
+                        a.revertY()
+                        b.revertY()
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy
@@ -813,8 +813,8 @@ class GameDraw : JComponent() {
             for (i in 1..model1.muscleMap.size) {
                 cmass1 = model1.getMuscle(i)!!.mass1
                 cmass2 = model1.getMuscle(i)!!.mass2
-                cmass1X = cmass1!!.getX()
-                cmass2X = cmass2!!.getX()
+                cmass1X = cmass1.getX()
+                cmass2X = cmass2.getX()
                 cmass1Y = cmass1.getY()
                 cmass2Y = cmass2.getY()
                 if (currentMassX > cmass1X && currentMassX > cmass2X) {
@@ -849,8 +849,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertX()
-                        b!!.revertX()
+                        a.revertX()
+                        b.revertX()
                         a.revertY()
                         b.revertY()
                         currentMassVx = currentMass.oldVx
@@ -902,8 +902,8 @@ class GameDraw : JComponent() {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a!!.revertX()
-                            b!!.revertX()
+                            a.revertX()
+                            b.revertX()
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -927,8 +927,8 @@ class GameDraw : JComponent() {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a!!.revertY()
-                        b!!.revertY()
+                        a.revertY()
+                        b.revertY()
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy

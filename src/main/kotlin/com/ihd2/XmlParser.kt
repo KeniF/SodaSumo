@@ -106,13 +106,13 @@ class XmlParser(path: String?) : ContentHandler {
                     ParseMode.REST_LENGTH -> {
                         if (!createMuscle) {
                             currentSpring.restLength = readCh.toDouble()
-                            currentSpring.mass1 = model.getMass(mass1)
-                            currentSpring.mass2 = model.getMass(mass2)
+                            currentSpring.mass1 = model.getMass(mass1)!!
+                            currentSpring.mass2 = model.getMass(mass2)!!
                             model.addSpring(currentSpring)
                         } else {
                             currentMuscle.restLength = readCh.toDouble()
-                            currentMuscle.mass1 = model.getMass(mass1)
-                            currentMuscle.mass2 = model.getMass(mass2)
+                            currentMuscle.mass1 = model.getMass(mass1)!!
+                            currentMuscle.mass2 = model.getMass(mass2)!!
                             model.addMuscle(currentMuscle)
                         }
                         mode = ParseMode.NONE

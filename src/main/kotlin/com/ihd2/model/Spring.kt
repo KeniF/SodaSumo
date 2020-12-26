@@ -1,8 +1,8 @@
 package com.ihd2.model
 
 open class Spring(val id: Int) {
-    var mass1: Mass? = null
-    var mass2: Mass? = null
+    lateinit var mass1: Mass
+    lateinit var mass2: Mass
     var restLength = 0.0
 
     override fun toString(): String {
