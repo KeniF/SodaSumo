@@ -409,10 +409,10 @@ class GameDraw : JComponent() {
             checkForSpringCollisions(currentMass, model2.muscleMap)
         }
 
-        var cmass1X: Double
-        var cmass2X: Double
-        var cmass1Y: Double
-        var cmass2Y: Double
+        var currentMass1X: Double
+        var currentMass2X: Double
+        var currentMass1Y: Double
+        var currentMass2Y: Double
         var kineticEnergyX1: Double
         var kineticEnergyY1: Double
         var slopeOfLine: Double
@@ -435,18 +435,18 @@ class GameDraw : JComponent() {
             for (i in 1..model1.springMap.size) {
                 cmass1 = model1.getSpring(i)!!.mass1
                 cmass2 = model1.getSpring(i)!!.mass2
-                cmass1X = cmass1.getX()
-                cmass2X = cmass2.getX()
-                cmass1Y = cmass1.getY()
-                cmass2Y = cmass2.getY()
-                if (currentMassX > cmass1X && currentMassX > cmass2X) { //not collided
+                currentMass1X = cmass1.getX()
+                currentMass2X = cmass2.getX()
+                currentMass1Y = cmass1.getY()
+                currentMass2Y = cmass2.getY()
+                if (currentMassX > currentMass1X && currentMassX > currentMass2X) { //not collided
                     //prune
-                } else if (cmass1X != cmass2X && cmass1Y != cmass2Y) { // not vertical / horizontal
-                    slopeOfLine = (cmass1Y - cmass2Y) / (cmass1X - cmass2X)
+                } else if (currentMass1X != currentMass2X && currentMass1Y != currentMass2Y) { // not vertical / horizontal
+                    slopeOfLine = (currentMass1Y - currentMass2Y) / (currentMass1X - currentMass2X)
                     currentMassOldX = currentMass.oldX
                     currentMassOldY = currentMass.oldY
                     //y=mx+c
-                    yIntercept = cmass1Y - slopeOfLine * cmass1X
+                    yIntercept = currentMass1Y - slopeOfLine * currentMass1X
                     resultNew = throwPointInLine(currentMassX, currentMassY, yIntercept, slopeOfLine)
                     val mass1OldX = cmass1.oldX
                     val mass2OldX = cmass2.oldX
@@ -456,7 +456,7 @@ class GameDraw : JComponent() {
                     yIntercept = mass1OldY - slopeOfLine * mass1OldX
                     resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yIntercept, slopeOfLine)
                     horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
-                    lineNew.setLine(cmass1X, cmass1Y, cmass2X, cmass2Y)
+                    lineNew.setLine(currentMass1X, currentMass1Y, currentMass2X, currentMass2Y)
                     lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
                     massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
                     var countIntersections = 0
@@ -508,11 +508,11 @@ class GameDraw : JComponent() {
                             }
                         }
                     }
-                } else if (cmass1X == cmass2X) {
+                } else if (currentMass1X == currentMass2X) {
                     when {
-                        currentMassX > cmass1X -> {
+                        currentMassX > currentMass1X -> {
                         }
-                        currentMassX > cmass1X - SPEED_LIMIT -> {
+                        currentMassX > currentMass1X - SPEED_LIMIT -> {
                             currentMass.revertPoints()
                             val a = model1.getSpring(i)!!.mass1
                             val b = model1.getSpring(i)!!.mass2
@@ -533,10 +533,10 @@ class GameDraw : JComponent() {
                             b.setVx(0 - kineticEnergyX1)
                         }
                     }
-                } else if (cmass1Y == cmass2Y) {
-                    if (currentMassY > cmass1Y) {
+                } else if (currentMass1Y == currentMass2Y) {
+                    if (currentMassY > currentMass1Y) {
                         //no collision, pruned
-                    } else if (currentMassY < cmass1Y - SPEED_LIMIT) {
+                    } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
                         currentMass.revertPoints()
                         val a = model1.getSpring(i)!!.mass1
                         val b = model1.getSpring(i)!!.mass2
@@ -561,18 +561,18 @@ class GameDraw : JComponent() {
             for (i in 1..model1.muscleMap.size) {
                 cmass1 = model1.getMuscle(i)!!.mass1
                 cmass2 = model1.getMuscle(i)!!.mass2
-                cmass1X = cmass1.getX()
-                cmass2X = cmass2.getX()
-                cmass1Y = cmass1.getY()
-                cmass2Y = cmass2.getY()
-                if (currentMassX > cmass1X && currentMassX > cmass2X) {
+                currentMass1X = cmass1.getX()
+                currentMass2X = cmass2.getX()
+                currentMass1Y = cmass1.getY()
+                currentMass2Y = cmass2.getY()
+                if (currentMassX > currentMass1X && currentMassX > currentMass2X) {
                     //prune
-                } else if (cmass1X != cmass2X && cmass1Y != cmass2Y) { // not vertical / horizontal
-                    slopeOfLine = (cmass1Y - cmass2Y) / (cmass1X - cmass2X)
+                } else if (currentMass1X != currentMass2X && currentMass1Y != currentMass2Y) { // not vertical / horizontal
+                    slopeOfLine = (currentMass1Y - currentMass2Y) / (currentMass1X - currentMass2X)
                     currentMassOldX = currentMass.oldX
                     currentMassOldY = currentMass.oldY
                     //y=mx+c
-                    yIntercept = cmass1Y - slopeOfLine * cmass1X
+                    yIntercept = currentMass1Y - slopeOfLine * currentMass1X
                     resultNew = throwPointInLine(currentMassX, currentMassY, yIntercept, slopeOfLine)
                     val mass1OldX = cmass1.oldX
                     val mass2OldX = cmass2.oldX
@@ -582,7 +582,7 @@ class GameDraw : JComponent() {
                     yIntercept = mass1OldY - slopeOfLine * mass1OldX
                     resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yIntercept, slopeOfLine)
                     horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
-                    lineNew.setLine(cmass1X, cmass1Y, cmass2X, cmass2Y)
+                    lineNew.setLine(currentMass1X, currentMass1Y, currentMass2X, currentMass2Y)
                     lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
                     massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
                     var countIntersections = 0
@@ -636,11 +636,11 @@ class GameDraw : JComponent() {
                             }
                         }
                     }
-                } else if (cmass1X == cmass2X) {
+                } else if (currentMass1X == currentMass2X) {
                     when {
-                        currentMassX > cmass1X -> {
+                        currentMassX > currentMass1X -> {
                         }
-                        currentMassX > cmass1X - SPEED_LIMIT -> {
+                        currentMassX > currentMass1X - SPEED_LIMIT -> {
                             currentMass.revertPoints()
                             val a = model1.getMuscle(i)!!.mass1
                             val b = model1.getMuscle(i)!!.mass2
@@ -661,10 +661,10 @@ class GameDraw : JComponent() {
                             b.setVx(0 - kineticEnergyX1)
                         }
                     }
-                } else if (cmass1Y == cmass2Y) {
-                    if (currentMassY > cmass1Y) {
+                } else if (currentMass1Y == currentMass2Y) {
+                    if (currentMassY > currentMass1Y) {
                         //no collision, pruned
-                    } else if (currentMassY < cmass1Y - SPEED_LIMIT) {
+                    } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
                         currentMass.revertPoints()
                         val a = model1.getMuscle(i)!!.mass1
                         val b = model1.getMuscle(i)!!.mass2
@@ -738,32 +738,32 @@ class GameDraw : JComponent() {
                     val aVy = a.oldVy
                     val bVy = b.oldVy
                     //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    val kineticEnergyX =
+                    val resultantVelocityX =
                         sqrt((aVx * aVx + bVx * bVx + currentMass.oldVx * currentMass.oldVx) / 3.0 * ENERGY_LEFT)
-                    val kineticEnergyY =
+                    val resultantVelocityY =
                         sqrt((aVy * aVy + bVy * bVy + currentMass.oldVy * currentMass.oldVy) / 3.0 * ENERGY_LEFT)
-                    currentMass.setVx(0 - kineticEnergyX)
-                    a.setVx(kineticEnergyX)
-                    b.setVx(kineticEnergyX)
+                    currentMass.setVx(0 - resultantVelocityX)
+                    a.setVx(resultantVelocityX)
+                    b.setVx(resultantVelocityX)
                     if (slopeOfLine > 0) {
                         if (resultOld == 1) {
-                            currentMass.setVy(kineticEnergyY)
-                            a.setVy(0 - kineticEnergyY)
-                            b.setVy(0 - kineticEnergyY)
+                            currentMass.setVy(resultantVelocityY)
+                            a.setVy(0 - resultantVelocityY)
+                            b.setVy(0 - resultantVelocityY)
                         } else {
-                            currentMass.setVy(0 - kineticEnergyY)
-                            a.setVy(kineticEnergyY)
-                            b.setVy(kineticEnergyY)
+                            currentMass.setVy(0 - resultantVelocityY)
+                            a.setVy(resultantVelocityY)
+                            b.setVy(resultantVelocityY)
                         }
                     } else {
                         if (resultOld == 1) {
-                            currentMass.setVy(0 - kineticEnergyY)
-                            a.setVy(kineticEnergyY)
-                            b.setVy(kineticEnergyY)
+                            currentMass.setVy(0 - resultantVelocityY)
+                            a.setVy(resultantVelocityY)
+                            b.setVy(resultantVelocityY)
                         } else {
-                            currentMass.setVy(kineticEnergyY)
-                            a.setVy(0 - kineticEnergyY)
-                            b.setVy(0 - kineticEnergyY)
+                            currentMass.setVy(resultantVelocityY)
+                            a.setVy(0 - resultantVelocityY)
+                            b.setVy(0 - resultantVelocityY)
                         }
                     }
                 }
@@ -846,8 +846,6 @@ class GameDraw : JComponent() {
         private const val LINE_WIDTH = 0.4f
         private const val MASS_SHIFT = MASS_SIZE / 2.0 //Shift needed because specified point is ellipse's top-left
         private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
-
-        private const val DEBUG = true
 
         @Volatile
         private var run = false
