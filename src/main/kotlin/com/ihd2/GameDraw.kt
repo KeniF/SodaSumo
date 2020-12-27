@@ -84,16 +84,34 @@ class GameDraw : JComponent() {
     }
 
     private fun drawModel(model: Model) {
+        drawMasses(model)
         drawSprings(model)
         drawMuscles(model)
+    }
+
+    private fun drawMasses(model: Model) {
+        for (mass in model.massMap.values) {
+            gfx2d.color = when(DEBUG) {
+                true -> Color.GRAY
+                false -> Color.BLACK
+            }
+            g2dEllipse.setFrame(
+                mass.getX() - MASS_SHIFT,
+                HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
+            )
+            gfx2d.fill(g2dEllipse)
+            if (DEBUG) {
+                gfx2d.color = Color.BLACK
+                gfx2d.font = debugFont
+                gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
+            }
+        }
     }
 
     private fun drawSprings(model: Model) {
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
-            drawMass(mass1)
-            drawMass(mass2)
 
             gfx2d.color = Color.BLACK
             g2dLine.setLine(
@@ -108,8 +126,6 @@ class GameDraw : JComponent() {
         for (muscle in model.muscleMap.values) {
             val mass1 = muscle.mass1
             val mass2 = muscle.mass2
-            drawMass(mass1)
-            drawMass(mass2)
 
             val mass1X = mass1.getX()
             val mass1Y = mass1.getY()
@@ -129,23 +145,6 @@ class GameDraw : JComponent() {
                 MUSCLE_MARKER_SIZE
             )
             gfx2d.fill(g2dEllipse)
-        }
-    }
-
-    private fun drawMass(mass: Mass) {
-        gfx2d.color = when(DEBUG) {
-            true -> Color.GRAY
-            false -> Color.BLACK
-        }
-        g2dEllipse.setFrame(
-            mass.getX() - MASS_SHIFT,
-            HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-        )
-        gfx2d.fill(g2dEllipse)
-        if (DEBUG) {
-            gfx2d.color = Color.BLACK
-            gfx2d.font = debugFont
-            gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
         }
     }
 
