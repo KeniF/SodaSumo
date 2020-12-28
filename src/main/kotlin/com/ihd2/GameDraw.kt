@@ -415,10 +415,12 @@ class GameDraw : JComponent() {
     private fun doCollision() {
         if (model1.boundRight < model2.boundLeft) return
 
+        val massesToRevert = HashSet<Mass>()
+
         for (j in 1..model1.massMap.size) {
             val currentMass = model1.getMass(j)!!
-            checkForSpringCollisions(currentMass, model2.springMap)
-            checkForSpringCollisions(currentMass, model2.muscleMap)
+            checkForSpringCollisions(currentMass, model2.springMap, massesToRevert)
+            checkForSpringCollisions(currentMass, model2.muscleMap, massesToRevert)
         }
 
         var currentMass1X: Double
@@ -475,15 +477,15 @@ class GameDraw : JComponent() {
                     if (horizontalLine.intersectsLine(lineNew)) countIntersections++
                     if (horizontalLine.intersectsLine(lineOld)) countIntersections++
                     if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) || resultOld == -1 && resultNew == 1 && countIntersections == 1) {
-                        currentMass.revertPoints()
                         val a = model1.getSpring(i)!!.mass1
                         val b = model1.getSpring(i)!!.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a.revertPoints()
-                        b.revertPoints()
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
                         currentMassVx = currentMass.oldVx
                         currentMassVy = currentMass.oldVy
                         val aVx = a.oldVx
@@ -525,15 +527,15 @@ class GameDraw : JComponent() {
                         currentMassX > currentMass1X -> {
                         }
                         currentMassX > currentMass1X - SPEED_LIMIT -> {
-                            currentMass.revertPoints()
                             val a = model1.getSpring(i)!!.mass1
                             val b = model1.getSpring(i)!!.mass2
                             if (!collided) {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a.revertPoints()
-                            b.revertPoints()
+                            massesToRevert.add(currentMass)
+                            massesToRevert.add(a)
+                            massesToRevert.add(b)
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -549,15 +551,15 @@ class GameDraw : JComponent() {
                     if (currentMassY > currentMass1Y) {
                         //no collision, pruned
                     } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
-                        currentMass.revertPoints()
                         val a = model1.getSpring(i)!!.mass1
                         val b = model1.getSpring(i)!!.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a.revertPoints()
-                        b.revertPoints()
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy
@@ -603,15 +605,15 @@ class GameDraw : JComponent() {
                     if (lineNew.intersectsLine(massLine) ||
                         lineOld.intersectsLine(massLine) ||
                         resultOld == -1 && resultNew == 1 && countIntersections == 1) {
-                        currentMass.revertPoints()
                         val a = model1.getMuscle(i)!!.mass1
                         val b = model1.getMuscle(i)!!.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a.revertPoints()
-                        b.revertPoints()
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
                         currentMassVx = currentMass.oldVx
                         currentMassVy = currentMass.oldVy
                         val aVx = a.oldVx
@@ -653,15 +655,15 @@ class GameDraw : JComponent() {
                         currentMassX > currentMass1X -> {
                         }
                         currentMassX > currentMass1X - SPEED_LIMIT -> {
-                            currentMass.revertPoints()
                             val a = model1.getMuscle(i)!!.mass1
                             val b = model1.getMuscle(i)!!.mass2
                             if (!collided) {
                                 collided = true
                                 firstContactPoint = currentMassX
                             }
-                            a.revertPoints()
-                            b.revertPoints()
+                            massesToRevert.add(currentMass)
+                            massesToRevert.add(a)
+                            massesToRevert.add(b)
                             currentMassVx = currentMass.oldVx
                             val aVx = a.oldVx
                             val bVx = b.oldVx
@@ -677,15 +679,15 @@ class GameDraw : JComponent() {
                     if (currentMassY > currentMass1Y) {
                         //no collision, pruned
                     } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
-                        currentMass.revertPoints()
                         val a = model1.getMuscle(i)!!.mass1
                         val b = model1.getMuscle(i)!!.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a.revertPoints()
-                        b.revertPoints()
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
                         currentMassVy = currentMass.oldVy
                         val aVy = a.oldVy
                         val bVy = b.oldVy
@@ -699,9 +701,12 @@ class GameDraw : JComponent() {
                 }
             }
         }
+        for (mass in massesToRevert) {
+            mass.revertPoints()
+        }
     }
 
-    private fun checkForSpringCollisions(currentMass: Mass, springMap: Map<Int, Spring>) {
+    private fun checkForSpringCollisions(currentMass: Mass, springMap: Map<Int, Spring>, massesToRevert: MutableSet<Mass>) {
         val currentMassX = currentMass.getX()
         val currentMassY = currentMass.getY()
         for (spring: Spring in springMap.values) {
@@ -736,15 +741,15 @@ class GameDraw : JComponent() {
                 if (lineNew.intersectsLine(massLine) ||
                     lineOld.intersectsLine(massLine) ||
                     resultOld == 1 && resultNew == -1 && countIntersections == 1) {
-                    currentMass.revertPoints()
                     val a = spring.mass1
                     val b = spring.mass2
                     if (!collided) {
                         collided = true
                         firstContactPoint = currentMassX
                     }
-                    a.revertPoints()
-                    b.revertPoints()
+                    massesToRevert.add(currentMass)
+                    massesToRevert.add(a)
+                    massesToRevert.add(b)
                     val aVx = a.oldVx
                     val bVx = b.oldVx
                     val aVy = a.oldVy
@@ -784,15 +789,15 @@ class GameDraw : JComponent() {
                     currentMassX < springMass1x -> {
                     }
                     currentMassX > springMass1x + SPEED_LIMIT -> {
-                        currentMass.revertPoints()
                         val a = spring.mass1
                         val b = spring.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
-                        a.revertPoints()
-                        b.revertPoints()
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
                         val aVx = a.oldVx
                         val bVx = b.oldVx
                         //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
@@ -807,13 +812,15 @@ class GameDraw : JComponent() {
                 if (currentMassY > springMass1y) {
                     //no collision, pruned
                 } else if (currentMassY < springMass1y + SPEED_LIMIT) {
-                    currentMass.revertPoints()
                     val a = spring.mass1
                     val b = spring.mass2
                     if (!collided) {
                         collided = true
                         firstContactPoint = currentMassX
                     }
+                    massesToRevert.add(currentMass)
+                    massesToRevert.add(a)
+                    massesToRevert.add(b)
                     val aVy = a.oldVy
                     val bVy = b.oldVy
                     //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
