@@ -37,6 +37,8 @@ class GameDraw : JComponent() {
     private var invertM1 = false
     @Volatile
     private var invertM2 = false
+    @Volatile
+    var paused = false
 
     private lateinit var gfx2d: Graphics2D
 
@@ -46,6 +48,12 @@ class GameDraw : JComponent() {
 
     fun invertM2() {
         invertM2 = !invertM2
+    }
+
+    fun stepAnimationManually() {
+        if (!run) return
+        paused = true
+        animateAndStep()
     }
 
     override fun paint(g: Graphics) {
@@ -59,8 +67,9 @@ class GameDraw : JComponent() {
         drawDebugStats()
     }
 
-    fun pause() {
+    fun stop() {
         run = false
+        paused = false
     }
 
     fun setTimeLimit(milliseconds: Long) {
@@ -192,17 +201,8 @@ class GameDraw : JComponent() {
             while (curThread === physicsThread && run) {
                 if (gameFrames > timeLimitMs / FRAME_DELAY) {
                     endGame()
-                } else {
-                    animate()
-                    repaint()
-                    gameFrames++
-                    if (!invertM1)
-                        model1.noOfFrames = model1.noOfFrames + 1
-                    else model1.noOfFrames =
-                        model1.noOfFrames - 1
-                    if (!invertM2)
-                        model2.noOfFrames = model2.noOfFrames + 1
-                    else model2.noOfFrames = model2.noOfFrames - 1
+                } else if (!paused) {
+                    animateAndStep()
                 }
                 try {
                     //to keep a constant framerate depending on how far we are behind :D
@@ -214,6 +214,19 @@ class GameDraw : JComponent() {
             }
         }
         physicsThread!!.start()
+    }
+
+    private fun animateAndStep() {
+        animate()
+        repaint()
+        gameFrames++
+        if (!invertM1)
+            model1.noOfFrames = model1.noOfFrames + 1
+        else model1.noOfFrames =
+            model1.noOfFrames - 1
+        if (!invertM2)
+            model2.noOfFrames = model2.noOfFrames + 1
+        else model2.noOfFrames = model2.noOfFrames - 1
     }
 
     private fun endGame() {

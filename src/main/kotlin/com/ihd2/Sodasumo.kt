@@ -16,9 +16,11 @@ import javax.swing.*
 class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, ActionListener, KeyListener {
     private val loadButton: JButton
     private val stopButton: JButton
+    private val stepButton: JButton
+    private val pauseButton: JButton
     private val invertM1Button: JCheckBox
     private val invertM2Button: JCheckBox
-    private val newGameDraw = GameDraw()
+    private val gameDraw = GameDraw()
     private val aboutItemSoda: JMenuItem
     private val aboutItemAuthor: JMenuItem
     private var xmlFiles: Array<String> = arrayOf()
@@ -51,24 +53,19 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         val source = e.itemSelectable
         if (source === invertM1Button) {
             invertM1 = !invertM1
-            newGameDraw.invertM1()
+            gameDraw.invertM1()
         } else if (source === invertM2Button) {
             invertM2 = !invertM2
-            newGameDraw.invertM2()
+            gameDraw.invertM2()
         }
     }
 
     override fun actionPerformed(e: ActionEvent) {
         when {
-            e.source === box1 -> {
-                box1.showPopup()
-            }
-            e.source === box2 -> {
-                box2.showPopup()
-            }
-            e.source === boxTime -> {
-                newGameDraw.setTimeLimit((boxTime.selectedItem?.toString()?.toLong() ?: 0) * 1000L)
-            }
+            e.source === box1 -> box1.showPopup()
+            e.source === box2 -> box2.showPopup()
+            e.source === boxTime -> gameDraw.setTimeLimit(
+                (boxTime.selectedItem?.toString()?.toLong() ?: 0) * 1000L)
         }
     }
 
@@ -78,97 +75,78 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
     override fun keyTyped(e: KeyEvent) {}
     override fun keyPressed(e: KeyEvent) {
         try {
-            if ((e.keyCode == KeyEvent.VK_ENTER ||
-                        e.keyCode == KeyEvent.VK_SPACE) && loadButton.isVisible
-            ) {
-                val xmlFile1 = box1.selectedItem?.toString() ?: ""
-                xp1 = XmlParser("$xmlFile1.xml")
-                if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
-                val xmlFile2 = box2.selectedItem?.toString() ?: ""
-                xp2 = XmlParser("$xmlFile2.xml")
-                if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
-                val model1 = xp1!!.model
-                model1.name = box1.selectedItem?.toString() ?: ""
-                val model2 = xp2!!.model
-                model2.name = box2.selectedItem?.toString() ?: ""
-                newGameDraw.provideModel1(model1)
-                newGameDraw.provideModel2(model2)
-                loadButton.isVisible = false
-                stopButton.isVisible = true
-                stopButton.grabFocus()
-                box1.isEnabled = false
-                box2.isEnabled = false
-                newGameDraw.startDraw()
-                newGameDraw.init()
-            } else if ((e.keyCode == KeyEvent.VK_ENTER ||
-                        e.keyCode == KeyEvent.VK_SPACE) && stopButton.isVisible
-            ) {
-                newGameDraw.pause()
-                stopButton.isVisible = false
-                loadButton.isVisible = true
-                box1.isEnabled = true
-                loadButton.grabFocus()
-                box2.isEnabled = true
+            if ((e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE)) {
+                when {
+                    e.source === loadButton -> loadAndStart()
+                    e.source === stopButton -> stop()
+                    e.source === pauseButton -> pause()
+                    e.source === stepButton -> stepAnimation()
+                }
             }
         } catch (f: IOException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Please ensure the XML files are in the same directory.\n$f",
+                gameDraw, "Please ensure the XML files are in the same directory.\n$f",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (s: SAXException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Invalid XML files.\n$s",
+                gameDraw, "Invalid XML files.\n$s",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (ed: NullPointerException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Model contains objects not permitted in SodaSumo\n$ed",
+                gameDraw, "Model contains objects not permitted in SodaSumo\n$ed",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (ds: Exception) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Error when loading models\n$ds",
+                gameDraw, "Error when loading models\n$ds",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         }
     }
 
+    private fun stop() {
+        gameDraw.stop()
+        stopButton.isVisible = false
+        loadButton.isVisible = true
+        box1.isEnabled = true
+        loadButton.grabFocus()
+        box2.isEnabled = true
+    }
+
+    private fun loadAndStart() {
+        val xmlFile1 = box1.selectedItem?.toString() ?: ""
+        xp1 = XmlParser("$xmlFile1.xml")
+        if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
+        val xmlFile2 = box2.selectedItem?.toString() ?: ""
+        xp2 = XmlParser("$xmlFile2.xml")
+        if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
+        val model1 = xp1!!.model
+        model1.name = box1.selectedItem?.toString() ?: ""
+        val model2 = xp2!!.model
+        model2.name = box2.selectedItem?.toString() ?: ""
+        gameDraw.provideModel1(model1)
+        gameDraw.provideModel2(model2)
+        loadButton.isVisible = false
+        stopButton.isVisible = true
+        box1.isEnabled = false
+        box2.isEnabled = false
+        gameDraw.startDraw()
+        gameDraw.init()
+    }
+
     override fun keyReleased(e: KeyEvent) {}
     override fun mousePressed(e: MouseEvent) {
         try {
-            val xmlFile1: String
-            val xmlFile2: String
             when {
-                e.source === loadButton -> {
-                    xmlFile1 = box1.selectedItem?.toString() ?: ""
-                    xp1 = XmlParser("$xmlFile1.xml")
-                    if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
-                    xmlFile2 = box2.selectedItem?.toString() ?: ""
-                    xp2 = XmlParser("$xmlFile2.xml")
-                    if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
-                    val model1 = xp1!!.model
-                    model1.name = box1.selectedItem?.toString() ?: ""
-                    val model2 = xp2!!.model
-                    model2.name = box2.selectedItem?.toString() ?: ""
-                    newGameDraw.provideModel1(model1)
-                    newGameDraw.provideModel2(model2)
-                    loadButton.isVisible = false
-                    stopButton.isVisible = true
-                    box1.isEnabled = false
-                    box2.isEnabled = false
-                    newGameDraw.startDraw()
-                    newGameDraw.init()
-                }
-                e.source === stopButton -> {
-                    newGameDraw.pause()
-                    loadButton.isVisible = true
-                    stopButton.isVisible = false
-                    box1.isEnabled = true
-                    box2.setEnabled(true)
-                }
+                e.source === loadButton -> loadAndStart()
+                e.source === stopButton -> stop()
+                e.source === pauseButton -> pause()
+                e.source === stepButton -> stepAnimation()
                 e.source === aboutItemSoda -> {
                     JOptionPane.showMessageDialog(
-                        newGameDraw,
+                        gameDraw,
                         """
                                 <html><font size=5 color=blue><b><u>$APP_NAME $VERSION</u></b></font></html>
                                 
@@ -187,7 +165,7 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
                 }
                 e.source === aboutItemAuthor -> {
                     JOptionPane.showMessageDialog(
-                        newGameDraw,
+                        gameDraw,
                         """<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>
         
 (C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
@@ -201,25 +179,33 @@ Supervised by Dr. Mary McGee Wood""",
             }
         } catch (f: IOException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Please ensure the XML files are in the same directory\n$f",
+                gameDraw, "Please ensure the XML files are in the same directory\n$f",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (s: SAXException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Invalid XML files.\n$s",
+                gameDraw, "Invalid XML files.\n$s",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (es: NullPointerException) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Model contains objects not permitted in SodaSumo\n$es",
+                gameDraw, "Model contains objects not permitted in SodaSumo\n$es",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         } catch (ds: Exception) {
             JOptionPane.showMessageDialog(
-                newGameDraw, "Error when loading models\n$ds",
+                gameDraw, "Error when loading models\n$ds",
                 "Error During Load", JOptionPane.WARNING_MESSAGE
             )
         }
+    }
+
+    private fun stepAnimation() {
+        gameDraw.stepAnimationManually()
+    }
+
+    private fun pause() {
+        gameDraw.paused = !gameDraw.paused
     }
 
     override fun mouseReleased(e: MouseEvent) {}
@@ -254,7 +240,7 @@ Supervised by Dr. Mary McGee Wood""",
         contents.background = Color.WHITE
         size = GAME_DIMENSION
         isResizable = false
-        contents.add(newGameDraw)
+        contents.add(gameDraw)
         val cPanel = JPanel()
         contents.add(cPanel, BorderLayout.EAST)
         cPanel.background = Color.GRAY.brighter()
@@ -284,22 +270,27 @@ Supervised by Dr. Mary McGee Wood""",
         loadButton = JButton("  Start  ")
         loadButton.addMouseListener(this)
         loadButton.addKeyListener(this)
-        loadButton.addActionListener(this)
         cPanel.add(loadButton)
         stopButton = JButton("  Stop  ")
         stopButton.addMouseListener(this)
         stopButton.addKeyListener(this)
         stopButton.isVisible = false
-        stopButton.addActionListener(this)
         cPanel.add(stopButton)
-        val emptySpace = JLabel("                                    ")
-        val emptySpace2 = JLabel("                                    ")
-        val eS3 = JLabel("                                    ")
-        val label = JLabel("    Time Limit")
-        cPanel.add(emptySpace)
-        cPanel.add(emptySpace2)
-        cPanel.add(eS3)
+        cPanel.add(JLabel("                                    "))
+
+        pauseButton = JButton("Pause / Resume")
+        pauseButton.addMouseListener(this)
+        pauseButton.addKeyListener(this)
+        cPanel.add(pauseButton)
+
+        stepButton = JButton("Step")
+        stepButton.addMouseListener(this)
+        stepButton.addKeyListener(this)
+        cPanel.add(stepButton)
+
+        val label = JLabel("   Time Limit")
         cPanel.add(label)
+
         val times = arrayOf("5", "10", "15", "20", "25", "30", "60")
         boxTime = JComboBox(times)
         boxTime.maximumRowCount = 10
