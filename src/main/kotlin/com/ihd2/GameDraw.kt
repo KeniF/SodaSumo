@@ -432,293 +432,147 @@ class GameDraw : Canvas() {
         if (model1.boundRight < model2.boundLeft) return
 
         val massesToRevert = HashSet<Mass>()
-
         for (j in 1..model1.massMap.size) {
             val currentMass = model1.getMass(j)!!
             checkForSpringCollisions(currentMass, model2.springMap, massesToRevert)
             checkForSpringCollisions(currentMass, model2.muscleMap, massesToRevert)
         }
 
-        var currentMass1X: Double
-        var currentMass2X: Double
-        var currentMass1Y: Double
-        var currentMass2Y: Double
-        var kineticEnergyX1: Double
-        var kineticEnergyY1: Double
-        var slopeOfLine: Double
-        var yIntercept: Double
-        var currentMassX: Double
-        var currentMassY: Double
-        var currentMassOldX: Double
-        var currentMassOldY: Double
-        var currentMassVx: Double
-        var currentMassVy: Double
-        var resultOld: Int
-        var resultNew: Int
-        var currentMass: Mass
-        var cmass1: Mass?
-        var cmass2: Mass?
         for (j in 1..model2.massMap.size) {
-            currentMass = model2.getMass(j)!!
-            currentMassX = currentMass.getX()
-            currentMassY = currentMass.getY()
-            for (i in 1..model1.springMap.size) {
-                cmass1 = model1.getSpring(i)!!.mass1
-                cmass2 = model1.getSpring(i)!!.mass2
-                currentMass1X = cmass1.getX()
-                currentMass2X = cmass2.getX()
-                currentMass1Y = cmass1.getY()
-                currentMass2Y = cmass2.getY()
-                if (currentMassX > currentMass1X && currentMassX > currentMass2X) { //not collided
-                    //prune
-                } else if (currentMass1X != currentMass2X && currentMass1Y != currentMass2Y) { // not vertical / horizontal
-                    slopeOfLine = (currentMass1Y - currentMass2Y) / (currentMass1X - currentMass2X)
-                    currentMassOldX = currentMass.oldX
-                    currentMassOldY = currentMass.oldY
-                    //y=mx+c
-                    yIntercept = currentMass1Y - slopeOfLine * currentMass1X
-                    resultNew = throwPointInLine(currentMassX, currentMassY, yIntercept, slopeOfLine)
-                    val mass1OldX = cmass1.oldX
-                    val mass2OldX = cmass2.oldX
-                    val mass1OldY = cmass1.oldY
-                    val mass2OldY = cmass2.oldY
-                    slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
-                    yIntercept = mass1OldY - slopeOfLine * mass1OldX
-                    resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yIntercept, slopeOfLine)
-                    horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
-                    lineNew.setLine(currentMass1X, currentMass1Y, currentMass2X, currentMass2Y)
-                    lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
-                    massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
-                    var countIntersections = 0
-                    if (horizontalLine.intersectsLine(lineNew)) countIntersections++
-                    if (horizontalLine.intersectsLine(lineOld)) countIntersections++
-                    if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) || resultOld == -1 && resultNew == 1 && countIntersections == 1) {
-                        val a = model1.getSpring(i)!!.mass1
-                        val b = model1.getSpring(i)!!.mass2
-                        if (!collided) {
-                            collided = true
-                            firstContactPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
-                        currentMassVx = currentMass.oldVx
-                        currentMassVy = currentMass.oldVy
-                        val aVx = a.oldVx
-                        val bVx = b.oldVx
-                        val aVy = a.oldVy
-                        val bVy = b.oldVy
-                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                        kineticEnergyX1 =
-                            sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                        kineticEnergyY1 =
-                            sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
-                        currentMass.setVx(kineticEnergyX1)
-                        a.setVx(0 - kineticEnergyX1)
-                        b.setVx(0 - kineticEnergyX1)
-                        if (slopeOfLine > 0) {
-                            if (resultOld == -1) {
-                                currentMass.setVy(0 - kineticEnergyY1)
-                                a.setVy(kineticEnergyY1)
-                                b.setVy(kineticEnergyY1)
-                            } else {
-                                currentMass.setVy(kineticEnergyY1)
-                                a.setVy(0 - kineticEnergyY1)
-                                b.setVy(0 - kineticEnergyY1)
-                            }
-                        } else { //slope<0
-                            if (resultOld == -1) { //if on RHS
-                                currentMass.setVy(kineticEnergyY1)
-                                a.setVy(0 - kineticEnergyY1)
-                                b.setVy(0 - kineticEnergyY1)
-                            } else {
-                                currentMass.setVy(0 - kineticEnergyY1)
-                                a.setVy(kineticEnergyY1)
-                                b.setVy(kineticEnergyY1)
-                            }
-                        }
-                    }
-                } else if (currentMass1X == currentMass2X) {
-                    when {
-                        currentMassX > currentMass1X -> {
-                        }
-                        currentMassX > currentMass1X - SPEED_LIMIT -> {
-                            val a = model1.getSpring(i)!!.mass1
-                            val b = model1.getSpring(i)!!.mass2
-                            if (!collided) {
-                                collided = true
-                                firstContactPoint = currentMassX
-                            }
-                            massesToRevert.add(currentMass)
-                            massesToRevert.add(a)
-                            massesToRevert.add(b)
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(kineticEnergyX1)
-                            a.setVx(0 - kineticEnergyX1)
-                            b.setVx(0 - kineticEnergyX1)
-                        }
-                    }
-                } else if (currentMass1Y == currentMass2Y) {
-                    if (currentMassY > currentMass1Y) {
-                        //no collision, pruned
-                    } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
-                        val a = model1.getSpring(i)!!.mass1
-                        val b = model1.getSpring(i)!!.mass2
-                        if (!collided) {
-                            collided = true
-                            firstContactPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
-                        currentMassVy = currentMass.oldVy
-                        val aVy = a.oldVy
-                        val bVy = b.oldVy
-                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                        kineticEnergyY1 =
-                            sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
-                        currentMass.setVy(kineticEnergyY1)
-                        a.setVy(0 - kineticEnergyY1)
-                        b.setVy(0 - kineticEnergyY1)
-                    }
-                }
-            }
-            for (i in 1..model1.muscleMap.size) {
-                cmass1 = model1.getMuscle(i)!!.mass1
-                cmass2 = model1.getMuscle(i)!!.mass2
-                currentMass1X = cmass1.getX()
-                currentMass2X = cmass2.getX()
-                currentMass1Y = cmass1.getY()
-                currentMass2Y = cmass2.getY()
-                if (currentMassX > currentMass1X && currentMassX > currentMass2X) {
-                    //prune
-                } else if (currentMass1X != currentMass2X && currentMass1Y != currentMass2Y) { // not vertical / horizontal
-                    slopeOfLine = (currentMass1Y - currentMass2Y) / (currentMass1X - currentMass2X)
-                    currentMassOldX = currentMass.oldX
-                    currentMassOldY = currentMass.oldY
-                    //y=mx+c
-                    yIntercept = currentMass1Y - slopeOfLine * currentMass1X
-                    resultNew = throwPointInLine(currentMassX, currentMassY, yIntercept, slopeOfLine)
-                    val mass1OldX = cmass1.oldX
-                    val mass2OldX = cmass2.oldX
-                    val mass1OldY = cmass1.oldY
-                    val mass2OldY = cmass2.oldY
-                    slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
-                    yIntercept = mass1OldY - slopeOfLine * mass1OldX
-                    resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yIntercept, slopeOfLine)
-                    horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
-                    lineNew.setLine(currentMass1X, currentMass1Y, currentMass2X, currentMass2Y)
-                    lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
-                    massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
-                    var countIntersections = 0
-                    if (horizontalLine.intersectsLine(lineNew)) countIntersections++
-                    if (horizontalLine.intersectsLine(lineOld)) countIntersections++
-                    if (lineNew.intersectsLine(massLine) ||
-                        lineOld.intersectsLine(massLine) ||
-                        resultOld == -1 && resultNew == 1 && countIntersections == 1) {
-                        val a = model1.getMuscle(i)!!.mass1
-                        val b = model1.getMuscle(i)!!.mass2
-                        if (!collided) {
-                            collided = true
-                            firstContactPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
-                        currentMassVx = currentMass.oldVx
-                        currentMassVy = currentMass.oldVy
-                        val aVx = a.oldVx
-                        val bVx = b.oldVx
-                        val aVy = a.oldVy
-                        val bVy = b.oldVy
-                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                        kineticEnergyX1 =
-                            sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                        kineticEnergyY1 =
-                            sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
-                        currentMass.setVx(kineticEnergyX1)
-                        a.setVx(0 - kineticEnergyX1)
-                        b.setVx(0 - kineticEnergyX1)
-                        if (slopeOfLine > 0) {
-                            if (resultOld == -1) {
-                                currentMass.setVy(0 - kineticEnergyY1)
-                                a.setVy(kineticEnergyY1)
-                                b.setVy(kineticEnergyY1)
-                            } else {
-                                currentMass.setVy(kineticEnergyY1)
-                                a.setVy(0 - kineticEnergyY1)
-                                b.setVy(0 - kineticEnergyY1)
-                            }
-                        } else {
-                            if (resultOld == -1) {
-                                currentMass.setVy(kineticEnergyY1)
-                                a.setVy(0 - kineticEnergyY1)
-                                b.setVy(0 - kineticEnergyY1)
-                            } else {
-                                currentMass.setVy(0 - kineticEnergyY1)
-                                a.setVy(kineticEnergyY1)
-                                b.setVy(kineticEnergyY1)
-                            }
-                        }
-                    }
-                } else if (currentMass1X == currentMass2X) {
-                    when {
-                        currentMassX > currentMass1X -> {
-                        }
-                        currentMassX > currentMass1X - SPEED_LIMIT -> {
-                            val a = model1.getMuscle(i)!!.mass1
-                            val b = model1.getMuscle(i)!!.mass2
-                            if (!collided) {
-                                collided = true
-                                firstContactPoint = currentMassX
-                            }
-                            massesToRevert.add(currentMass)
-                            massesToRevert.add(a)
-                            massesToRevert.add(b)
-                            currentMassVx = currentMass.oldVx
-                            val aVx = a.oldVx
-                            val bVx = b.oldVx
-                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                            kineticEnergyX1 =
-                                sqrt((aVx * aVx + bVx * bVx + currentMassVx * currentMassVx) / 3.0 * ENERGY_LEFT)
-                            currentMass.setVx(kineticEnergyX1)
-                            a.setVx(0 - kineticEnergyX1)
-                            b.setVx(0 - kineticEnergyX1)
-                        }
-                    }
-                } else if (currentMass1Y == currentMass2Y) {
-                    if (currentMassY > currentMass1Y) {
-                        //no collision, pruned
-                    } else if (currentMassY < currentMass1Y - SPEED_LIMIT) {
-                        val a = model1.getMuscle(i)!!.mass1
-                        val b = model1.getMuscle(i)!!.mass2
-                        if (!collided) {
-                            collided = true
-                            firstContactPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
-                        currentMassVy = currentMass.oldVy
-                        val aVy = a.oldVy
-                        val bVy = b.oldVy
-                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                        kineticEnergyY1 =
-                            sqrt((aVy * aVy + bVy * bVy + currentMassVy * currentMassVy) / 3.0 * ENERGY_LEFT)
-                        currentMass.setVy(kineticEnergyY1)
-                        a.setVy(0 - kineticEnergyY1)
-                        b.setVy(0 - kineticEnergyY1)
-                    }
-                }
-            }
+            val currentMass = model2.getMass(j)!!
+            checkForSpringCollisionsRight(currentMass, model1.springMap, massesToRevert)
+            checkForSpringCollisionsRight(currentMass, model1.muscleMap, massesToRevert)
         }
         for (mass in massesToRevert) {
             mass.revertPoints()
+        }
+    }
+
+    // model2 reference mass
+    private fun checkForSpringCollisionsRight(currentMass: Mass, springMap: Map<Int, Spring>, massesToRevert: MutableSet<Mass>) {
+        val currentMassX = currentMass.getX()
+        val currentMassY = currentMass.getY()
+        for (i in 1..springMap.size) {
+            val spring = springMap[i]!!
+            val springMass1 = spring.mass1
+            val springMass2 = spring.mass2
+            val springMass1x = springMass1.getX()
+            val springMass2x = springMass2.getX()
+            val springMass1y = springMass1.getY()
+            val springMass2y = springMass2.getY()
+            if (currentMassX > springMass1x && currentMassX > springMass2x) { //not collided
+                //prune
+            } else if (springMass1x != springMass2x && springMass1y != springMass2y) { // not vertical / horizontal
+                var slopeOfLine = (springMass1y - springMass2y) / (springMass1x - springMass2x)
+                val currentMassOldX = currentMass.oldX
+                val currentMassOldY = currentMass.oldY
+                val yInterceptNew = springMass1y - slopeOfLine * springMass1x
+                val resultNew = throwPointInLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
+                val mass1OldX = springMass1.oldX
+                val mass2OldX = springMass2.oldX
+                val mass1OldY = springMass1.oldY
+                val mass2OldY = springMass2.oldY
+                slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
+                val yInterceptOld = mass1OldY - slopeOfLine * mass1OldX
+                val resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
+                horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
+                lineNew.setLine(springMass1x, springMass1y, springMass2x, springMass2y)
+                lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
+                massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
+                var countIntersections = 0
+                if (horizontalLine.intersectsLine(lineNew)) countIntersections++
+                if (horizontalLine.intersectsLine(lineOld)) countIntersections++
+                if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) || resultOld == -1 && resultNew == 1 && countIntersections == 1) {
+                    val a = spring.mass1
+                    val b = spring.mass2
+                    if (!collided) {
+                        collided = true
+                        firstContactPoint = currentMassX
+                    }
+                    massesToRevert.add(currentMass)
+                    massesToRevert.add(a)
+                    massesToRevert.add(b)
+                    val aVx = a.oldVx
+                    val bVx = b.oldVx
+                    val aVy = a.oldVy
+                    val bVy = b.oldVy
+                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                    val kineticEnergyX1 =
+                        sqrt((aVx * aVx + bVx * bVx + currentMass.oldVx * currentMass.oldVx) / 3.0 * ENERGY_LEFT)
+                    val kineticEnergyY1 =
+                        sqrt((aVy * aVy + bVy * bVy + currentMass.oldVy * currentMass.oldVy) / 3.0 * ENERGY_LEFT)
+                    currentMass.setVx(kineticEnergyX1)
+                    a.setVx(0 - kineticEnergyX1)
+                    b.setVx(0 - kineticEnergyX1)
+                    if (slopeOfLine > 0) {
+                        if (resultOld == -1) {
+                            currentMass.setVy(0 - kineticEnergyY1)
+                            a.setVy(kineticEnergyY1)
+                            b.setVy(kineticEnergyY1)
+                        } else {
+                            currentMass.setVy(kineticEnergyY1)
+                            a.setVy(0 - kineticEnergyY1)
+                            b.setVy(0 - kineticEnergyY1)
+                        }
+                    } else { //slope<0
+                        if (resultOld == -1) { //if on RHS
+                            currentMass.setVy(kineticEnergyY1)
+                            a.setVy(0 - kineticEnergyY1)
+                            b.setVy(0 - kineticEnergyY1)
+                        } else {
+                            currentMass.setVy(0 - kineticEnergyY1)
+                            a.setVy(kineticEnergyY1)
+                            b.setVy(kineticEnergyY1)
+                        }
+                    }
+                }
+            } else if (springMass1x == springMass2x) {
+                when {
+                    currentMassX > springMass1x -> {
+                    }
+                    currentMassX > springMass1x - SPEED_LIMIT -> {
+                        val a = spring.mass1
+                        val b = spring.mass2
+                        if (!collided) {
+                            collided = true
+                            firstContactPoint = currentMassX
+                        }
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
+                        val aVx = a.oldVx
+                        val bVx = b.oldVx
+                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                        val kineticEnergyX1 =
+                            sqrt((aVx * aVx + bVx * bVx + currentMass.oldVx * currentMass.oldVx) / 3.0 * ENERGY_LEFT)
+                        currentMass.setVx(kineticEnergyX1)
+                        a.setVx(0 - kineticEnergyX1)
+                        b.setVx(0 - kineticEnergyX1)
+                    }
+                }
+            } else if (springMass1y == springMass2y) {
+                if (currentMassY > springMass1y) {
+                    //no collision, pruned
+                } else if (currentMassY < springMass1y - SPEED_LIMIT) {
+                    val a = spring.mass1
+                    val b = spring.mass2
+                    if (!collided) {
+                        collided = true
+                        firstContactPoint = currentMassX
+                    }
+                    massesToRevert.add(currentMass)
+                    massesToRevert.add(a)
+                    massesToRevert.add(b)
+                    val aVy = a.oldVy
+                    val bVy = b.oldVy
+                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                    val kineticEnergyY1 =
+                        sqrt((aVy * aVy + bVy * bVy + currentMass.oldVy * currentMass.oldVy) / 3.0 * ENERGY_LEFT)
+                    currentMass.setVy(kineticEnergyY1)
+                    a.setVy(0 - kineticEnergyY1)
+                    b.setVy(0 - kineticEnergyY1)
+                }
+            }
         }
     }
 
