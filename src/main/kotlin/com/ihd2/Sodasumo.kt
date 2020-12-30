@@ -1,32 +1,26 @@
 package com.ihd2
 
-import org.xml.sax.SAXException
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.event.ActionListener
-import java.awt.event.ItemListener
-import java.awt.event.ActionEvent
-import java.awt.event.ItemEvent
-import java.awt.event.KeyEvent
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
-import java.awt.event.KeyListener
 import java.io.FilenameFilter
 import java.io.IOException
-import javax.swing.*
+import java.lang.NullPointerException
+import org.xml.sax.SAXException
+import java.awt.Dimension
 import kotlin.jvm.JvmStatic
+import java.awt.Color
+import java.awt.BorderLayout
+import java.awt.event.*
 import java.io.File
+import java.lang.Exception
+import javax.swing.*
 
-class Sodasumo private constructor(private val gameDraw: GameDraw) :
-    JFrame(), MouseListener, ItemListener, ActionListener, KeyListener
-{
+class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, ActionListener, KeyListener {
     private val loadButton: JButton
     private val stopButton: JButton
     private val stepButton: JButton
     private val pauseButton: JButton
     private val invertM1Button: JCheckBox
     private val invertM2Button: JCheckBox
+    private val gameDraw = GameDraw()
     private val aboutItemSoda: JMenuItem
     private val aboutItemAuthor: JMenuItem
     private var xmlFiles: Array<String> = arrayOf()
@@ -138,8 +132,8 @@ class Sodasumo private constructor(private val gameDraw: GameDraw) :
         stopButton.isVisible = true
         box1.isEnabled = false
         box2.isEnabled = false
-        gameDraw.reset()
         gameDraw.startDraw()
+        gameDraw.init()
     }
 
     override fun keyReleased(e: KeyEvent) {}
@@ -155,14 +149,14 @@ class Sodasumo private constructor(private val gameDraw: GameDraw) :
                         gameDraw,
                         """
                                 <html><font size=5 color=blue><b><u>$APP_NAME $VERSION</u></b></font></html>
-
+                                
                                 SodaSumo is a clone/extension to the physics game SodaRace.
                                 While SodaRace allows users to import several models designed
                                 in SodaConstructor for a competition in moving speed,
                                 SodaSumo replicates the SodaConstructor physics engine
                                 and takes the game further by implementing collision detection
                                 between two models.
-
+                                
                                 More information at
                                 <html><a href="http://sodaplay.com">www.sodaplay.com</a></html>
                                 """.trimIndent(),
@@ -173,9 +167,9 @@ class Sodasumo private constructor(private val gameDraw: GameDraw) :
                     JOptionPane.showMessageDialog(
                         gameDraw,
                         """<html><font size=5 color=blue><b><u>Who made SodaSumo?</u></b></font></html>
-
+        
 (C) 2008, 2020 Kenneth "KeniF" Lam | kenif.lam@gmail.com
-
+        
 This program was started as my third year project
 at the University of Manchester, United Kingdom.
 Supervised by Dr. Mary McGee Wood""",
@@ -222,10 +216,8 @@ Supervised by Dr. Mary McGee Wood""",
         var GAME_WIDTH = GAME_DIMENSION.getWidth() - CP_DIMENSION.getWidth()
         @JvmStatic
         fun main(args: Array<String>) {
-            val gameDraw = GameDraw()
-            val newGame = Sodasumo(gameDraw)
+            val newGame = Sodasumo()
             newGame.isVisible = true
-            gameDraw.init()
         }
     }
 
@@ -243,14 +235,12 @@ Supervised by Dr. Mary McGee Wood""",
         aboutItemAuthor = JMenuItem("Author")
         aboutMenu.add(aboutItemAuthor)
         aboutItemAuthor.addMouseListener(this)
-
         val contents = contentPane
         contents.layout = BorderLayout()
         contents.background = Color.WHITE
         size = GAME_DIMENSION
         isResizable = false
         contents.add(gameDraw)
-
         val cPanel = JPanel()
         contents.add(cPanel, BorderLayout.EAST)
         cPanel.background = Color.GRAY.brighter()

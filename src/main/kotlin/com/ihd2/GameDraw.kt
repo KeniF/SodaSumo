@@ -1,16 +1,22 @@
 package com.ihd2
 
+import javax.swing.JComponent
 import java.awt.geom.Line2D
 import java.awt.geom.Ellipse2D
+import java.awt.Graphics2D
 import kotlin.jvm.Volatile
+import java.awt.Graphics
+import java.awt.BasicStroke
+import java.awt.Color
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
 import com.ihd2.model.Spring
-import java.awt.*
 import java.lang.InterruptedException
+import java.awt.RenderingHints
+import java.awt.Font
 import kotlin.math.*
 
-class GameDraw : Canvas() {
+class GameDraw : JComponent() {
     private var timeLimitMs = 15000L
     private val horizontalLine = Line2D.Double()
     private val lineOld = Line2D.Double()
@@ -34,16 +40,7 @@ class GameDraw : Canvas() {
     @Volatile
     var paused = false
 
-    fun init() {
-        ignoreRepaint = true
-        isVisible = true
-        createBufferStrategy(2)
-        val gfx2d = bufferStrategy.drawGraphics as Graphics2D
-        clear(gfx2d)
-        if (!bufferStrategy.contentsLost()) {
-            bufferStrategy.show()
-        }
-    }
+    private lateinit var gfx2d: Graphics2D
 
     fun invertM1() {
         invertM1 = !invertM1
@@ -59,27 +56,15 @@ class GameDraw : Canvas() {
         animateAndStep()
     }
 
-    private fun render() {
-        val gfx2d = bufferStrategy.drawGraphics as Graphics2D
-        clear(gfx2d)
+    override fun paint(g: Graphics) {
+        gfx2d = g as Graphics2D
         gfx2d.stroke = BasicStroke(LINE_WIDTH)
         gfx2d.setRenderingHints(renderingHints) //turns on anti-aliasing
-        drawModel(model1, gfx2d)
-        drawModel(model2, gfx2d)
-        drawVerticalLine(gfx2d)
-        drawResult(gfx2d)
-        drawDebugStats(gfx2d)
-        gfx2d.dispose()
-
-        if (!bufferStrategy.contentsLost()) {
-            bufferStrategy.show()
-        }
-    }
-
-    private fun clear(gfx2d: Graphics2D) {
-        // lets draw over everything with a white background
-        gfx2d.color = Color.WHITE
-        gfx2d.fillRect(0, 0, width, height)
+        drawModel(model1)
+        drawModel(model2)
+        drawVerticalLine()
+        drawResult()
+        drawDebugStats()
     }
 
     fun stop() {
@@ -91,7 +76,7 @@ class GameDraw : Canvas() {
         timeLimitMs = milliseconds
     }
 
-    private fun drawVerticalLine(gfx2d: Graphics2D) {
+    private fun drawVerticalLine() {
         if (!collided) return
 
         gfx2d.color = Color.GRAY
@@ -99,7 +84,7 @@ class GameDraw : Canvas() {
         gfx2d.draw(g2dLine)
     }
 
-    private fun drawResult(gfx2d: Graphics2D) {
+    private fun drawResult() {
         if (resultMessage == "") return
 
         gfx2d.color = Color.BLUE.darker().darker()
@@ -107,13 +92,13 @@ class GameDraw : Canvas() {
         gfx2d.drawString(resultMessage, Sodasumo.GAME_WIDTH.toInt() / 2 - 150, 50)
     }
 
-    private fun drawModel(model: Model, gfx2d: Graphics2D) {
-        drawMasses(model, gfx2d)
-        drawSprings(model, gfx2d)
-        drawMuscles(model, gfx2d)
+    private fun drawModel(model: Model) {
+        drawMasses(model)
+        drawSprings(model)
+        drawMuscles(model)
     }
 
-    private fun drawMasses(model: Model, gfx2d: Graphics2D) {
+    private fun drawMasses(model: Model) {
         for (mass in model.massMap.values) {
             gfx2d.color = when(DEBUG) {
                 true -> Color.GRAY
@@ -132,7 +117,7 @@ class GameDraw : Canvas() {
         }
     }
 
-    private fun drawSprings(model: Model, gfx2d: Graphics2D) {
+    private fun drawSprings(model: Model) {
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
@@ -146,7 +131,7 @@ class GameDraw : Canvas() {
         }
     }
 
-    private fun drawMuscles(model: Model, gfx2d: Graphics2D) {
+    private fun drawMuscles(model: Model) {
         for (muscle in model.muscleMap.values) {
             val mass1 = muscle.mass1
             val mass2 = muscle.mass2
@@ -172,7 +157,7 @@ class GameDraw : Canvas() {
         }
     }
 
-    private fun drawDebugStats(gfx2d: Graphics2D) {
+    private fun drawDebugStats() {
         if (DEBUG) {
             gfx2d.color = Color.GRAY
             gfx2d.font = debugFont
@@ -182,7 +167,7 @@ class GameDraw : Canvas() {
         }
     }
 
-    fun reset() {
+    fun init() {
         run = true
         gameFrames = 0
         collided = false
@@ -219,9 +204,8 @@ class GameDraw : Canvas() {
                 } else if (!paused) {
                     animateAndStep()
                 }
-                render()
                 try {
-                    //to keep a constant framerate depending on how far we are behind
+                    //to keep a constant framerate depending on how far we are behind :D
                     beforeRun += FRAME_DELAY
                     Thread.sleep(max(0, beforeRun - System.currentTimeMillis()))
                 } catch (e: InterruptedException) {
@@ -234,7 +218,7 @@ class GameDraw : Canvas() {
 
     private fun animateAndStep() {
         animate()
-        //repaint()
+        repaint()
         gameFrames++
         if (!invertM1)
             model1.noOfFrames = model1.noOfFrames + 1
@@ -248,7 +232,7 @@ class GameDraw : Canvas() {
     private fun endGame() {
         run = false
         resultMessage(currentScore())
-        //repaint()
+        repaint()
     }
 
     private fun resultMessage(score: Int): String {
