@@ -1,22 +1,16 @@
 package com.ihd2
 
-import javax.swing.JComponent
 import java.awt.geom.Line2D
 import java.awt.geom.Ellipse2D
-import java.awt.Graphics2D
 import kotlin.jvm.Volatile
-import java.awt.Graphics
-import java.awt.BasicStroke
-import java.awt.Color
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
 import com.ihd2.model.Spring
+import java.awt.*
 import java.lang.InterruptedException
-import java.awt.RenderingHints
-import java.awt.Font
 import kotlin.math.*
 
-class GameDraw : JComponent() {
+class GameDraw : Canvas() {
     private var timeLimitMs = 15000L
     private val horizontalLine = Line2D.Double()
     private val lineOld = Line2D.Double()
@@ -40,7 +34,16 @@ class GameDraw : JComponent() {
     @Volatile
     var paused = false
 
-    private lateinit var gfx2d: Graphics2D
+    fun init() {
+        ignoreRepaint = true
+        isVisible = true
+        createBufferStrategy(2)
+        val gfx2d = bufferStrategy.drawGraphics as Graphics2D
+        clear(gfx2d)
+        if (!bufferStrategy.contentsLost()) {
+            bufferStrategy.show()
+        }
+    }
 
     fun invertM1() {
         invertM1 = !invertM1
@@ -56,15 +59,27 @@ class GameDraw : JComponent() {
         animateAndStep()
     }
 
-    override fun paint(g: Graphics) {
-        gfx2d = g as Graphics2D
+    private fun render() {
+        val gfx2d = bufferStrategy.drawGraphics as Graphics2D
+        clear(gfx2d)
         gfx2d.stroke = BasicStroke(LINE_WIDTH)
         gfx2d.setRenderingHints(renderingHints) //turns on anti-aliasing
-        drawModel(model1)
-        drawModel(model2)
-        drawVerticalLine()
-        drawResult()
-        drawDebugStats()
+        drawModel(model1, gfx2d)
+        drawModel(model2, gfx2d)
+        drawVerticalLine(gfx2d)
+        drawResult(gfx2d)
+        drawDebugStats(gfx2d)
+        gfx2d.dispose()
+
+        if (!bufferStrategy.contentsLost()) {
+            bufferStrategy.show()
+        }
+    }
+
+    private fun clear(gfx2d: Graphics2D) {
+        // lets draw over everything with a white background
+        gfx2d.color = Color.WHITE
+        gfx2d.fillRect(0, 0, width, height)
     }
 
     fun stop() {
@@ -76,7 +91,7 @@ class GameDraw : JComponent() {
         timeLimitMs = milliseconds
     }
 
-    private fun drawVerticalLine() {
+    private fun drawVerticalLine(gfx2d: Graphics2D) {
         if (!collided) return
 
         gfx2d.color = Color.GRAY
@@ -84,7 +99,7 @@ class GameDraw : JComponent() {
         gfx2d.draw(g2dLine)
     }
 
-    private fun drawResult() {
+    private fun drawResult(gfx2d: Graphics2D) {
         if (resultMessage == "") return
 
         gfx2d.color = Color.BLUE.darker().darker()
@@ -92,13 +107,13 @@ class GameDraw : JComponent() {
         gfx2d.drawString(resultMessage, Sodasumo.GAME_WIDTH.toInt() / 2 - 150, 50)
     }
 
-    private fun drawModel(model: Model) {
-        drawMasses(model)
-        drawSprings(model)
-        drawMuscles(model)
+    private fun drawModel(model: Model, gfx2d: Graphics2D) {
+        drawMasses(model, gfx2d)
+        drawSprings(model, gfx2d)
+        drawMuscles(model, gfx2d)
     }
 
-    private fun drawMasses(model: Model) {
+    private fun drawMasses(model: Model, gfx2d: Graphics2D) {
         for (mass in model.massMap.values) {
             gfx2d.color = when(DEBUG) {
                 true -> Color.GRAY
@@ -117,7 +132,7 @@ class GameDraw : JComponent() {
         }
     }
 
-    private fun drawSprings(model: Model) {
+    private fun drawSprings(model: Model, gfx2d: Graphics2D) {
         for (spring in model.springMap.values) {
             val mass1 = spring.mass1
             val mass2 = spring.mass2
@@ -131,7 +146,7 @@ class GameDraw : JComponent() {
         }
     }
 
-    private fun drawMuscles(model: Model) {
+    private fun drawMuscles(model: Model, gfx2d: Graphics2D) {
         for (muscle in model.muscleMap.values) {
             val mass1 = muscle.mass1
             val mass2 = muscle.mass2
@@ -157,7 +172,7 @@ class GameDraw : JComponent() {
         }
     }
 
-    private fun drawDebugStats() {
+    private fun drawDebugStats(gfx2d: Graphics2D) {
         if (DEBUG) {
             gfx2d.color = Color.GRAY
             gfx2d.font = debugFont
@@ -167,7 +182,7 @@ class GameDraw : JComponent() {
         }
     }
 
-    fun init() {
+    fun reset() {
         run = true
         gameFrames = 0
         collided = false
@@ -204,8 +219,9 @@ class GameDraw : JComponent() {
                 } else if (!paused) {
                     animateAndStep()
                 }
+                render()
                 try {
-                    //to keep a constant framerate depending on how far we are behind :D
+                    //to keep a constant framerate depending on how far we are behind
                     beforeRun += FRAME_DELAY
                     Thread.sleep(max(0, beforeRun - System.currentTimeMillis()))
                 } catch (e: InterruptedException) {
@@ -218,7 +234,7 @@ class GameDraw : JComponent() {
 
     private fun animateAndStep() {
         animate()
-        repaint()
+        //repaint()
         gameFrames++
         if (!invertM1)
             model1.noOfFrames = model1.noOfFrames + 1
@@ -232,7 +248,7 @@ class GameDraw : JComponent() {
     private fun endGame() {
         run = false
         resultMessage(currentScore())
-        repaint()
+        //repaint()
     }
 
     private fun resultMessage(score: Int): String {
