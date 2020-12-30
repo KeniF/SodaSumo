@@ -1,4 +1,4 @@
-/*
+package dyn4j;/*
  * Copyright (c) 2010-2016 William Bittle  http://www.dyn4j.org/
  * All rights reserved.
  * 
@@ -22,7 +22,6 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.ihd2.dyn4j;
 
 import org.dyn4j.world.World;
 

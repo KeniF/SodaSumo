@@ -1,4 +1,4 @@
-package com.ihd2.dyn4j;
+package dyn4j;
 
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
