@@ -220,13 +220,16 @@ class GameDraw : JComponent() {
         animate()
         repaint()
         gameFrames++
-        if (!invertM1)
-            model1.noOfFrames = model1.noOfFrames + 1
-        else model1.noOfFrames =
-            model1.noOfFrames - 1
-        if (!invertM2)
-            model2.noOfFrames = model2.noOfFrames + 1
-        else model2.noOfFrames = model2.noOfFrames - 1
+        if (!invertM1) {
+            model1.noOfFrames += 1
+        } else {
+            model1.noOfFrames -= 1
+        }
+        if (!invertM2) {
+            model2.noOfFrames +=  1
+        } else {
+            model2.noOfFrames -= 1
+        }
     }
 
     private fun endGame() {
