@@ -222,7 +222,7 @@ class GameDraw : JComponent() {
         bodyFixture.density = 0.001
         val springBody = SimulationBody()
         springBody.addFixture(bodyFixture)
-        springBody.rotate(spring.angle)
+        springBody.rotate(PI * 2.0 - spring.angle)
         springBody.translate(
             (spring.mass1.getX() + spring.mass2.getX()) / 2.0,
             (spring.mass1.getY() + spring.mass2.getY()) / 2.0)

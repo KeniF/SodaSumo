@@ -12,7 +12,7 @@ open class Spring(val id: Int) {
     val currentLength: Double
         get() = sqrt((mass1.getX() - mass2.getX()).pow(2) + (mass1.getY() - mass2.getY()).pow(2))
     val angle: Double
-        get() = PI * 2.0 - atan((mass1.getX() - mass2.getX()) / (mass1.getY() - mass2.getY()))
+        get() = atan((mass1.getX() - mass2.getX()) / (mass1.getY() - mass2.getY()))
 
     override fun toString(): String {
         return "$id a:$mass1 b:$mass2 restlength:$restLength"
