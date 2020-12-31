@@ -221,7 +221,7 @@ public abstract class SimulationFrame extends JFrame {
 		AffineTransform yFlip = AffineTransform.getScaleInstance(1, -1);
 		AffineTransform move = AffineTransform.getTranslateInstance(w / 2, -h / 2);
 		g.transform(yFlip);
-		g.transform(move);
+		//g.transform(move);
 	}
 	
 	/**

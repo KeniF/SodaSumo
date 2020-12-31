@@ -72,17 +72,6 @@ public class SimulationBody extends Body {
 			this.renderFixture(g, scale, fixture, color);
 		}
 		
-		// draw a center point
-		Ellipse2D.Double ce = new Ellipse2D.Double(
-				this.getLocalCenter().x * scale - pr * 0.5,
-				this.getLocalCenter().y * scale - pr * 0.5,
-				pr,
-				pr);
-		g.setColor(Color.WHITE);
-		g.fill(ce);
-		g.setColor(Color.DARK_GRAY);
-		g.draw(ce);
-		
 		// set the original transform
 		g.setTransform(ot);
 	}
