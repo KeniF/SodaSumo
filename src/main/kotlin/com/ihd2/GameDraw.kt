@@ -454,22 +454,23 @@ class GameDraw : JComponent() {
                 val currentMassOldX = currentMass.oldX
                 val currentMassOldY = currentMass.oldY
                 val yInterceptNew = springMass1y - slopeOfLine * springMass1x
-                val resultNew = throwPointInLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
+                val resultNew = isLeftOfLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
                 val mass1OldX = springMass1.oldX
                 val mass2OldX = springMass2.oldX
                 val mass1OldY = springMass1.oldY
                 val mass2OldY = springMass2.oldY
                 slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
                 val yInterceptOld = mass1OldY - slopeOfLine * mass1OldX
-                val resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
-                horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
+                val resultOld = isLeftOfLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
+                horizontalLine.setLine(currentMassX, currentMassY, -10000.0, currentMassY)
                 lineNew.setLine(springMass1x, springMass1y, springMass2x, springMass2y)
                 lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
                 massLine.setLine(currentMassX, currentMassY, currentMassOldX, currentMassOldY)
                 var countIntersections = 0
                 if (horizontalLine.intersectsLine(lineNew)) countIntersections++
                 if (horizontalLine.intersectsLine(lineOld)) countIntersections++
-                if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) || resultOld == -1 && resultNew == 1 && countIntersections == 1) {
+                if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) ||
+                    resultOld == -1 && resultNew == 1 && countIntersections == 1) {
                     val a = spring.mass1
                     val b = spring.mass2
                     if (!collided) {
@@ -580,14 +581,14 @@ class GameDraw : JComponent() {
                 val currentMassOldX = currentMass.oldX
                 val currentMassOldY = currentMass.oldY
                 val yInterceptNew = springMass1y - slopeOfLine * springMass1x
-                val resultNew = throwPointInLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
+                val resultNew = isLeftOfLine(currentMassX, currentMassY, yInterceptNew, slopeOfLine)
                 val mass1OldX = springMass1.oldX
                 val mass2OldX = springMass2.oldX
                 val mass1OldY = springMass1.oldY
                 val mass2OldY = springMass2.oldY
                 slopeOfLine = (mass1OldY - mass2OldY) / (mass1OldX - mass2OldX)
                 val yInterceptOld = mass1OldY - slopeOfLine * mass1OldX
-                val resultOld = throwPointInLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
+                val resultOld = isLeftOfLine(currentMassOldX, currentMassOldY, yInterceptOld, slopeOfLine)
                 horizontalLine.setLine(currentMassX, currentMassY, 10000.0, currentMassY)
                 lineNew.setLine(springMass1x, springMass1y, springMass2x, springMass2y)
                 lineOld.setLine(mass1OldX, mass1OldY, mass2OldX, mass2OldY)
@@ -598,12 +599,12 @@ class GameDraw : JComponent() {
                 if (lineNew.intersectsLine(massLine) ||
                     lineOld.intersectsLine(massLine) ||
                     resultOld == 1 && resultNew == -1 && countIntersections == 1) {
-                    val a = spring.mass1
-                    val b = spring.mass2
                     if (!collided) {
                         collided = true
                         firstContactPoint = currentMassX
                     }
+                    val a = spring.mass1
+                    val b = spring.mass2
                     massesToRevert.add(currentMass)
                     massesToRevert.add(a)
                     massesToRevert.add(b)
@@ -646,12 +647,12 @@ class GameDraw : JComponent() {
                     currentMassX < springMass1x -> {
                     }
                     currentMassX > springMass1x + SPEED_LIMIT -> {
-                        val a = spring.mass1
-                        val b = spring.mass2
                         if (!collided) {
                             collided = true
                             firstContactPoint = currentMassX
                         }
+                        val a = spring.mass1
+                        val b = spring.mass2
                         massesToRevert.add(currentMass)
                         massesToRevert.add(a)
                         massesToRevert.add(b)
@@ -691,16 +692,17 @@ class GameDraw : JComponent() {
         }
     }
 
-    private fun throwPointInLine(x: Double, y: Double, yInter: Double, slope: Double): Int {
+    private fun isLeftOfLine(x: Double, y: Double, yInter: Double, slope: Double): Int {
         //y-mx-c, returns 1 if on the left
-        var feedback = 1
         val result = y - slope * x - yInter
-        if (slope > 0) {
-            if (result < 0) feedback = -1 else if (result == 0.0) feedback = 0
-        } else if (slope < 0) {
-            if (result > 0) feedback = -1 else if (result == 0.0) feedback = 0
+        if (result == 0.0) return 0
+
+        if (slope > 0 && result < 0) {
+            return -1
+        } else if (slope < 0 && result > 0) {
+            return -1
         }
-        return feedback
+        return 1
     }
 
     companion object {
