@@ -21,7 +21,7 @@ class Model {
         private set
     var boundLeft = Double.POSITIVE_INFINITY
         private set
-    var name: String? = null
+    lateinit var name: String
 
     fun addMass(m: Mass) {
         massMap[m.id] = m

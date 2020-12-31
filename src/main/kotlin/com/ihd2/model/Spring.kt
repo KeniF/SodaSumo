@@ -1,6 +1,5 @@
 package com.ihd2.model
 
-import kotlin.math.PI
 import kotlin.math.atan
 import kotlin.math.pow
 import kotlin.math.sqrt

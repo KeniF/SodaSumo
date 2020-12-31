@@ -203,7 +203,7 @@ class GameDraw : JComponent() {
         for (mass in model.massMap.values) {
             mass.setX(mass.getX() + shiftRight)
         }
-        val filter = NoSelfCollisionFilter(model.name!!)
+        val filter = NoSelfCollisionFilter(model.name)
         for (spring in model.springMap.values) {
             createSprings(spring, filter)
         }
