@@ -126,14 +126,12 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         model1.name = box1.selectedItem?.toString() ?: ""
         val model2 = xp2!!.model
         model2.name = box2.selectedItem?.toString() ?: ""
-        gameDraw.provideModel1(model1)
-        gameDraw.provideModel2(model2)
+        gameDraw.provideModels(model1, model2)
         loadButton.isVisible = false
         stopButton.isVisible = true
         box1.isEnabled = false
         box2.isEnabled = false
-        gameDraw.startDraw()
-        gameDraw.init()
+        gameDraw.startGameLoop()
     }
 
     override fun keyReleased(e: KeyEvent) {}

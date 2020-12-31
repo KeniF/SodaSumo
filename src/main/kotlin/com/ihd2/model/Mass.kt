@@ -1,5 +1,7 @@
 package com.ihd2.model
 
+import com.ihd2.dyn4j.SimulationBody
+
 class Mass(val id: Int) {
     var ax = 0.0
         private set
@@ -17,6 +19,7 @@ class Mass(val id: Int) {
     private var vy = 0.0
     private var x = 0.0
     private var y = 0.0
+    lateinit var simulationBody: SimulationBody
 
     fun getX(): Double {
         return x
@@ -52,11 +55,6 @@ class Mass(val id: Int) {
     fun setVy(vy: Double) {
         oldVy = this.vy
         this.vy = vy
-    }
-
-    fun revertPoints() {
-        x = oldX
-        y = oldY
     }
 
     fun accelerate(x: Double, y: Double) {
