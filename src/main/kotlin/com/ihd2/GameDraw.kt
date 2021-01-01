@@ -4,7 +4,6 @@ import com.ihd2.dyn4j.NoSelfCollisionFilter
 import com.ihd2.dyn4j.SimulationBody
 import javax.swing.JComponent
 import java.awt.geom.Line2D
-import java.awt.geom.Ellipse2D
 import java.awt.Graphics2D
 import kotlin.jvm.Volatile
 import java.awt.Graphics
@@ -12,11 +11,14 @@ import java.awt.BasicStroke
 import java.awt.Color
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
+import com.ihd2.model.Muscle
 import com.ihd2.model.Spring
 import org.dyn4j.collision.Filter
 import org.dyn4j.dynamics.BodyFixture
+import org.dyn4j.dynamics.joint.WheelJoint
 import org.dyn4j.geometry.Geometry
 import org.dyn4j.geometry.MassType
+import org.dyn4j.geometry.Vector2
 import org.dyn4j.world.World
 import java.lang.InterruptedException
 import java.awt.RenderingHints
@@ -26,9 +28,7 @@ import kotlin.math.*
 
 class GameDraw : JComponent() {
     private var timeLimitMs = 15000L
-    private val g2dEllipse = Ellipse2D.Double()
     private val g2dLine = Line2D.Double()
-
     private var physicsThread: Thread? = null
     private var gameFrames = 0
     private var model1: Model = Model()
@@ -39,7 +39,10 @@ class GameDraw : JComponent() {
     private var world = World<SimulationBody>()
 
     init {
-        world.settings.stepFrequency = 1.0 / FRAME_DELAY
+        world.settings.apply {
+            maximumTranslation = SPEED_LIMIT
+            stepFrequency = 1.0 / FRAME_DELAY
+        }
     }
 
     @Volatile
@@ -82,8 +85,6 @@ class GameDraw : JComponent() {
         for (body in world.bodies) {
             body.render(gfx2d, 1.0)
         }
-//        drawModel(model1)
-//        drawModel(model2)
     }
 
     fun stop() {
@@ -111,71 +112,6 @@ class GameDraw : JComponent() {
         gfx2d.drawString(resultMessage, Sodasumo.GAME_WIDTH.toInt() / 2 - 150, 50)
     }
 
-    private fun drawModel(model: Model) {
-        drawMasses(model)
-        drawSprings(model)
-        drawMuscles(model)
-    }
-
-    private fun drawMasses(model: Model) {
-        for (mass in model.massMap.values) {
-            gfx2d.color = when(DEBUG) {
-                true -> Color.GRAY
-                false -> Color.BLACK
-            }
-            g2dEllipse.setFrame(
-                mass.getX() - MASS_SHIFT,
-                HEIGHT - (mass.getY() + MASS_SHIFT), MASS_DIAMETER, MASS_DIAMETER
-            )
-            gfx2d.fill(g2dEllipse)
-            if (DEBUG) {
-                gfx2d.color = Color.BLACK
-                gfx2d.font = debugFont
-                gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
-            }
-        }
-    }
-
-    private fun drawSprings(model: Model) {
-        for (spring in model.springMap.values) {
-            val mass1 = spring.mass1
-            val mass2 = spring.mass2
-
-            gfx2d.color = Color.BLACK
-            g2dLine.setLine(
-                mass1.getX(), HEIGHT - mass1.getY(),
-                mass2.getX(), HEIGHT - mass2.getY()
-            )
-            gfx2d.draw(g2dLine)
-        }
-    }
-
-    private fun drawMuscles(model: Model) {
-        for (muscle in model.muscleMap.values) {
-            val mass1 = muscle.mass1
-            val mass2 = muscle.mass2
-
-            val mass1X = mass1.getX()
-            val mass1Y = mass1.getY()
-            val mass2X = mass2.getX()
-            val mass2Y = mass2.getY()
-            gfx2d.color = Color.BLACK
-            g2dLine.setLine(
-                mass1X, HEIGHT - mass1Y,
-                mass2X, HEIGHT - mass2Y
-            )
-            gfx2d.draw(g2dLine)
-
-            g2dEllipse.setFrame(
-                (mass1X + mass2X) / 2.0 - MUSCLE_MARKER_DIAMETER / 2.0,
-                HEIGHT - ((mass1Y + mass2Y) / 2.0 + MUSCLE_MARKER_DIAMETER / 2.0),
-                MUSCLE_MARKER_DIAMETER,
-                MUSCLE_MARKER_DIAMETER
-            )
-            gfx2d.fill(g2dEllipse)
-        }
-    }
-
     private fun drawDebugStats() {
         if (DEBUG) {
             gfx2d.color = Color.GRAY
@@ -194,29 +130,32 @@ class GameDraw : JComponent() {
         this.model1 = model1
         this.model2 = model2
         val shiftRightM1 = Sodasumo.GAME_WIDTH / 2.0 - model1.boundingRectangle[3] - 10.0
-        createModel(model1, shiftRightM1)
+        createModel(model1, shiftRightM1, 1)
         val shiftRightM2 = Sodasumo.GAME_WIDTH / 2.0 - model2.boundingRectangle[2] + 10.0
-        createModel(model2, shiftRightM2)
+        createModel(model2, shiftRightM2, 2)
     }
 
-    private fun createModel(model: Model, shiftRight: Double) {
+    private fun createModel(model: Model, shiftRight: Double, id: Int) {
+        val filter = NoSelfCollisionFilter(id)
         for (mass in model.massMap.values) {
             mass.setX(mass.getX() + shiftRight)
+            world.addBody(createMassBodies(mass, filter))
         }
-        val filter = NoSelfCollisionFilter(model.name)
         for (spring in model.springMap.values) {
-            createSprings(spring, filter)
+            createSpringBodies(spring, filter)
         }
         for (spring in model.muscleMap.values) {
-            createSprings(spring, filter)
+            createSpringBodies(spring, filter)
         }
     }
 
-    private fun createSprings(spring: Spring, filter: Filter) {
-        world.addBody(createMassBody(spring.mass1, filter))
-        world.addBody(createMassBody(spring.mass2, filter))
+    private fun createSpringBodies(spring: Spring, filter: Filter) {
+        val isMuslce = spring is Muscle
 
-        val convex = Geometry.createRectangle(1.0, spring.currentLength)
+        val convex = when (isMuslce) {
+            true -> Geometry.createRectangle(1.0, spring.currentLength * 0.6)
+            false -> Geometry.createRectangle(1.0, spring.currentLength)
+        }
         val bodyFixture = BodyFixture(convex)
         bodyFixture.filter = filter
         bodyFixture.density = 0.001
@@ -228,17 +167,45 @@ class GameDraw : JComponent() {
             (spring.mass1.getY() + spring.mass2.getY()) / 2.0)
         springBody.setMass(MassType.NORMAL)
         world.addBody(springBody)
+
+        val linearAxis =  Vector2(
+            spring.mass2.getX() - spring.mass1.getX(),
+            spring.mass2.getY() - spring.mass1.getY())
+
+        val upperLimit = when(isMuslce) {
+            true -> 5.0
+            false -> 0.0
+        }
+        val joint = WheelJoint(
+            spring.mass1.simulationBody,
+            springBody,
+            Vector2(
+                spring.mass1.getX(),
+                spring.mass1.getY()),
+            linearAxis).apply { setLimits(0.0, upperLimit) }
+        val joint2 = WheelJoint(
+            spring.mass2.simulationBody,
+            springBody,
+            Vector2(
+                spring.mass2.getX(),
+                spring.mass2.getY()),
+            linearAxis).apply {
+            setLimits(0.0, upperLimit)
+        }
+        world.addJoint(joint)
+        world.addJoint(joint2)
     }
 
-    private fun createMassBody(mass: Mass, filter: Filter): SimulationBody {
-        val convex = Geometry.createCircle(MASS_DIAMETER / 2.0)
+    private fun createMassBodies(mass: Mass, filter: Filter): SimulationBody {
+        val convex = Geometry.createCircle(MASS_RADIUS)
         val bodyFixture = BodyFixture(convex)
         bodyFixture.filter = filter
-        bodyFixture.density = 1.0 / (MASS_DIAMETER / 2.0).pow(2) * PI
+        bodyFixture.density = 1.0 / (MASS_RADIUS.pow(2) * PI)
         val body = SimulationBody()
         body.addFixture(bodyFixture)
         body.translate(mass.getX(), mass.getY())
         body.setMass(MassType.NORMAL)
+        mass.simulationBody = body
         return body
     }
 
@@ -271,16 +238,17 @@ class GameDraw : JComponent() {
 
     private fun addGroundToWorld() {
         val ground = SimulationBody()
-        val convex = Geometry.createRectangle(width.toDouble(), 1.0)
+        val convex = Geometry.createRectangle(width.toDouble(), 30.0)
         val bf = BodyFixture(convex)
         ground.addFixture(bf)
-        ground.translate(width / 2.0, GROUND_HEIGHT)
+        ground.translate(width / 2.0, GROUND_HEIGHT - 10.0)
         ground.setMass(MassType.INFINITE)
         world.addBody(ground)
     }
 
     private fun animateAndStep() {
-        animate()
+        calculateForces()
+        world.update(FRAME_DELAY.toDouble())
         repaint()
         gameFrames++
         if (!invertM1) {
@@ -320,7 +288,7 @@ class GameDraw : JComponent() {
                 model2.boundLeft - firstContactPoint) / 20).toInt()
     }
 
-    private fun animate() {
+    private fun calculateForces() {
         accelerateSpringsAndMuscles(model1)
         //moveMasses(model1)
         accelerateSpringsAndMuscles(model2)
@@ -378,105 +346,70 @@ class GameDraw : JComponent() {
             if (mass1X > mass2X) {
                 when {
                     mass2Y > mass1Y -> {
-                        mass1.accelerate(
-                            -(resultantAcceleration * cosineAngle),
-                            resultantAcceleration * sineAngle
-                        )
-                        mass2.accelerate(
-                            resultantAcceleration * cosineAngle,
-                            -(resultantAcceleration * sineAngle)
-                        )
+                        mass1.applyForce(
+                                -(resultantAcceleration * cosineAngle),
+                                resultantAcceleration * sineAngle)
+                        mass2.applyForce(
+                                resultantAcceleration * cosineAngle,
+                                -(resultantAcceleration * sineAngle))
                     }
                     mass2Y < mass1Y -> {
-                        mass1.accelerate(
+                        mass1.applyForce(
                             -(resultantAcceleration * cosineAngle),
                             -(resultantAcceleration * sineAngle)
                         )
-                        mass2.accelerate(
+                        mass2.applyForce(
                             resultantAcceleration * cosineAngle,
                             resultantAcceleration * sineAngle
                         )
                     }
                     else -> {
-                        mass1.accelerate(-resultantAcceleration, 0.0)
-                        mass2.accelerate(resultantAcceleration, 0.0)
+                        mass1.applyForce(-resultantAcceleration, 0.0)
+                        mass2.applyForce(resultantAcceleration, 0.0)
                     }
                 }
             } else if (mass1X < mass2X) {
                 when {
                     mass2Y > mass1Y -> {
-                        mass1.accelerate(
+                        mass1.applyForce(
                             resultantAcceleration * cosineAngle,
                             resultantAcceleration * sineAngle
                         )
-                        mass2.accelerate(
+                        mass2.applyForce(
                             -(resultantAcceleration * cosineAngle),
                             -(resultantAcceleration * sineAngle)
                         )
                     }
                     mass2Y < mass1Y -> {
-                        mass1.accelerate(
+                        mass1.applyForce(
                             resultantAcceleration * cosineAngle,
                             -(resultantAcceleration * sineAngle)
                         )
-                        mass2.accelerate(
+                        mass2.applyForce(
                             -(resultantAcceleration * cosineAngle),
                             resultantAcceleration * sineAngle
                         )
                     }
                     else -> {
-                        mass1.accelerate(resultantAcceleration, 0.0) //x
-                        mass2.accelerate(-resultantAcceleration, 0.0) //x
+                        mass1.applyForce(resultantAcceleration, 0.0) //x
+                        mass2.applyForce(-resultantAcceleration, 0.0) //x
                     }
                 }
             } else {
                 if (mass1Y > mass2Y) {
-                    mass1.accelerate(0.0, -resultantAcceleration)
-                    mass2.accelerate(0.0, resultantAcceleration)
+                    mass1.applyForce(0.0, -resultantAcceleration)
+                    mass2.applyForce(0.0, resultantAcceleration)
                 } else if (mass1Y < mass2Y) {
-                    mass1.accelerate(0.0, resultantAcceleration)
-                    mass2.accelerate(0.0, -resultantAcceleration)
+                    mass1.applyForce(0.0, resultantAcceleration)
+                    mass2.applyForce(0.0, -resultantAcceleration)
                 }
             }
         }
     }
 
-    private fun moveMasses(model: Model) {
-        model.resetBoundRect()
-        for (i in 1..model.massMap.size) {
-            //damping for F=-fv
-            val mass = model.getMass(i)!!
-            val oldVx = mass.getVx()
-            val oldVy = mass.getVy()
-            var newVx = oldVx + mass.ax
-            newVx -= newVx * model.friction
-            var newVy = oldVy + mass.ay
-            newVy -= newVy * model.friction
-            newVy -= model.gravity
-            newVy = newVy.coerceIn(-SPEED_LIMIT, SPEED_LIMIT)
-            newVx = newVx.coerceIn(-SPEED_LIMIT, SPEED_LIMIT)
-            val oldPx = mass.getX()
-            val oldPy = mass.getY()
-            val newPx = oldPx + newVx
-            var newPy = oldPy + newVy
-
-            //if goes through ground
-            if (newPy <= GROUND_HEIGHT) {
-                if (newVy < 0) newVy *= SURFACE_REFLECTION
-                newPy = GROUND_HEIGHT
-                newVx *= SURFACE_FRICTION
-            }
-            mass.setVx(newVx)
-            mass.setVy(newVy)
-            mass.setX(newPx)
-            mass.setY(newPy)
-            model.adjustBoundRect(mass)
-            mass.clearAccelerations()
-        }
-    }
 
     companion object {
-        private const val FRAME_DELAY = 20 //ms 30ms~33.33fps
+        private const val FRAME_DELAY = 15 //ms 30ms~33.33fps
         private const val GROUND_HEIGHT = 0.0
         private const val SURFACE_FRICTION = 0.1
         private const val SURFACE_REFLECTION = -0.75 // y velocity left when hitting ground
@@ -489,10 +422,9 @@ class GameDraw : JComponent() {
         )
         private val debugFont = Font("Arial", Font.PLAIN, 9)
         private val resultFont = Font("Arial", Font.PLAIN, 20)
-        private const val MASS_DIAMETER = 4.0
+        private const val MASS_RADIUS = 2.0
         private const val MUSCLE_MARKER_DIAMETER = 3.0
         private const val LINE_WIDTH = 0.4f
-        private const val MASS_SHIFT = MASS_DIAMETER / 2.0 //Shift needed because specified point is ellipse's top-left
         private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
 
         @Volatile

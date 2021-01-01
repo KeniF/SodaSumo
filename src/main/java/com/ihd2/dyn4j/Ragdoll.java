@@ -53,7 +53,7 @@ public class Ragdoll extends SimulationFrame {
 	 * Creates game objects and adds them to the world.
 	 */
 	protected void initializeWorld() {		
-		NoSelfCollisionFilter filter = new NoSelfCollisionFilter("1");
+		NoSelfCollisionFilter filter = new NoSelfCollisionFilter(1);
 		// Ground
 		SimulationBody ground = new SimulationBody();
 	    {// Fixture1

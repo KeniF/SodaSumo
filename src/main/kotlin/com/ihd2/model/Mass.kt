@@ -1,73 +1,34 @@
 package com.ihd2.model
 
 import com.ihd2.dyn4j.SimulationBody
+import org.dyn4j.geometry.Vector2
 
 class Mass(val id: Int) {
-    var ax = 0.0
-        private set
-    var ay = 0.0
-        private set
-    var oldVx = 0.0
-        private set
-    var oldVy = 0.0
-        private set
-    var oldX = 0.0
-        private set
-    var oldY = 0.0
-        private set
-    private var vx = 0.0
-    private var vy = 0.0
     private var x = 0.0
     private var y = 0.0
-    lateinit var simulationBody: SimulationBody
+    var simulationBody: SimulationBody? = null
 
     fun getX(): Double {
-        return x
+        if (simulationBody == null) return x
+        return simulationBody!!.transform.translationX
     }
 
     fun setX(x: Double) {
-        oldX = this.x
         this.x = x
     }
 
     fun getY(): Double {
-        return y
+        if (simulationBody == null) return y
+        return simulationBody!!.transform.translationY
     }
 
     fun setY(y: Double) {
-        oldY = this.y
         this.y = y
     }
 
-    fun getVx(): Double {
-        return vx
-    }
-
-    fun setVx(vx: Double) {
-        oldVx = this.vx
-        this.vx = vx
-    }
-
-    fun getVy(): Double {
-        return vy
-    }
-
-    fun setVy(vy: Double) {
-        oldVy = this.vy
-        this.vy = vy
-    }
-
-    fun accelerate(x: Double, y: Double) {
-        ax += x
-        ay += y
-    }
-
-    fun clearAccelerations() {
-        ax = 0.0
-        ay = 0.0
-    }
-
-    override fun toString(): String {
-        return "$id Vx:$vx Vy:$vy X:$x Y:$y"
+    fun applyForce(x: Double, y: Double) {
+        val direction = Vector2(x, y)
+        val point = Vector2(this.x, this.y)
+        simulationBody!!.applyForce(direction, point)
     }
 }

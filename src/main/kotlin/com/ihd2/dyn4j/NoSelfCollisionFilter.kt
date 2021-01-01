@@ -5,7 +5,7 @@ import org.dyn4j.collision.Filter
 /**
  * Forbids a model from colliding with itself
  */
-class NoSelfCollisionFilter(val modelId: String): Filter {
+class NoSelfCollisionFilter(val modelId: Int): Filter {
     override fun isAllowed(filter: Filter?): Boolean {
         if (filter == Filter.DEFAULT_FILTER) return true
 
