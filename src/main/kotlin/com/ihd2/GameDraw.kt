@@ -95,7 +95,7 @@ class GameDraw: JComponent() {
         renderer.drawDebugText(Color.GRAY,
             2,
             288,
-            "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames} $width $height")
+            "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
     }
 
     fun init() {
