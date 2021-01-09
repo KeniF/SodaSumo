@@ -17,6 +17,7 @@ class Model: Renderable {
     var waveSpeed = 0.0
     var waveAmplitude = 0.0
     var noOfFrames = 0
+        private set
     private var boundTop = Double.NEGATIVE_INFINITY
     private var boundBottom = Double.POSITIVE_INFINITY
     var boundRight = Double.NEGATIVE_INFINITY
@@ -74,6 +75,13 @@ class Model: Renderable {
         muscleMap[m.id] = m
     }
 
+    fun step(forward: Boolean) {
+        when (forward) {
+            true -> noOfFrames += STEP_SIZE
+            false -> noOfFrames -= STEP_SIZE
+        }
+    }
+
     override fun render(renderer: GraphicsRenderer) {
         for (mass in massMap.values) {
             mass.render(renderer)
@@ -92,5 +100,9 @@ class Model: Renderable {
             Springs:${springMap.size}
             Muscles:${muscleMap.size}
             """.trimIndent()
+    }
+
+    companion object {
+        private const val STEP_SIZE = 1
     }
 }
