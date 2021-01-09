@@ -82,6 +82,12 @@ class Model: Renderable {
         }
     }
 
+    fun shiftRight(shift: Double) {
+        for (mass in massMap.values) {
+            mass.setX(mass.getX() + shift)
+        }
+    }
+
     override fun render(renderer: GraphicsRenderer) {
         for (mass in massMap.values) {
             mass.render(renderer)

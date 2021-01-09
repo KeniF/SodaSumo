@@ -110,9 +110,7 @@ class GameDraw: JComponent() {
         model1 = model
         val br = model1.boundingRectangle
         val shiftRight = width / 2.0 - br[3] - 10.0
-        for (i in 1..model1.massMap.size) {
-            model1.getMass(i)!!.setX(model1.getMass(i)!!.getX() + shiftRight)
-        }
+        model1.shiftRight(shiftRight)
     }
 
     fun provideModel2(model: Model) {
@@ -120,9 +118,7 @@ class GameDraw: JComponent() {
         model2 = model
         val br = model2.boundingRectangle
         val shiftRight = width / 2.0 - br[2] + 10.0
-        for (i in 1..model2.massMap.size) {
-            model2.getMass(i)!!.setX(model2.getMass(i)!!.getX() + shiftRight)
-        }
+        model2.shiftRight(shiftRight)
     }
 
     fun startDraw() {
