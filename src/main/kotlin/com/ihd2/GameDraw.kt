@@ -1,19 +1,18 @@
 package com.ihd2
 
+import com.ihd2.Sodasumo.Companion.GAME_WIDTH
+import com.ihd2.graphics.GraphicsRenderer
+import com.ihd2.graphics.JavaAwtRenderer
 import javax.swing.JComponent
 import java.awt.geom.Line2D
-import java.awt.geom.Ellipse2D
 import java.awt.Graphics2D
 import kotlin.jvm.Volatile
 import java.awt.Graphics
-import java.awt.BasicStroke
 import java.awt.Color
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
 import com.ihd2.model.Spring
 import java.lang.InterruptedException
-import java.awt.RenderingHints
-import java.awt.Font
 import kotlin.math.*
 
 class GameDraw : JComponent() {
@@ -22,8 +21,6 @@ class GameDraw : JComponent() {
     private val lineOld = Line2D.Double()
     private val lineNew = Line2D.Double()
     private val massLine = Line2D.Double()
-    private val g2dEllipse = Ellipse2D.Double()
-    private val g2dLine = Line2D.Double()
 
     private var physicsThread: Thread? = null
     private var gameFrames = 0
@@ -32,6 +29,7 @@ class GameDraw : JComponent() {
     private var firstContactPoint = 0.0
     private var collided = false
     private var resultMessage = ""
+    private val renderer = JavaAwtRenderer()
 
     @Volatile
     private var invertM1 = false
@@ -39,8 +37,6 @@ class GameDraw : JComponent() {
     private var invertM2 = false
     @Volatile
     var paused = false
-
-    private lateinit var gfx2d: Graphics2D
 
     fun invertM1() {
         invertM1 = !invertM1
@@ -57,14 +53,13 @@ class GameDraw : JComponent() {
     }
 
     override fun paint(g: Graphics) {
-        gfx2d = g as Graphics2D
-        gfx2d.stroke = BasicStroke(LINE_WIDTH)
-        gfx2d.setRenderingHints(renderingHints) //turns on anti-aliasing
-        drawModel(model1)
-        drawModel(model2)
-        drawVerticalLine()
-        drawResult()
-        drawDebugStats()
+        renderer.initFrame(g as Graphics2D, HEIGHT.toInt(), GAME_WIDTH.toInt())
+        model1.render(renderer)
+        model2.render(renderer)
+
+        drawVerticalLine(renderer)
+        drawResult(renderer)
+        drawDebugStats(renderer)
     }
 
     fun stop() {
@@ -76,94 +71,33 @@ class GameDraw : JComponent() {
         timeLimitMs = milliseconds
     }
 
-    private fun drawVerticalLine() {
+    private fun drawVerticalLine(renderer: GraphicsRenderer) {
         if (!collided) return
 
-        gfx2d.color = Color.GRAY
-        g2dLine.setLine(firstContactPoint, HEIGHT + 10.0, firstContactPoint, HEIGHT - 1000.0)
-        gfx2d.draw(g2dLine)
+        renderer.drawLine(
+            Color.GRAY,
+            firstContactPoint,
+            0.0,
+            firstContactPoint,
+            1000.0)
     }
 
-    private fun drawResult() {
+    private fun drawResult(renderer: GraphicsRenderer) {
         if (resultMessage == "") return
 
-        gfx2d.color = Color.BLUE.darker().darker()
-        gfx2d.font = resultFont
-        gfx2d.drawString(resultMessage, Sodasumo.GAME_WIDTH.toInt() / 2 - 150, 50)
+        renderer.drawText(
+            Color.BLUE.darker().darker(),
+            GAME_WIDTH.toInt() / 2 - 150,
+            248,
+            resultMessage)
     }
 
-    private fun drawModel(model: Model) {
-        drawMasses(model)
-        drawSprings(model)
-        drawMuscles(model)
-    }
-
-    private fun drawMasses(model: Model) {
-        for (mass in model.massMap.values) {
-            gfx2d.color = when(DEBUG) {
-                true -> Color.GRAY
-                false -> Color.BLACK
-            }
-            g2dEllipse.setFrame(
-                mass.getX() - MASS_SHIFT,
-                HEIGHT - (mass.getY() + MASS_SHIFT), MASS_SIZE, MASS_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
-            if (DEBUG) {
-                gfx2d.color = Color.BLACK
-                gfx2d.font = debugFont
-                gfx2d.drawString("${mass.id}", mass.getX().toInt(), (HEIGHT - mass.getY()).toInt())
-            }
-        }
-    }
-
-    private fun drawSprings(model: Model) {
-        for (spring in model.springMap.values) {
-            val mass1 = spring.mass1
-            val mass2 = spring.mass2
-
-            gfx2d.color = Color.BLACK
-            g2dLine.setLine(
-                mass1.getX(), HEIGHT - mass1.getY(),
-                mass2.getX(), HEIGHT - mass2.getY()
-            )
-            gfx2d.draw(g2dLine)
-        }
-    }
-
-    private fun drawMuscles(model: Model) {
-        for (muscle in model.muscleMap.values) {
-            val mass1 = muscle.mass1
-            val mass2 = muscle.mass2
-
-            val mass1X = mass1.getX()
-            val mass1Y = mass1.getY()
-            val mass2X = mass2.getX()
-            val mass2Y = mass2.getY()
-            gfx2d.color = Color.BLACK
-            g2dLine.setLine(
-                mass1X, HEIGHT - mass1Y,
-                mass2X, HEIGHT - mass2Y
-            )
-            gfx2d.draw(g2dLine)
-
-            g2dEllipse.setFrame(
-                (mass1X + mass2X) / 2.0 - MUSCLE_MARKER_SIZE / 2.0,
-                HEIGHT - ((mass1Y + mass2Y) / 2.0 + MUSCLE_MARKER_SIZE / 2.0),
-                MUSCLE_MARKER_SIZE,
-                MUSCLE_MARKER_SIZE
-            )
-            gfx2d.fill(g2dEllipse)
-        }
-    }
-
-    private fun drawDebugStats() {
+    private fun drawDebugStats(renderer: GraphicsRenderer) {
         if (DEBUG) {
-            gfx2d.color = Color.GRAY
-            gfx2d.font = debugFont
-            val string =
-                "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}"
-            gfx2d.drawString(string, 2, 10)
+            renderer.drawDebugText(Color.GRAY,
+                2,
+                288,
+                "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
         }
     }
 
@@ -178,7 +112,7 @@ class GameDraw : JComponent() {
         run = false
         model1 = model
         val br = model1.boundingRectangle
-        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[3] - 10.0
+        val shiftRight = GAME_WIDTH / 2.0 - br[3] - 10.0
         for (i in 1..model1.massMap.size) {
             model1.getMass(i)!!.setX(model1.getMass(i)!!.getX() + shiftRight)
         }
@@ -188,7 +122,7 @@ class GameDraw : JComponent() {
         run = false
         model2 = model
         val br = model2.boundingRectangle
-        val shiftRight = Sodasumo.GAME_WIDTH / 2.0 - br[2] + 10.0
+        val shiftRight = GAME_WIDTH / 2.0 - br[2] + 10.0
         for (i in 1..model2.massMap.size) {
             model2.getMass(i)!!.setX(model2.getMass(i)!!.getX() + shiftRight)
         }
@@ -713,16 +647,6 @@ class GameDraw : JComponent() {
         private const val MODEL_REFLECTION = -0.75 // x velocity left when hitting ground
         private const val SPEED_LIMIT = 10.0 //solves model explosion problem!!
         private const val ENERGY_LEFT = 0.95
-        private val renderingHints = RenderingHints(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON
-        )
-        private val debugFont = Font("Arial", Font.PLAIN, 9)
-        private val resultFont = Font("Arial", Font.PLAIN, 20)
-        private const val MASS_SIZE = 4.0
-        private const val MUSCLE_MARKER_SIZE = 3.0
-        private const val LINE_WIDTH = 0.4f
-        private const val MASS_SHIFT = MASS_SIZE / 2.0 //Shift needed because specified point is ellipse's top-left
         private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
 
         @Volatile

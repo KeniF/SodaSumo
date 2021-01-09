@@ -1,6 +1,11 @@
 package com.ihd2.model
 
-class Mass(val id: Int) {
+import com.ihd2.DEBUG
+import com.ihd2.graphics.GraphicsRenderer
+import com.ihd2.graphics.Renderable
+import java.awt.Color
+
+class Mass(val id: Int): Renderable {
     var ax = 0.0
         private set
     var ay = 0.0
@@ -69,7 +74,28 @@ class Mass(val id: Int) {
         ay = 0.0
     }
 
+    override fun render(renderer: GraphicsRenderer) {
+        val color = when (DEBUG) {
+            true -> Color.GRAY
+            false -> Color.BLACK
+        }
+        renderer.drawEllipse(color, x, y, MASS_DIAMETER, MASS_DIAMETER)
+
+        if (DEBUG) {
+            renderer.drawDebugText(
+                Color.BLACK,
+                x.toInt(),
+                y.toInt(),
+                "$id"
+            )
+        }
+    }
+
     override fun toString(): String {
         return "$id Vx:$vx Vy:$vy X:$x Y:$y"
+    }
+
+    companion object {
+        private const val MASS_DIAMETER = 4.0
     }
 }

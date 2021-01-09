@@ -1,10 +1,12 @@
 package com.ihd2.model
 
+import com.ihd2.graphics.GraphicsRenderer
+import com.ihd2.graphics.Renderable
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.HashMap
 
-class Model {
+class Model: Renderable {
     val massMap = HashMap<Int, Mass>()
     val springMap = HashMap<Int, Spring>()
     val muscleMap = HashMap<Int, Muscle>()
@@ -70,6 +72,18 @@ class Model {
 
     fun addMuscle(m: Muscle) {
         muscleMap[m.id] = m
+    }
+
+    override fun render(renderer: GraphicsRenderer) {
+        for (mass in massMap.values) {
+            mass.render(renderer)
+        }
+        for (spring in springMap.values) {
+            spring.render(renderer)
+        }
+        for (muscle in muscleMap.values) {
+            muscle.render(renderer)
+        }
     }
 
     override fun toString(): String {
