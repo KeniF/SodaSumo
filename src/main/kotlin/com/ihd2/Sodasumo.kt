@@ -212,8 +212,8 @@ Supervised by Dr. Mary McGee Wood""",
 
     companion object {
         private val GAME_DIMENSION = Dimension(1000, 350)
-        private val CP_DIMENSION = Dimension(150, 320)
-        var GAME_WIDTH = GAME_DIMENSION.getWidth() - CP_DIMENSION.getWidth()
+        private val SIDE_PANEL_DIMENSION = Dimension(150, 320)
+
         @JvmStatic
         fun main(args: Array<String>) {
             val newGame = Sodasumo()
@@ -244,7 +244,7 @@ Supervised by Dr. Mary McGee Wood""",
         val cPanel = JPanel()
         contents.add(cPanel, BorderLayout.EAST)
         cPanel.background = Color.GRAY.brighter()
-        cPanel.preferredSize = CP_DIMENSION
+        cPanel.preferredSize = SIDE_PANEL_DIMENSION
         box1 = JComboBox(xmlFiles)
         box1.maximumRowCount = 10
         box1.prototypeDisplayValue = "THIS IS A VERY LON"

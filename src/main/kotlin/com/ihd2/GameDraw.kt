@@ -1,6 +1,5 @@
 package com.ihd2
 
-import com.ihd2.Sodasumo.Companion.GAME_WIDTH
 import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.graphics.JavaAwtRenderer
 import javax.swing.JComponent
@@ -15,7 +14,7 @@ import com.ihd2.model.Spring
 import java.lang.InterruptedException
 import kotlin.math.*
 
-class GameDraw : JComponent() {
+class GameDraw: JComponent() {
     private var timeLimitMs = 15000L
     private val horizontalLine = Line2D.Double()
     private val lineOld = Line2D.Double()
@@ -53,7 +52,7 @@ class GameDraw : JComponent() {
     }
 
     override fun paint(g: Graphics) {
-        renderer.initFrame(g as Graphics2D, HEIGHT.toInt(), GAME_WIDTH.toInt())
+        renderer.initFrame(g as Graphics2D, height - 2, width)
         model1.render(renderer)
         model2.render(renderer)
 
@@ -87,7 +86,7 @@ class GameDraw : JComponent() {
 
         renderer.drawText(
             Color.BLUE.darker().darker(),
-            GAME_WIDTH.toInt() / 2 - 150,
+            width / 2 - 150,
             248,
             resultMessage)
     }
@@ -96,7 +95,7 @@ class GameDraw : JComponent() {
         renderer.drawDebugText(Color.GRAY,
             2,
             288,
-            "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
+            "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames} $width $height")
     }
 
     fun init() {
@@ -110,7 +109,7 @@ class GameDraw : JComponent() {
         run = false
         model1 = model
         val br = model1.boundingRectangle
-        val shiftRight = GAME_WIDTH / 2.0 - br[3] - 10.0
+        val shiftRight = width / 2.0 - br[3] - 10.0
         for (i in 1..model1.massMap.size) {
             model1.getMass(i)!!.setX(model1.getMass(i)!!.getX() + shiftRight)
         }
@@ -120,7 +119,7 @@ class GameDraw : JComponent() {
         run = false
         model2 = model
         val br = model2.boundingRectangle
-        val shiftRight = GAME_WIDTH / 2.0 - br[2] + 10.0
+        val shiftRight = width / 2.0 - br[2] + 10.0
         for (i in 1..model2.massMap.size) {
             model2.getMass(i)!!.setX(model2.getMass(i)!!.getX() + shiftRight)
         }
@@ -645,7 +644,6 @@ class GameDraw : JComponent() {
         private const val MODEL_REFLECTION = -0.75 // x velocity left when hitting ground
         private const val SPEED_LIMIT = 10.0 //solves model explosion problem!!
         private const val ENERGY_LEFT = 0.95
-        private const val HEIGHT = 298.0 //need to invert height as top-left is (0,0)
 
         @Volatile
         private var run = false
