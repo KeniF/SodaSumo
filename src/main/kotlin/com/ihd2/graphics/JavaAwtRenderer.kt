@@ -52,9 +52,11 @@ class JavaAwtRenderer(private val isDebugging: Boolean): GraphicsRenderer {
     }
 
     override fun drawDebugText(color: Color, x: Int, y: Int, message: String) {
-        gfx2d.color = color
-        gfx2d.font = debugFont
-        gfx2d.drawString(message, x, height - y)
+        if (isDebugging) {
+            gfx2d.color = color
+            gfx2d.font = debugFont
+            gfx2d.drawString(message, x, height - y)
+        }
     }
 
     override fun isDebug() = isDebugging

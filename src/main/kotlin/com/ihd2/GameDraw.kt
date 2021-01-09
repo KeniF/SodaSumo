@@ -93,12 +93,10 @@ class GameDraw : JComponent() {
     }
 
     private fun drawDebugStats(renderer: GraphicsRenderer) {
-        if (DEBUG) {
-            renderer.drawDebugText(Color.GRAY,
-                2,
-                288,
-                "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
-        }
+        renderer.drawDebugText(Color.GRAY,
+            2,
+            288,
+            "Frames: $gameFrames Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
     }
 
     fun init() {
@@ -160,7 +158,7 @@ class GameDraw : JComponent() {
             model1.noOfFrames -= 1
         }
         if (!invertM2) {
-            model2.noOfFrames +=  1
+            model2.noOfFrames += 1
         } else {
             model2.noOfFrames -= 1
         }
