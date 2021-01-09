@@ -8,4 +8,5 @@ interface GraphicsRenderer {
     fun drawEllipse(color: Color, x: Double, y: Double, heightX: Double, heightY: Double)
     fun drawText(color: Color, x: Int, y: Int, message: String)
     fun drawDebugText(color: Color, x: Int, y: Int, message: String)
+    fun isDebug() = false
 }

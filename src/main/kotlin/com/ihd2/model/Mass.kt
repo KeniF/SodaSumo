@@ -1,6 +1,5 @@
 package com.ihd2.model
 
-import com.ihd2.DEBUG
 import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.graphics.Renderable
 import java.awt.Color
@@ -75,13 +74,14 @@ class Mass(val id: Int): Renderable {
     }
 
     override fun render(renderer: GraphicsRenderer) {
-        val color = when (DEBUG) {
+        val debug = renderer.isDebug()
+        val color = when (debug) {
             true -> Color.GRAY
             false -> Color.BLACK
         }
         renderer.drawEllipse(color, x, y, MASS_DIAMETER, MASS_DIAMETER)
 
-        if (DEBUG) {
+        if (debug) {
             renderer.drawDebugText(
                 Color.BLACK,
                 x.toInt(),

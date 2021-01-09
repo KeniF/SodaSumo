@@ -29,7 +29,7 @@ class GameDraw : JComponent() {
     private var firstContactPoint = 0.0
     private var collided = false
     private var resultMessage = ""
-    private val renderer = JavaAwtRenderer()
+    private val renderer = JavaAwtRenderer(DEBUG)
 
     @Volatile
     private var invertM1 = false

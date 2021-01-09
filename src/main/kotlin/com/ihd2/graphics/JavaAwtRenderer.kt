@@ -4,7 +4,7 @@ import java.awt.*
 import java.awt.geom.Ellipse2D
 import java.awt.geom.Line2D
 
-class JavaAwtRenderer: GraphicsRenderer {
+class JavaAwtRenderer(private val isDebugging: Boolean): GraphicsRenderer {
 
     private val g2dEllipse = Ellipse2D.Double()
     private val g2dLine = Line2D.Double()
@@ -56,6 +56,8 @@ class JavaAwtRenderer: GraphicsRenderer {
         gfx2d.font = debugFont
         gfx2d.drawString(message, x, height - y)
     }
+
+    override fun isDebug() = isDebugging
 
     companion object {
         private const val LINE_WIDTH = 0.4f
