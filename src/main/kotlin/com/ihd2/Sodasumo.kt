@@ -116,6 +116,11 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
     }
 
     private fun loadAndStart() {
+        loadButton.isVisible = false
+        stopButton.isVisible = true
+        box1.isEnabled = false
+        box2.isEnabled = false
+
         val xmlFile1 = box1.selectedItem?.toString() ?: ""
         xp1 = XmlParser("$xmlFile1.xml")
         if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
@@ -124,16 +129,12 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
         val model1 = xp1!!.model
         model1.name = box1.selectedItem?.toString() ?: ""
+        model1.flipModel = invertM1Button.isSelected
         val model2 = xp2!!.model
         model2.name = box2.selectedItem?.toString() ?: ""
-        gameDraw.provideModel1(model1)
-        gameDraw.provideModel2(model2)
-        loadButton.isVisible = false
-        stopButton.isVisible = true
-        box1.isEnabled = false
-        box2.isEnabled = false
+        model2.flipModel = invertM2Button.isSelected
+        gameDraw.init(model1, model2)
         gameDraw.startDraw()
-        gameDraw.init()
     }
 
     override fun keyReleased(e: KeyEvent) {}
@@ -247,7 +248,7 @@ Supervised by Dr. Mary McGee Wood""",
         cPanel.preferredSize = SIDE_PANEL_DIMENSION
         box1 = JComboBox(xmlFiles)
         box1.maximumRowCount = 10
-        box1.prototypeDisplayValue = "THIS IS A VERY LON"
+        box1.prototypeDisplayValue = "THIS IS A VERY LO"
         box1.selectedItem = "daintywalker"
         box1.isEditable = true
         box1.addActionListener(this)
@@ -258,7 +259,7 @@ Supervised by Dr. Mary McGee Wood""",
         cPanel.add(invertM1Button)
         box2 = JComboBox(xmlFiles)
         box2.maximumRowCount = 10
-        box2.prototypeDisplayValue = "THIS IS A VERY LON"
+        box2.prototypeDisplayValue = "THIS IS A VERY LO"
         box2.selectedItem = "KeniF_triangle"
         box2.isEditable = true
         box2.addActionListener(this)

@@ -6,9 +6,9 @@ import java.lang.Double.max
 import java.lang.Double.min
 
 class Model: Renderable {
-    val masses = HashSet<Mass>()
-    val springs = HashSet<Spring>()
-    val muscles = HashSet<Muscle>()
+    val masses = LinkedHashSet<Mass>()
+    val springs = LinkedHashSet<Spring>()
+    val muscles = LinkedHashSet<Muscle>()
     var friction = 0.0
     var gravity = 0.0
     var springyness = 0.0
@@ -19,6 +19,10 @@ class Model: Renderable {
         private set
     private var boundTop = Double.NEGATIVE_INFINITY
     private var boundBottom = Double.POSITIVE_INFINITY
+
+    @Volatile
+    var flipModel: Boolean = false
+
     var boundRight = Double.NEGATIVE_INFINITY
         private set
     var boundLeft = Double.POSITIVE_INFINITY
@@ -62,8 +66,8 @@ class Model: Renderable {
         muscles.add(m)
     }
 
-    fun step(forward: Boolean) {
-        when (forward) {
+    fun incrementTimeStep() {
+        when (!flipModel) {
             true -> noOfFrames += STEP_SIZE
             false -> noOfFrames -= STEP_SIZE
         }
