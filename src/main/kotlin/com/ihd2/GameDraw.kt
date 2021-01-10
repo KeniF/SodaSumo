@@ -27,6 +27,9 @@ class GameDraw: JComponent() {
     @Volatile
     var paused = false
 
+    @Volatile
+    private var run = false
+
     fun init(model1: Model, model2: Model) {
         run = true
         resultMessage = ""
@@ -93,7 +96,6 @@ class GameDraw: JComponent() {
     }
 
     private fun drawVerticalLine(renderer: GraphicsRenderer) {
-        if (!run) return
         physicalWorld.apply {
             firstCollisionInfo.apply {
                 renderer.drawLine(
@@ -117,7 +119,6 @@ class GameDraw: JComponent() {
     }
 
     private fun drawDebugStats(renderer: GraphicsRenderer) {
-        if (!run) return
         renderer.drawDebugText(Color.GRAY,
             2,
             288,
@@ -159,8 +160,5 @@ class GameDraw: JComponent() {
 
     companion object {
         private const val FRAME_DELAY = 20 //ms 30ms~33.33fps
-
-        @Volatile
-        private var run = false
     }
 }
