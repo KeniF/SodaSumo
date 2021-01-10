@@ -4,12 +4,11 @@ import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.graphics.Renderable
 import java.lang.Double.max
 import java.lang.Double.min
-import java.util.HashMap
 
 class Model: Renderable {
-    val massMap = HashMap<Int, Mass>()
-    val springMap = HashMap<Int, Spring>()
-    val muscleMap = HashMap<Int, Muscle>()
+    val masses = HashSet<Mass>()
+    val springs = HashSet<Spring>()
+    val muscles = HashSet<Muscle>()
     var friction = 0.0
     var gravity = 0.0
     var springyness = 0.0
@@ -27,7 +26,7 @@ class Model: Renderable {
     var name: String? = null
 
     fun addMass(m: Mass) {
-        massMap[m.id] = m
+        masses.add(m)
         adjustBoundRect(m)
     }
 
@@ -55,24 +54,12 @@ class Model: Renderable {
             return boundingRectangle
         }
 
-    fun getMass(s: Int): Mass? {
-        return massMap[s]
-    }
-
-    fun getSpring(s: Int): Spring? {
-        return springMap[s]
-    }
-
-    fun getMuscle(s: Int): Muscle? {
-        return muscleMap[s]
-    }
-
     fun addSpring(s: Spring) {
-        springMap[s.id] = s
+        springs.add(s)
     }
 
     fun addMuscle(m: Muscle) {
-        muscleMap[m.id] = m
+        muscles.add(m)
     }
 
     fun step(forward: Boolean) {
@@ -83,28 +70,28 @@ class Model: Renderable {
     }
 
     fun shiftRight(shift: Double) {
-        for (mass in massMap.values) {
+        for (mass in masses) {
             mass.setX(mass.getX() + shift)
         }
     }
 
     override fun render(renderer: GraphicsRenderer) {
-        for (mass in massMap.values) {
+        for (mass in masses) {
             mass.render(renderer)
         }
-        for (spring in springMap.values) {
+        for (spring in springs) {
             spring.render(renderer)
         }
-        for (muscle in muscleMap.values) {
+        for (muscle in muscles) {
             muscle.render(renderer)
         }
     }
 
     override fun toString(): String {
         return """
-            [Model] Masses:${massMap.size}
-            Springs:${springMap.size}
-            Muscles:${muscleMap.size}
+            [Model] Masses:${masses.size}
+            Springs:${springs.size}
+            Muscles:${muscles.size}
             """.trimIndent()
     }
 

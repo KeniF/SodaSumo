@@ -92,6 +92,6 @@ class Mass(val id: Int): Renderable {
     }
 
     companion object {
-        private const val MASS_DIAMETER = 4.0
+        const val MASS_DIAMETER = 4.0
     }
 }

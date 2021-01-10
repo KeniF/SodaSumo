@@ -45,6 +45,7 @@ class XmlParser(path: String?) : ContentHandler {
     private var createMuscle = false
     private var createWave = false
     private var source: InputSource
+    private var masses: MutableMap<Int, Mass> = HashMap()
 
     val model: Model
     var verified = 0 // to count the no. of strings verified
@@ -101,18 +102,19 @@ class XmlParser(path: String?) : ContentHandler {
                     ParseMode.Y -> {
                         currentMass.setY(readCh.toDouble())
                         model.addMass(currentMass)
+                        masses[currentMass.id] = currentMass
                         mode = ParseMode.NONE
                     }
                     ParseMode.REST_LENGTH -> {
                         if (!createMuscle) {
                             currentSpring.restLength = readCh.toDouble()
-                            currentSpring.mass1 = model.getMass(mass1)!!
-                            currentSpring.mass2 = model.getMass(mass2)!!
+                            currentSpring.mass1 = masses[mass1]!!
+                            currentSpring.mass2 = masses[mass2]!!
                             model.addSpring(currentSpring)
                         } else {
                             currentMuscle.restLength = readCh.toDouble()
-                            currentMuscle.mass1 = model.getMass(mass1)!!
-                            currentMuscle.mass2 = model.getMass(mass2)!!
+                            currentMuscle.mass1 = masses[mass1]!!
+                            currentMuscle.mass2 = masses[mass2]!!
                             model.addMuscle(currentMuscle)
                         }
                         mode = ParseMode.NONE

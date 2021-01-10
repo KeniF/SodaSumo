@@ -10,6 +10,7 @@ import java.awt.Graphics
 import java.awt.Color
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
+import com.ihd2.model.Muscle
 import com.ihd2.model.Spring
 import java.lang.InterruptedException
 import kotlin.math.*
@@ -191,15 +192,14 @@ class GameDraw: JComponent() {
     }
 
     private fun accelerateSprings(model: Model, isMuscle: Boolean) {
-        val totalNo: Int = if (isMuscle) model.muscleMap.size else model.springMap.size
-        for (i in 1..totalNo) {
+        val springs = if (isMuscle) model.muscles else model.springs
+        for (spring in springs) {
             var restLength: Double
             var mass1: Mass
             var mass2: Mass
 
             if (isMuscle) {
-                val muscle = model.getMuscle(i)!!
-
+                val muscle = spring as Muscle
                 val amp = abs(muscle.amplitude)
                 val phase = muscle.phase
                 val rLength = muscle.restLength
@@ -211,7 +211,6 @@ class GameDraw: JComponent() {
                 mass1 = muscle.mass1
                 mass2 = muscle.mass2
             } else {
-                val spring = model.getSpring(i)!!
                 restLength = spring.restLength
                 mass1 = spring.mass1
                 mass2 = spring.mass2
@@ -302,9 +301,8 @@ class GameDraw: JComponent() {
 
     private fun moveMasses(model: Model) {
         model.resetBoundRect()
-        for (i in 1..model.massMap.size) {
+        for (mass in model.masses) {
             //damping for F=-fv
-            val mass = model.getMass(i)!!
             val oldVx = mass.getVx()
             val oldVy = mass.getVy()
             var newVx = oldVx + mass.ax
@@ -338,16 +336,14 @@ class GameDraw: JComponent() {
         if (model1.boundRight < model2.boundLeft) return
 
         val massesToRevert = HashSet<Mass>()
-        for (j in 1..model1.massMap.size) {
-            val currentMass = model1.getMass(j)!!
-            checkForSpringCollisions(currentMass, model2.springMap, massesToRevert)
-            checkForSpringCollisions(currentMass, model2.muscleMap, massesToRevert)
+        for (mass in model1.masses) {
+            checkForSpringCollisions(mass, model2.springs, massesToRevert)
+            checkForSpringCollisions(mass, model2.muscles, massesToRevert)
         }
 
-        for (j in 1..model2.massMap.size) {
-            val currentMass = model2.getMass(j)!!
-            checkForSpringCollisionsRight(currentMass, model1.springMap, massesToRevert)
-            checkForSpringCollisionsRight(currentMass, model1.muscleMap, massesToRevert)
+        for (mass in model2.masses) {
+            checkForSpringCollisionsRight(mass, model1.springs, massesToRevert)
+            checkForSpringCollisionsRight(mass, model1.muscles, massesToRevert)
         }
         for (mass in massesToRevert) {
             mass.revertPoints()
@@ -355,11 +351,10 @@ class GameDraw: JComponent() {
     }
 
     // model2 reference mass
-    private fun checkForSpringCollisionsRight(currentMass: Mass, springMap: Map<Int, Spring>, massesToRevert: MutableSet<Mass>) {
+    private fun checkForSpringCollisionsRight(currentMass: Mass, springs: Set<Spring>, massesToRevert: MutableSet<Mass>) {
         val currentMassX = currentMass.getX()
         val currentMassY = currentMass.getY()
-        for (i in 1..springMap.size) {
-            val spring = springMap[i]!!
+        for (spring in springs) {
             val springMass1 = spring.mass1
             val springMass2 = spring.mass2
             val springMass1x = springMass1.getX()
@@ -483,10 +478,10 @@ class GameDraw: JComponent() {
         }
     }
 
-    private fun checkForSpringCollisions(currentMass: Mass, springMap: Map<Int, Spring>, massesToRevert: MutableSet<Mass>) {
+    private fun checkForSpringCollisions(currentMass: Mass, springs: Set<Spring>, massesToRevert: MutableSet<Mass>) {
         val currentMassX = currentMass.getX()
         val currentMassY = currentMass.getY()
-        for (spring: Spring in springMap.values) {
+        for (spring: Spring in springs) {
             val springMass1 = spring.mass1
             val springMass2 = spring.mass2
             val springMass1x = springMass1.getX()
