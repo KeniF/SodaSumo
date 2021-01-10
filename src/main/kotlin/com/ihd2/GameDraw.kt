@@ -22,7 +22,7 @@ class GameDraw: JComponent() {
     private var model2: Model = Model()
     private var resultMessage = ""
     private val renderer = JavaAwtRenderer(DEBUG)
-    private lateinit var physicalWorld: PhysicalWorld
+    private val physicalWorld = PhysicalWorld()
 
     @Volatile
     var paused = false
@@ -35,8 +35,7 @@ class GameDraw: JComponent() {
         this.model2 = model2
 
         val scene = Scene(model1, model2)
-        scene.moveToStartPosition(width)
-        physicalWorld = PhysicalWorld(scene, PhysicsConfig.CLASSIC)
+        physicalWorld.reset(scene, PhysicsConfig.CLASSIC, width)
     }
 
     fun invertM1() {
@@ -50,13 +49,12 @@ class GameDraw: JComponent() {
     fun stepAnimationManually() {
         if (!run) return
         paused = true
-        updatePhysicalWorld()
+        repaintWorld()
     }
 
     override fun paint(g: Graphics) {
         renderer.initFrame(g as Graphics2D, height - 2, width)
-        model1.render(renderer)
-        model2.render(renderer)
+        physicalWorld.render(renderer)
 
         drawVerticalLine(renderer)
         drawResult(renderer)
@@ -80,7 +78,7 @@ class GameDraw: JComponent() {
                 if (physicalWorld.gameFrames > timeLimitMs / FRAME_DELAY) {
                     endGame()
                 } else if (!paused) {
-                    updatePhysicalWorld()
+                    repaintWorld()
                 }
                 try {
                     //to keep a constant framerate depending on how far we are behind :D
@@ -97,12 +95,12 @@ class GameDraw: JComponent() {
     private fun drawVerticalLine(renderer: GraphicsRenderer) {
         if (!run) return
         physicalWorld.apply {
-            firstCollisionInfo?.let { info ->
+            firstCollisionInfo.apply {
                 renderer.drawLine(
                     Color.GRAY,
-                    info.collisionPoint,
+                    collisionPoint,
                     0.0,
-                    info.collisionPoint,
+                    collisionPoint,
                     1000.0)
             }
         }
@@ -127,8 +125,8 @@ class GameDraw: JComponent() {
     }
 
 
-    private fun updatePhysicalWorld() {
-        physicalWorld.incrementTimeStep()
+    private fun repaintWorld() {
+        physicalWorld.generateNextFrame()
         repaint()
     }
 
@@ -154,7 +152,7 @@ class GameDraw: JComponent() {
     }
 
     private fun currentScore(): Int {
-        val collisionPoint = physicalWorld.firstCollisionInfo!!.collisionPoint
+        val collisionPoint = physicalWorld.firstCollisionInfo.collisionPoint
         return ((model1.boundRight - collisionPoint +
                 model2.boundLeft - collisionPoint) / 20).toInt()
     }

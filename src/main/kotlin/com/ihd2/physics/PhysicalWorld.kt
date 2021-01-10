@@ -1,19 +1,35 @@
 package com.ihd2.physics
 
+import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.model.Scene
+import com.ihd2.model.Scene.Companion.EMPTY_SCENE
 
-class PhysicalWorld(val scene: Scene, private val config: PhysicsConfig) {
+class PhysicalWorld {
 
     var gameFrames = 0
         private set
+    private var scene: Scene = EMPTY_SCENE
+    private lateinit var config: PhysicsConfig
 
-    var firstCollisionInfo: CollisionInfo? = null
+    var firstCollisionInfo: CollisionInfo = CollisionInfo()
 
-    fun incrementTimeStep() {
+    fun generateNextFrame() {
         accelerateSprings()
         resolveCollisions()
-        scene.incrementTimeStep()
+        scene.incrementTimeStep(STEP_SIZE)
         gameFrames++
+    }
+
+    fun reset(scene: Scene, config: PhysicsConfig, width: Int) {
+        scene.moveToStartPosition(width)
+        this.scene = scene
+        this.config = config
+        gameFrames = 0
+        firstCollisionInfo = CollisionInfo()
+    }
+
+    fun render(renderer: GraphicsRenderer) {
+        scene.render(renderer)
     }
 
     private fun accelerateSprings() {
@@ -27,8 +43,13 @@ class PhysicalWorld(val scene: Scene, private val config: PhysicsConfig) {
             scene.rightModel,
             config)
 
-        if (collisionInfo.collided && firstCollisionInfo == null) {
+        if (collisionInfo.collided && !firstCollisionInfo.collided) {
             firstCollisionInfo = collisionInfo
         }
+    }
+
+    companion object {
+        // TODO: Pass this into SpringAccelerator and CollisionChecker
+        private const val STEP_SIZE = 1.0
     }
 }

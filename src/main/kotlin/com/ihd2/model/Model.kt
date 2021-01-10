@@ -15,7 +15,7 @@ class Model: Renderable {
     var wavePhase = 0.0
     var waveSpeed = 0.0
     var waveAmplitude = 0.0
-    var noOfFrames = 0
+    var noOfFrames = 0.0
         private set
     private var boundTop = Double.NEGATIVE_INFINITY
     private var boundBottom = Double.POSITIVE_INFINITY
@@ -66,10 +66,10 @@ class Model: Renderable {
         muscles.add(m)
     }
 
-    fun incrementTimeStep() {
+    fun incrementTimeStep(stepSize: Double) {
         when (!flipModel) {
-            true -> noOfFrames += STEP_SIZE
-            false -> noOfFrames -= STEP_SIZE
+            true -> noOfFrames += stepSize
+            false -> noOfFrames -= stepSize
         }
     }
 
@@ -97,9 +97,5 @@ class Model: Renderable {
             Springs:${springs.size}
             Muscles:${muscles.size}
             """.trimIndent()
-    }
-
-    companion object {
-        private const val STEP_SIZE = 1
     }
 }

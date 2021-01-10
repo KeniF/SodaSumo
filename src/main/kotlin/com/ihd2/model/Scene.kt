@@ -8,9 +8,9 @@ class Scene(
     val rightModel: Model) : Renderable
 {
 
-    fun incrementTimeStep() {
-        leftModel.incrementTimeStep()
-        rightModel.incrementTimeStep()
+    fun incrementTimeStep(stepSize: Double) {
+        leftModel.incrementTimeStep(stepSize)
+        rightModel.incrementTimeStep(stepSize)
     }
 
     fun moveToStartPosition(width: Int) {
@@ -24,5 +24,9 @@ class Scene(
     override fun render(renderer: GraphicsRenderer) {
         leftModel.render(renderer)
         rightModel.render(renderer)
+    }
+
+    companion object {
+        val EMPTY_SCENE = Scene(Model(), Model())
     }
 }
