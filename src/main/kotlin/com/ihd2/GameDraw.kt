@@ -59,7 +59,7 @@ class GameDraw: JComponent() {
         renderer.initFrame(g as Graphics2D, height - 2, width)
         physicalWorld.render(renderer)
 
-        drawVerticalLine(renderer)
+        drawCollisionLine(renderer)
         drawResult(renderer)
         drawDebugStats(renderer)
     }
@@ -95,7 +95,7 @@ class GameDraw: JComponent() {
         physicsThread!!.start()
     }
 
-    private fun drawVerticalLine(renderer: GraphicsRenderer) {
+    private fun drawCollisionLine(renderer: GraphicsRenderer) {
         physicalWorld.apply {
             firstCollisionInfo.apply {
                 renderer.drawLine(
