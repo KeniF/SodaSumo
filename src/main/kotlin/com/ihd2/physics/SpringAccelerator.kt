@@ -2,7 +2,7 @@ package com.ihd2.physics
 
 import com.ihd2.model.Model
 import com.ihd2.model.Spring
-import kotlin.math.*
+import org.dyn4j.geometry.Vector2
 
 class SpringAccelerator {
 
@@ -17,12 +17,6 @@ class SpringAccelerator {
             for (spring in springs) {
                 val mass1 = spring.mass1
                 val mass2 = spring.mass2
-                val mass1X = mass1.position.x
-                val mass1Y = mass1.position.y
-                val mass2X = mass2.position.x
-                val mass2Y = mass2.position.y
-                val lengthX = abs(mass1X - mass2X) //absolute value, so angle is always +
-                val lengthY = abs(mass1Y - mass2Y)
                 val length = mass1.position.distance(mass2.position)
                 val extension = length - spring.getRestLength(model)
 
@@ -31,72 +25,11 @@ class SpringAccelerator {
                 // Frictional force affects velocity only!!
                 // F = kx = ma where m=1.0
                 val resultantAcceleration = model.springyness * extension
-                val angle = atan(lengthY / lengthX) //in radians
-                val cosineAngle = cos(angle)
-                val sineAngle = sin(angle)
-                if (mass1X > mass2X) {
-                    when {
-                        mass2Y > mass1Y -> {
-                            mass1.accelerate(
-                                -(resultantAcceleration * cosineAngle),
-                                resultantAcceleration * sineAngle
-                            )
-                            mass2.accelerate(
-                                resultantAcceleration * cosineAngle,
-                                -(resultantAcceleration * sineAngle)
-                            )
-                        }
-                        mass2Y < mass1Y -> {
-                            mass1.accelerate(
-                                -(resultantAcceleration * cosineAngle),
-                                -(resultantAcceleration * sineAngle)
-                            )
-                            mass2.accelerate(
-                                resultantAcceleration * cosineAngle,
-                                resultantAcceleration * sineAngle
-                            )
-                        }
-                        else -> {
-                            mass1.accelerate(-resultantAcceleration, 0.0)
-                            mass2.accelerate(resultantAcceleration, 0.0)
-                        }
-                    }
-                } else if (mass1X < mass2X) {
-                    when {
-                        mass2Y > mass1Y -> {
-                            mass1.accelerate(
-                                resultantAcceleration * cosineAngle,
-                                resultantAcceleration * sineAngle
-                            )
-                            mass2.accelerate(
-                                -(resultantAcceleration * cosineAngle),
-                                -(resultantAcceleration * sineAngle)
-                            )
-                        }
-                        mass2Y < mass1Y -> {
-                            mass1.accelerate(
-                                resultantAcceleration * cosineAngle,
-                                -(resultantAcceleration * sineAngle)
-                            )
-                            mass2.accelerate(
-                                -(resultantAcceleration * cosineAngle),
-                                resultantAcceleration * sineAngle
-                            )
-                        }
-                        else -> {
-                            mass1.accelerate(resultantAcceleration, 0.0) //x
-                            mass2.accelerate(-resultantAcceleration, 0.0) //x
-                        }
-                    }
-                } else {
-                    if (mass1Y > mass2Y) {
-                        mass1.accelerate(0.0, -resultantAcceleration)
-                        mass2.accelerate(0.0, resultantAcceleration)
-                    } else if (mass1Y < mass2Y) {
-                        mass1.accelerate(0.0, resultantAcceleration)
-                        mass2.accelerate(0.0, -resultantAcceleration)
-                    }
-                }
+                val diff = mass1.position.difference(mass2.position)
+                val vector2To1 = Vector2.create(resultantAcceleration, diff.direction)
+
+                mass2.accelerate(vector2To1)
+                mass1.accelerate(vector2To1.multiply(-1.0))
             }
         }
 
