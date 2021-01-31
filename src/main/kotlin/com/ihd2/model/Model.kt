@@ -35,10 +35,12 @@ class Model: Renderable {
     }
 
     fun adjustBoundRect(mass: Mass) {
-        boundLeft = min(boundLeft, mass.getX())
-        boundRight = max(boundRight, mass.getX())
-        boundTop = max(boundTop, mass.getY())
-        boundBottom = min(boundBottom, mass.getY())
+        mass.position.apply {
+            boundLeft = min(boundLeft, x)
+            boundRight = max(boundRight, x)
+            boundTop = max(boundTop, y)
+            boundBottom = min(boundBottom, y)
+        }
     }
 
     fun resetBoundRect() {
@@ -75,7 +77,9 @@ class Model: Renderable {
 
     fun shiftRight(shift: Double) {
         for (mass in masses) {
-            mass.setX(mass.getX() + shift)
+            mass.position.apply {
+                x += shift
+            }
         }
     }
 

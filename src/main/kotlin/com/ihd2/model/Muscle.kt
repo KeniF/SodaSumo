@@ -11,15 +11,15 @@ class Muscle(id: Int) : Spring(id), Renderable {
     override fun render(renderer: GraphicsRenderer) {
         renderer.drawLine(
             Color.BLACK,
-            mass1.getX(),
-            mass1.getY(),
-            mass2.getX(),
-            mass2.getY())
+            mass1.position.x,
+            mass1.position.y,
+            mass2.position.x,
+            mass2.position.y)
 
         renderer.drawEllipse(
             Color.BLACK,
-            (mass1.getX() + mass2.getX()) / 2.0,
-            (mass1.getY() + mass2.getY()) / 2.0,
+            (mass1.position.x + mass2.position.x) / 2.0,
+            (mass1.position.y + mass2.position.y) / 2.0,
             MUSCLE_MARKER_SIZE,
             MUSCLE_MARKER_SIZE
         )

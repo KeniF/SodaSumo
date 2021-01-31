@@ -43,10 +43,10 @@ class SpringAccelerator {
                     mass2 = spring.mass2
                 }
 
-                val mass1X = mass1.getX()
-                val mass1Y = mass1.getY()
-                val mass2X = mass2.getX()
-                val mass2Y = mass2.getY()
+                val mass1X = mass1.position.x
+                val mass1Y = mass1.position.y
+                val mass2X = mass2.position.x
+                val mass2Y = mass2.position.y
                 val lengthX = abs(mass1X - mass2X) //absolute value, so angle is always +
                 val lengthY = abs(mass1Y - mass2Y)
                 val length = sqrt(lengthX * lengthX + lengthY * lengthY) //Pythagoras'
@@ -130,17 +130,17 @@ class SpringAccelerator {
             model.resetBoundRect()
             for (mass in model.masses) {
                 //damping for F=-fv
-                val oldVx = mass.getVx()
-                val oldVy = mass.getVy()
-                var newVx = oldVx + mass.ax
+                val oldVx = mass.velocity.x
+                val oldVy = mass.velocity.y
+                var newVx = oldVx + mass.acceleration.x
                 newVx -= newVx * model.friction
-                var newVy = oldVy + mass.ay
+                var newVy = oldVy + mass.acceleration.y
                 newVy -= newVy * model.friction
                 newVy -= model.gravity
                 newVy = newVy.coerceIn(-config.speedLimit, config.speedLimit)
                 newVx = newVx.coerceIn(-config.speedLimit, config.speedLimit)
-                val oldPx = mass.getX()
-                val oldPy = mass.getY()
+                val oldPx = mass.position.x
+                val oldPy = mass.position.y
                 val newPx = oldPx + newVx
                 var newPy = oldPy + newVy
 
