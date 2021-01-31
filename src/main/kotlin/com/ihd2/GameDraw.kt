@@ -96,15 +96,13 @@ class GameDraw: JComponent() {
     }
 
     private fun drawCollisionLine(renderer: GraphicsRenderer) {
-        physicalWorld.apply {
-            firstCollisionInfo.apply {
-                renderer.drawLine(
-                    Color.GRAY,
-                    collisionPoint,
-                    0.0,
-                    collisionPoint,
-                    1000.0)
-            }
+        physicalWorld.firstCollisionInfo.apply {
+            renderer.drawLine(
+                Color.GRAY,
+                collisionPoint,
+                0.0,
+                collisionPoint,
+                1000.0)
         }
     }
 
