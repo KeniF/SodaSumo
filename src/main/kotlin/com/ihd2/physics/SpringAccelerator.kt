@@ -22,7 +22,6 @@ class SpringAccelerator {
 
                 if (extension == 0.0) continue
 
-                // Frictional force affects velocity only!!
                 // F = kx = ma where m=1.0
                 val resultantAcceleration = model.springyness * extension
                 val diff = mass1.position.difference(mass2.position)
