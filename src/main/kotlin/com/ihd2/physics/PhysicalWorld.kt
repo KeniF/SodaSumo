@@ -11,7 +11,7 @@ class PhysicalWorld {
     private var scene: Scene = EMPTY_SCENE
     private lateinit var config: PhysicsConfig
 
-    var firstCollisionInfo: CollisionInfo = CollisionInfo.uncollided()
+    var firstCollisionInfo: CollisionInfo = CollisionInfo.UNCOLLIDED
 
     fun generateNextFrame() {
         accelerateSprings()
@@ -25,7 +25,7 @@ class PhysicalWorld {
         this.scene = scene
         this.config = config
         gameFrames = 0
-        firstCollisionInfo = CollisionInfo.uncollided()
+        firstCollisionInfo = CollisionInfo.UNCOLLIDED
     }
 
     fun render(renderer: GraphicsRenderer) {

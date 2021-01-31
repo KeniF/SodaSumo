@@ -15,7 +15,7 @@ class CollisionChecker {
         private val massLine by lazy { Line2D.Double() }
 
         fun resolveCollisions(leftModel: Model, rightModel: Model, config: PhysicsConfig): CollisionInfo {
-            val collisionInfo = CollisionInfo.uncollided()
+            val collisionInfo = CollisionInfo.UNCOLLIDED
             if (leftModel.boundRight < rightModel.boundLeft) return collisionInfo
 
             val massesToRevert = HashSet<Mass>()
