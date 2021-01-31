@@ -37,8 +37,8 @@ class Mass(val id: Int): Renderable {
         position.y = lastPosition.y
     }
 
-    fun accelerate(x: Double, y: Double) {
-        acceleration.add(x, y)
+    fun accelerate(vector: Vector2) {
+        acceleration.add(vector)
     }
 
     fun clearAccelerations() {
