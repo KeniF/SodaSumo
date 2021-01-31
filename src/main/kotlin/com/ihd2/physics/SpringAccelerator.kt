@@ -129,33 +129,31 @@ class SpringAccelerator {
         private fun moveMasses(model: Model, config: PhysicsConfig) {
             model.resetBoundRect()
             for (mass in model.masses) {
-                //damping for F=-fv
-                val oldVx = mass.velocity.x
-                val oldVy = mass.velocity.y
-                var newVx = oldVx + mass.acceleration.x
-                newVx -= newVx * model.friction
-                var newVy = oldVy + mass.acceleration.y
-                newVy -= newVy * model.friction
-                newVy -= model.gravity
-                newVy = newVy.coerceIn(-config.speedLimit, config.speedLimit)
-                newVx = newVx.coerceIn(-config.speedLimit, config.speedLimit)
-                val oldPx = mass.position.x
-                val oldPy = mass.position.y
-                val newPx = oldPx + newVx
-                var newPy = oldPy + newVy
+                mass.apply {
+                    //damping for F=-fv
+                    var newVx = velocity.x + acceleration.x
+                    newVx -= newVx * model.friction
+                    var newVy = velocity.y + acceleration.y
+                    newVy -= newVy * model.friction
+                    newVy -= model.gravity
+                    newVy = newVy.coerceIn(-config.speedLimit, config.speedLimit)
+                    newVx = newVx.coerceIn(-config.speedLimit, config.speedLimit)
+                    val newPx = position.x + newVx
+                    var newPy = position.y + newVy
 
-                //if goes through ground
-                if (newPy <= config.groundHeight) {
-                    if (newVy < 0) newVy *= config.surfaceReflection
-                    newPy = config.groundHeight
-                    newVx *= config.surfaceFriction
+                    //if goes through ground
+                    if (newPy <= config.groundHeight) {
+                        if (newVy < 0) newVy *= config.surfaceReflection
+                        newPy = config.groundHeight
+                        newVx *= config.surfaceFriction
+                    }
+                    setVx(newVx)
+                    setVy(newVy)
+                    setX(newPx)
+                    setY(newPy)
+                    model.adjustBoundRect(mass)
+                    clearAccelerations()
                 }
-                mass.setVx(newVx)
-                mass.setVy(newVy)
-                mass.setX(newPx)
-                mass.setY(newPy)
-                model.adjustBoundRect(mass)
-                mass.clearAccelerations()
             }
         }
     }
