@@ -21,6 +21,9 @@ repositories {
 }
 
 dependencies {
+    implementation "org.dyn4j:dyn4j:4.0.2"
+    implementation "org.jogamp.jogl:jogl-all:2.3.2"
+    implementation "org.jogamp.gluegen:gluegen-rt:2.3.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

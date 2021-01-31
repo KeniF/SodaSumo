@@ -2,75 +2,47 @@ package com.ihd2.model
 
 import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.graphics.Renderable
+import org.dyn4j.geometry.Vector2
 import java.awt.Color
 
 class Mass(val id: Int): Renderable {
-    var ax = 0.0
-        private set
-    var ay = 0.0
-        private set
-    var oldVx = 0.0
-        private set
-    var oldVy = 0.0
-        private set
-    var oldX = 0.0
-        private set
-    var oldY = 0.0
-        private set
-    private var vx = 0.0
-    private var vy = 0.0
-    private var x = 0.0
-    private var y = 0.0
-
-    fun getX(): Double {
-        return x
-    }
+    val acceleration = Vector2()
+    val position = Vector2()
+    val lastPosition = Vector2()
+    val velocity = Vector2()
+    val lastVelocity = Vector2()
 
     fun setX(x: Double) {
-        oldX = this.x
-        this.x = x
-    }
-
-    fun getY(): Double {
-        return y
+        lastPosition.x = position.x
+        position.x = x
     }
 
     fun setY(y: Double) {
-        oldY = this.y
-        this.y = y
-    }
-
-    fun getVx(): Double {
-        return vx
+        lastPosition.y = position.y
+        position.y = y
     }
 
     fun setVx(vx: Double) {
-        oldVx = this.vx
-        this.vx = vx
-    }
-
-    fun getVy(): Double {
-        return vy
+        lastVelocity.x = velocity.x
+        velocity.x = vx
     }
 
     fun setVy(vy: Double) {
-        oldVy = this.vy
-        this.vy = vy
+        lastVelocity.y = velocity.y
+        velocity.y = vy
     }
 
     fun revertPoints() {
-        x = oldX
-        y = oldY
+        position.x = lastPosition.x
+        position.y = lastPosition.y
     }
 
     fun accelerate(x: Double, y: Double) {
-        ax += x
-        ay += y
+        acceleration.add(x, y)
     }
 
     fun clearAccelerations() {
-        ax = 0.0
-        ay = 0.0
+        acceleration.zero()
     }
 
     override fun render(renderer: GraphicsRenderer) {
@@ -78,17 +50,17 @@ class Mass(val id: Int): Renderable {
             true -> Color.GRAY
             false -> Color.BLACK
         }
-        renderer.drawEllipse(color, x, y, MASS_DIAMETER, MASS_DIAMETER)
+        renderer.drawEllipse(color, position.x, position.y, MASS_DIAMETER, MASS_DIAMETER)
 
         renderer.drawDebugText(
             Color.BLACK,
-            x.toInt(),
-            y.toInt(),
+            position.x.toInt(),
+            position.y.toInt(),
             "$id")
     }
 
     override fun toString(): String {
-        return "$id Vx:$vx Vy:$vy X:$x Y:$y"
+        return "$id Vx:$velocity.x Vy:$velocity.y X:$position.x Y:$position.y"
     }
 
     companion object {

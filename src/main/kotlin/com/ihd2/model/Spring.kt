@@ -12,10 +12,10 @@ open class Spring(val id: Int): Renderable {
     override fun render(renderer: GraphicsRenderer) {
         renderer.drawLine(
             Color.BLACK,
-            mass1.getX(),
-            mass1.getY(),
-            mass2.getX(),
-            mass2.getY())
+            mass1.position.x,
+            mass1.position.y,
+            mass2.position.x,
+            mass2.position.y)
     }
 
     override fun toString(): String {
