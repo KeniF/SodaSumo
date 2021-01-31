@@ -1,10 +1,10 @@
 package com.ihd2.physics
 
-class CollisionInfo {
-    var collided: Boolean = false
+class CollisionInfo private constructor(
+    var collided: Boolean,
     var collisionPoint: Double = 0.0
-
+) {
     companion object {
-        fun uncollided() = CollisionInfo()
+        val UNCOLLIDED = CollisionInfo(false, 0.0)
     }
 }
