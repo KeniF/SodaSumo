@@ -1,56 +1,30 @@
 package com.ihd2.physics
 
-import com.ihd2.model.Mass
 import com.ihd2.model.Model
-import com.ihd2.model.Muscle
+import com.ihd2.model.Spring
 import kotlin.math.*
 
 class SpringAccelerator {
 
     companion object {
         fun accelerateAndMove(model: Model, config: PhysicsConfig) {
-            accelerateSpringsAndMuscles(model)
+            accelerateSprings(model, model.springs)
+            accelerateSprings(model, model.muscles)
             moveMasses(model, config)
         }
 
-        private fun accelerateSpringsAndMuscles(model: Model) {
-            accelerateSprings(model, false)
-            accelerateSprings(model, true)
-        }
-
-        private fun accelerateSprings(model: Model, isMuscle: Boolean) {
-            val springs = if (isMuscle) model.muscles else model.springs
+        private fun accelerateSprings(model: Model, springs: Set<Spring>) {
             for (spring in springs) {
-                var restLength: Double
-                var mass1: Mass
-                var mass2: Mass
-
-                if (isMuscle) {
-                    val muscle = spring as Muscle
-                    val amp = abs(muscle.amplitude)
-                    val phase = muscle.phase
-                    val rLength = muscle.restLength
-                    // new = old * (1.0 + waveAmplitude * muscleAmplitude * sine())
-                    // * 2 pi to convert to radians
-                    // - wavePhase to set correct restLength of Muscle
-                    restLength = rLength * (1.0 + model.waveAmplitude * amp *
-                            sin((model.waveSpeed * model.noOfFrames + phase - model.wavePhase) * 2.0 * Math.PI))
-                    mass1 = muscle.mass1
-                    mass2 = muscle.mass2
-                } else {
-                    restLength = spring.restLength
-                    mass1 = spring.mass1
-                    mass2 = spring.mass2
-                }
-
+                val mass1 = spring.mass1
+                val mass2 = spring.mass2
                 val mass1X = mass1.position.x
                 val mass1Y = mass1.position.y
                 val mass2X = mass2.position.x
                 val mass2Y = mass2.position.y
                 val lengthX = abs(mass1X - mass2X) //absolute value, so angle is always +
                 val lengthY = abs(mass1Y - mass2Y)
-                val length = sqrt(lengthX * lengthX + lengthY * lengthY) //Pythagoras'
-                val extension = length - restLength
+                val length = mass1.position.distance(mass2.position)
+                val extension = length - spring.getRestLength(model)
 
                 if (extension == 0.0) continue
 
