@@ -9,6 +9,11 @@ open class Spring(val id: Int): Renderable {
     lateinit var mass2: Mass
     var restLength = 0.0
 
+    /**
+     * Calculates the rest length at the current frame
+     */
+    open fun getRestLength(model: Model) = restLength
+
     override fun render(renderer: GraphicsRenderer) {
         renderer.drawLine(
             Color.BLACK,
