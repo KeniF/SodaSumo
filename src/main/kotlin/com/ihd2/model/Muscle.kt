@@ -20,16 +20,16 @@ class Muscle(id: Int) : Spring(id), Renderable {
                 sin((model.waveSpeed * model.noOfFrames + phase - model.wavePhase) * 2.0 * Math.PI))
     }
 
-    override fun render(renderer: GraphicsRenderer) {
+    override fun render(color: Color, renderer: GraphicsRenderer) {
         renderer.drawLine(
-            Color.BLACK,
+            color,
             mass1.position.x,
             mass1.position.y,
             mass2.position.x,
             mass2.position.y)
 
         renderer.drawEllipse(
-            Color.BLACK,
+            color,
             (mass1.position.x + mass2.position.x) / 2.0,
             (mass1.position.y + mass2.position.y) / 2.0,
             MUSCLE_MARKER_SIZE,

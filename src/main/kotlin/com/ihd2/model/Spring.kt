@@ -14,9 +14,9 @@ open class Spring(val id: Int): Renderable {
      */
     open fun getRestLength(model: Model) = restLength
 
-    override fun render(renderer: GraphicsRenderer) {
+    override fun render(color: Color, renderer: GraphicsRenderer) {
         renderer.drawLine(
-            Color.BLACK,
+            color,
             mass1.position.x,
             mass1.position.y,
             mass2.position.x,

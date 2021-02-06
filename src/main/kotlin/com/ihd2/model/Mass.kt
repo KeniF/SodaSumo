@@ -45,12 +45,12 @@ class Mass(val id: Int): Renderable {
         acceleration.zero()
     }
 
-    override fun render(renderer: GraphicsRenderer) {
-        val color = when (renderer.isDebug()) {
+    override fun render(color: Color, renderer: GraphicsRenderer) {
+        val colorToUse = when (renderer.isDebug()) {
             true -> Color.GRAY
-            false -> Color.BLACK
+            false -> color
         }
-        renderer.drawEllipse(color, position.x, position.y, MASS_DIAMETER, MASS_DIAMETER)
+        renderer.drawEllipse(colorToUse, position.x, position.y, MASS_DIAMETER, MASS_DIAMETER)
 
         renderer.drawDebugText(
             Color.BLACK,

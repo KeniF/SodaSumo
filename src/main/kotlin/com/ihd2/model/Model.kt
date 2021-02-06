@@ -2,6 +2,7 @@ package com.ihd2.model
 
 import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.graphics.Renderable
+import java.awt.Color
 import java.lang.Double.max
 import java.lang.Double.min
 
@@ -83,15 +84,15 @@ class Model: Renderable {
         }
     }
 
-    override fun render(renderer: GraphicsRenderer) {
+    override fun render(color: Color, renderer: GraphicsRenderer) {
         for (mass in masses) {
-            mass.render(renderer)
+            mass.render(color, renderer)
         }
         for (spring in springs) {
-            spring.render(renderer)
+            spring.render(color, renderer)
         }
         for (muscle in muscles) {
-            muscle.render(renderer)
+            muscle.render(color, renderer)
         }
     }
 }

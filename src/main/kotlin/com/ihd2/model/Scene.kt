@@ -1,11 +1,11 @@
 package com.ihd2.model
 
 import com.ihd2.graphics.GraphicsRenderer
-import com.ihd2.graphics.Renderable
+import java.awt.Color
 
 class Scene(
     val leftModel: Model,
-    val rightModel: Model) : Renderable
+    val rightModel: Model)
 {
 
     fun incrementTimeStep(stepSize: Double) {
@@ -21,9 +21,9 @@ class Scene(
         rightModel.shiftRight(m2ShiftRight)
     }
 
-    override fun render(renderer: GraphicsRenderer) {
-        leftModel.render(renderer)
-        rightModel.render(renderer)
+    fun render(renderer: GraphicsRenderer) {
+        leftModel.render(Color.BLUE.darker(), renderer)
+        rightModel.render(Color.RED.darker(), renderer)
     }
 
     companion object {

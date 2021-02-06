@@ -1,5 +1,7 @@
 package com.ihd2.graphics
 
+import java.awt.Color
+
 interface Renderable {
-    fun render(renderer: GraphicsRenderer)
+    fun render(color: Color, renderer: GraphicsRenderer)
 }
