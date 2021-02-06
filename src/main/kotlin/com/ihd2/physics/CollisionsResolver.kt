@@ -6,7 +6,7 @@ import com.ihd2.model.Spring
 import java.awt.geom.Line2D
 import kotlin.math.sqrt
 
-class CollisionChecker {
+class CollisionsResolver {
 
     companion object {
         private val horizontalLine by lazy { Line2D.Double() }

@@ -3,7 +3,6 @@ package com.ihd2.physics
 import com.ihd2.graphics.GraphicsRenderer
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
-import java.awt.Color
 
 class PhysicalWorld {
 
@@ -39,7 +38,7 @@ class PhysicalWorld {
     }
 
     private fun resolveCollisions() {
-        val collisionInfo = CollisionChecker.resolveCollisions(
+        val collisionInfo = CollisionsResolver.resolveCollisions(
             scene.leftModel,
             scene.rightModel,
             config)
