@@ -59,10 +59,6 @@ class Mass(val id: Int): Renderable {
             "$id")
     }
 
-    override fun toString(): String {
-        return "$id Vx:$velocity.x Vy:$velocity.y X:$position.x Y:$position.y"
-    }
-
     companion object {
         const val MASS_DIAMETER = 4.0
     }

@@ -37,10 +37,6 @@ class Muscle(id: Int) : Spring(id), Renderable {
         )
     }
 
-    override fun toString(): String {
-        return "$id a:$mass1 b:$mass2 amp:$amplitude phase:$phase restLeng:$restLength"
-    }
-
     companion object {
         private const val MUSCLE_MARKER_SIZE = 3.0
     }

@@ -22,8 +22,4 @@ open class Spring(val id: Int): Renderable {
             mass2.position.x,
             mass2.position.y)
     }
-
-    override fun toString(): String {
-        return "$id a:$mass1 b:$mass2 restlength:$restLength"
-    }
 }

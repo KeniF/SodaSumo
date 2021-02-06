@@ -94,12 +94,4 @@ class Model: Renderable {
             muscle.render(renderer)
         }
     }
-
-    override fun toString(): String {
-        return """
-            [Model] Masses:${masses.size}
-            Springs:${springs.size}
-            Muscles:${muscles.size}
-            """.trimIndent()
-    }
 }
