@@ -118,42 +118,52 @@ class CollisionsResolver {
                             }
                         }
                     }
-                } else if (springMass1x == springMass2x && currentMassX > springMass1x) {
-                    val a = spring.mass1
-                    val b = spring.mass2
-                    if (!info.collided) {
-                        info.collided = true
-                        info.collisionPoint = currentMassX
+                } else if (springMass1x == springMass2x) {
+                    when {
+                        currentMassX > springMass1x -> {
+                        }
+                        currentMassX > springMass1x - config.speedLimit -> {
+                            val a = spring.mass1
+                            val b = spring.mass2
+                            if (!info.collided) {
+                                info.collided = true
+                                info.collisionPoint = currentMassX
+                            }
+                            massesToRevert.add(currentMass)
+                            massesToRevert.add(a)
+                            massesToRevert.add(b)
+                            val aVx = a.lastVelocity.x
+                            val bVx = b.lastVelocity.x
+                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                            val kineticEnergyX1 =
+                                sqrt((aVx * aVx + bVx * bVx + currentMass.lastVelocity.x * currentMass.lastVelocity.x) / 3.0 * config.energyLeft)
+                            currentMass.setVx(kineticEnergyX1)
+                            a.setVx(0 - kineticEnergyX1)
+                            b.setVx(0 - kineticEnergyX1)
+                        }
                     }
-                    massesToRevert.add(currentMass)
-                    massesToRevert.add(a)
-                    massesToRevert.add(b)
-                    val aVx = a.lastVelocity.x
-                    val bVx = b.lastVelocity.x
-                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    val kineticEnergyX1 =
-                        sqrt((aVx * aVx + bVx * bVx + currentMass.lastVelocity.x * currentMass.lastVelocity.x) / 3.0 * config.energyLeft)
-                    currentMass.setVx(kineticEnergyX1)
-                    a.setVx(0 - kineticEnergyX1)
-                    b.setVx(0 - kineticEnergyX1)
-                } else if (springMass1y == springMass2y && currentMassY < springMass1y) {
-                    val a = spring.mass1
-                    val b = spring.mass2
-                    if (!info.collided) {
-                        info.collided = true
-                        info.collisionPoint = currentMassX
+                } else if (springMass1y == springMass2y) {
+                    if (currentMassY > springMass1y) {
+                        //no collision, pruned
+                    } else if (currentMassY < springMass1y - config.speedLimit) {
+                        val a = spring.mass1
+                        val b = spring.mass2
+                        if (!info.collided) {
+                            info.collided = true
+                            info.collisionPoint = currentMassX
+                        }
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
+                        val aVy = a.lastVelocity.y
+                        val bVy = b.lastVelocity.y
+                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                        val kineticEnergyY1 =
+                            sqrt((aVy * aVy + bVy * bVy + currentMass.lastVelocity.y * currentMass.lastVelocity.y) / 3.0 * config.energyLeft)
+                        currentMass.setVy(kineticEnergyY1)
+                        a.setVy(0 - kineticEnergyY1)
+                        b.setVy(0 - kineticEnergyY1)
                     }
-                    massesToRevert.add(currentMass)
-                    massesToRevert.add(a)
-                    massesToRevert.add(b)
-                    val aVy = a.lastVelocity.y
-                    val bVy = b.lastVelocity.y
-                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    val kineticEnergyY1 =
-                        sqrt((aVy * aVy + bVy * bVy + currentMass.lastVelocity.y * currentMass.lastVelocity.y) / 3.0 * config.energyLeft)
-                    currentMass.setVy(kineticEnergyY1)
-                    a.setVy(0 - kineticEnergyY1)
-                    b.setVy(0 - kineticEnergyY1)
                 }
             }
         }
@@ -242,42 +252,52 @@ class CollisionsResolver {
                             }
                         }
                     }
-                } else if (springMass1x == springMass2x && currentMassX > springMass1x) {
-                    if (!info.collided) {
-                        info.collided = true
-                        info.collisionPoint = currentMassX
+                } else if (springMass1x == springMass2x) {
+                    when {
+                        currentMassX < springMass1x -> {
+                        }
+                        currentMassX > springMass1x + config.speedLimit -> {
+                            if (!info.collided) {
+                                info.collided = true
+                                info.collisionPoint = currentMassX
+                            }
+                            val a = spring.mass1
+                            val b = spring.mass2
+                            massesToRevert.add(currentMass)
+                            massesToRevert.add(a)
+                            massesToRevert.add(b)
+                            val aVx = a.lastVelocity.x
+                            val bVx = b.lastVelocity.x
+                            //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                            val kineticEnergyX1 =
+                                sqrt((aVx * aVx + bVx * bVx + currentMass.lastVelocity.x * currentMass.lastVelocity.x) / 3.0 * config.energyLeft)
+                            currentMass.setVx(0 - kineticEnergyX1)
+                            a.setVx(kineticEnergyX1)
+                            b.setVx(kineticEnergyX1)
+                        }
                     }
-                    val a = spring.mass1
-                    val b = spring.mass2
-                    massesToRevert.add(currentMass)
-                    massesToRevert.add(a)
-                    massesToRevert.add(b)
-                    val aVx = a.lastVelocity.x
-                    val bVx = b.lastVelocity.x
-                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    val kineticEnergyX1 =
-                        sqrt((aVx * aVx + bVx * bVx + currentMass.lastVelocity.x * currentMass.lastVelocity.x) / 3.0 * config.energyLeft)
-                    currentMass.setVx(0 - kineticEnergyX1)
-                    a.setVx(kineticEnergyX1)
-                    b.setVx(kineticEnergyX1)
-                } else if (springMass1y == springMass2y && currentMassY < springMass1y) {
-                    val a = spring.mass1
-                    val b = spring.mass2
-                    if (!info.collided) {
-                        info.collided = true
-                        info.collisionPoint = currentMassX
+                } else if (springMass1y == springMass2y) {
+                    if (currentMassY > springMass1y) {
+                        //no collision, pruned
+                    } else if (currentMassY < springMass1y + config.speedLimit) {
+                        val a = spring.mass1
+                        val b = spring.mass2
+                        if (!info.collided) {
+                            info.collided = true
+                            info.collisionPoint = currentMassX
+                        }
+                        massesToRevert.add(currentMass)
+                        massesToRevert.add(a)
+                        massesToRevert.add(b)
+                        val aVy = a.lastVelocity.y
+                        val bVy = b.lastVelocity.y
+                        //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
+                        val kineticEnergyY1 =
+                            sqrt((aVy * aVy + bVy * bVy + currentMass.lastVelocity.y * currentMass.lastVelocity.y) / 3.0 * config.energyLeft)
+                        currentMass.setVy(kineticEnergyY1)
+                        a.setVy(0 - kineticEnergyY1)
+                        b.setVy(0 - kineticEnergyY1)
                     }
-                    massesToRevert.add(currentMass)
-                    massesToRevert.add(a)
-                    massesToRevert.add(b)
-                    val aVy = a.lastVelocity.y
-                    val bVy = b.lastVelocity.y
-                    //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
-                    val kineticEnergyY1 =
-                        sqrt((aVy * aVy + bVy * bVy + currentMass.lastVelocity.y * currentMass.lastVelocity.y) / 3.0 * config.energyLeft)
-                    currentMass.setVy(kineticEnergyY1)
-                    a.setVy(0 - kineticEnergyY1)
-                    b.setVy(0 - kineticEnergyY1)
                 }
             }
         }
