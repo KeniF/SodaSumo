@@ -38,10 +38,10 @@ class SpringAccelerator {
                 mass.apply {
                     //damping for F=-fv
                     var newVx = velocity.x + acceleration.x
-                    newVx -= newVx * model.friction
+                    newVx *= (1.0 - model.friction)
                     var newVy = velocity.y + acceleration.y
-                    newVy -= newVy * model.friction
                     newVy -= model.gravity
+                    newVy *= (1.0 - model.friction)
                     newVy = newVy.coerceIn(-config.speedLimit, config.speedLimit)
                     newVx = newVx.coerceIn(-config.speedLimit, config.speedLimit)
                     val newPx = position.x + newVx
