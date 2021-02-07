@@ -1,10 +1,11 @@
 package com.ihd2.physics
 
-class CollisionInfo private constructor(
-    var collided: Boolean,
+data class CollisionInfo (
+    var collided: Boolean = false,
     var collisionPoint: Double = 0.0
 ) {
-    companion object {
-        val UNCOLLIDED = CollisionInfo(false, 0.0)
+    fun reset() {
+        collided = false
+        collisionPoint = 0.0
     }
 }

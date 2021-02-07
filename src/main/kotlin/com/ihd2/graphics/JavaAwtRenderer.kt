@@ -62,6 +62,6 @@ class JavaAwtRenderer(private val isDebugging: Boolean): GraphicsRenderer {
     override fun isDebug() = isDebugging
 
     companion object {
-        private const val LINE_WIDTH = 0.4f
+        private const val LINE_WIDTH = 0.6f
     }
 }

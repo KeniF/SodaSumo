@@ -97,12 +97,15 @@ class GameDraw: JComponent() {
 
     private fun drawCollisionLine(renderer: GraphicsRenderer) {
         physicalWorld.firstCollisionInfo.apply {
-            renderer.drawLine(
-                Color.GRAY,
-                collisionPoint,
-                0.0,
-                collisionPoint,
-                1000.0)
+            if (collided) {
+                renderer.drawLine(
+                    Color.GRAY,
+                    collisionPoint,
+                    0.0,
+                    collisionPoint,
+                    1000.0
+                )
+            }
         }
     }
 
@@ -151,9 +154,10 @@ class GameDraw: JComponent() {
     }
 
     private fun currentScore(): Int {
-        val collisionPoint = physicalWorld.firstCollisionInfo.collisionPoint
-        return ((model1.boundRight - collisionPoint +
-                model2.boundLeft - collisionPoint) / 20).toInt()
+        physicalWorld.firstCollisionInfo.apply {
+            return ((model1.boundRight - collisionPoint +
+                    model2.boundLeft - collisionPoint) / 20).toInt()
+        }
     }
 
     companion object {

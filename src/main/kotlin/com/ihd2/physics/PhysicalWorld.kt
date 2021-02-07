@@ -6,33 +6,33 @@ import com.ihd2.model.Scene.Companion.EMPTY_SCENE
 
 class PhysicalWorld {
 
-    var gameFrames = 0
+    var gameFrames = 0.0
         private set
     private var scene: Scene = EMPTY_SCENE
     private lateinit var config: PhysicsConfig
 
-    var firstCollisionInfo: CollisionInfo = CollisionInfo.UNCOLLIDED
+    var firstCollisionInfo: CollisionInfo = CollisionInfo()
 
     fun generateNextFrame() {
-        accelerateSprings()
+        accelerateAndMoveSprings()
         resolveCollisions()
         scene.incrementTimeStep(STEP_SIZE)
-        gameFrames++
+        gameFrames += STEP_SIZE
     }
 
     fun reset(scene: Scene, config: PhysicsConfig, width: Int) {
         scene.moveToStartPosition(width)
         this.scene = scene
         this.config = config
-        gameFrames = 0
-        firstCollisionInfo = CollisionInfo.UNCOLLIDED
+        gameFrames = 0.0
+        firstCollisionInfo.reset()
     }
 
     fun render(renderer: GraphicsRenderer) {
         scene.render(renderer)
     }
 
-    private fun accelerateSprings() {
+    private fun accelerateAndMoveSprings() {
         SpringAccelerator.accelerateAndMove(scene.leftModel, config)
         SpringAccelerator.accelerateAndMove(scene.rightModel, config)
     }
@@ -43,7 +43,7 @@ class PhysicalWorld {
             scene.rightModel,
             config)
 
-        if (collisionInfo.collided && !firstCollisionInfo.collided) {
+        if (!firstCollisionInfo.collided && collisionInfo.collided) {
             firstCollisionInfo = collisionInfo
         }
     }

@@ -28,7 +28,7 @@ class SpringAccelerator {
                 val accelerationVector = Vector2.create(resultantAcceleration, vector2To1.direction)
 
                 mass2.accelerate(accelerationVector)
-                mass1.accelerate(accelerationVector.multiply(-1.0))
+                mass1.accelerate(accelerationVector.negate())
             }
         }
 
