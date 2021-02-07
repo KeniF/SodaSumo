@@ -39,6 +39,7 @@ class XmlParser(path: String?) : ContentHandler {
     private var mode: ParseMode
     private var mass1 = 0
     private var mass2 = 0
+    private var x = 0.0
     private lateinit var currentMass: Mass
     private lateinit var currentSpring: Spring
     private lateinit var currentMuscle: Muscle
@@ -89,7 +90,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.X -> {
-                        currentMass.setX(readCh.toDouble())
+                        x = readCh.toDouble()
                         mode = ParseMode.NONE
                     }
                     ParseMode.W_DIRECTION -> {
@@ -100,7 +101,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.Y -> {
-                        currentMass.setY(readCh.toDouble())
+                        currentMass.setPosition(x, readCh.toDouble())
                         model.addMass(currentMass)
                         masses[currentMass.id] = currentMass
                         mode = ParseMode.NONE

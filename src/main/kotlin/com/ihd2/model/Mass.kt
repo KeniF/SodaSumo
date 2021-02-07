@@ -12,12 +12,9 @@ class Mass(val id: Int): Renderable {
     val velocity = Vector2()
     val lastVelocity = Vector2()
 
-    fun setX(x: Double) {
+    fun setPosition(x: Double, y: Double) {
         lastPosition.x = position.x
         position.x = x
-    }
-
-    fun setY(y: Double) {
         lastPosition.y = position.y
         position.y = y
     }

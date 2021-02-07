@@ -55,8 +55,7 @@ class SpringAccelerator {
                     }
                     setVx(newVx)
                     setVy(newVy)
-                    setX(newPx)
-                    setY(newPy)
+                    setPosition(newPx, newPy)
                     model.adjustBoundRect(mass)
                     clearAccelerations()
                 }
