@@ -75,17 +75,16 @@ class GameDraw: JComponent() {
 
     fun startDraw() {
         physicsThread = Thread {
-            val curThread = Thread.currentThread()
             var beforeRun = System.currentTimeMillis()
-            while (curThread === physicsThread && run) {
+            while (run) {
                 if (physicalWorld.gameFrames > timeLimitMs / FRAME_DELAY) {
                     endGame()
                 } else if (!paused) {
                     repaintWorld()
                 }
+                //to keep a constant framerate depending on how far we are behind :D
+                beforeRun += FRAME_DELAY
                 try {
-                    //to keep a constant framerate depending on how far we are behind :D
-                    beforeRun += FRAME_DELAY
                     Thread.sleep(max(0, beforeRun - System.currentTimeMillis()))
                 } catch (e: InterruptedException) {
                     println(e)
