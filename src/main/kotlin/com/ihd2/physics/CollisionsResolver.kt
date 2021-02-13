@@ -75,15 +75,10 @@ class CollisionsResolver {
                     if (horizontalLine.intersectsLine(lineOld)) countIntersections++
                     if (lineNew.intersectsLine(massLine) || lineOld.intersectsLine(massLine) ||
                         resultOld == -1 && resultNew == 1 && countIntersections == 1) {
+                        collisionHappened(massesToRevert, info, currentMass, spring)
+
                         val a = spring.mass1
                         val b = spring.mass2
-                        if (!info.collided) {
-                            info.collided = true
-                            info.collisionPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
                         val aVx = a.lastVelocity.x
                         val bVx = b.lastVelocity.x
                         val aVy = a.lastVelocity.y
@@ -120,15 +115,10 @@ class CollisionsResolver {
                     }
                 } else if (springMass1x == springMass2x) {
                     if (currentMassX < springMass1x) {
+                        collisionHappened(massesToRevert, info, currentMass, spring)
                         val a = spring.mass1
                         val b = spring.mass2
-                        if (!info.collided) {
-                            info.collided = true
-                            info.collisionPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
+
                         val aVx = a.lastVelocity.x
                         val bVx = b.lastVelocity.x
                         //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
@@ -140,15 +130,10 @@ class CollisionsResolver {
                     }
                 } else if (springMass1y == springMass2y) {
                     if (currentMassY < springMass1y) {
+                        collisionHappened(massesToRevert, info, currentMass, spring)
+
                         val a = spring.mass1
                         val b = spring.mass2
-                        if (!info.collided) {
-                            info.collided = true
-                            info.collisionPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
                         val aVy = a.lastVelocity.y
                         val bVy = b.lastVelocity.y
                         //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
@@ -203,15 +188,9 @@ class CollisionsResolver {
                     if (lineNew.intersectsLine(massLine) ||
                         lineOld.intersectsLine(massLine) ||
                         resultOld == 1 && resultNew == -1 && countIntersections == 1) {
-                        if (!info.collided) {
-                            info.collided = true
-                            info.collisionPoint = currentMassX
-                        }
+                        collisionHappened(massesToRevert, info, currentMass, spring)
                         val a = spring.mass1
                         val b = spring.mass2
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
                         val aVx = a.lastVelocity.x
                         val bVx = b.lastVelocity.x
                         val aVy = a.lastVelocity.y
@@ -251,15 +230,10 @@ class CollisionsResolver {
                         currentMassX < springMass1x -> {
                         }
                         currentMassX > springMass1x -> {
-                            if (!info.collided) {
-                                info.collided = true
-                                info.collisionPoint = currentMassX
-                            }
+                            collisionHappened(massesToRevert, info, currentMass, spring)
                             val a = spring.mass1
                             val b = spring.mass2
-                            massesToRevert.add(currentMass)
-                            massesToRevert.add(a)
-                            massesToRevert.add(b)
+
                             val aVx = a.lastVelocity.x
                             val bVx = b.lastVelocity.x
                             //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
@@ -274,15 +248,10 @@ class CollisionsResolver {
                     if (currentMassY > springMass1y) {
                         //no collision, pruned
                     } else if (currentMassY < springMass1y + config.speedLimit) {
+                        collisionHappened(massesToRevert, info, currentMass, spring)
+
                         val a = spring.mass1
                         val b = spring.mass2
-                        if (!info.collided) {
-                            info.collided = true
-                            info.collisionPoint = currentMassX
-                        }
-                        massesToRevert.add(currentMass)
-                        massesToRevert.add(a)
-                        massesToRevert.add(b)
                         val aVy = a.lastVelocity.y
                         val bVy = b.lastVelocity.y
                         //lets [say] total (horizontal) kinetic energy is evenly distributed between 3 masses
@@ -294,6 +263,20 @@ class CollisionsResolver {
                     }
                 }
             }
+        }
+
+        private fun collisionHappened(
+            massesToRevert: MutableSet<Mass>,
+            collisionInfo: CollisionInfo,
+            mass: Mass, spring: Spring)
+        {
+            if (!collisionInfo.collided) {
+                collisionInfo.collided = true
+                collisionInfo.collisionPoint = mass.position.x
+            }
+            massesToRevert.add(mass)
+            massesToRevert.add(spring.mass1)
+            massesToRevert.add(spring.mass2)
         }
 
         private fun isLeftOfLine(x: Double, y: Double, yInter: Double, slope: Double): Int {
