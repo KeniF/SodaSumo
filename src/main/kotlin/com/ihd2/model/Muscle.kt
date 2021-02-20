@@ -21,20 +21,25 @@ class Muscle(id: Int) : Spring(id), Renderable {
     }
 
     override fun render(color: Color, renderer: GraphicsRenderer) {
+        val colorToUse = when (renderer.isDebug()) {
+            true -> if (hasCollided) Color.RED else color
+            false -> color
+        }
         renderer.drawLine(
-            color,
+            colorToUse,
             mass1.position.x,
             mass1.position.y,
             mass2.position.x,
             mass2.position.y)
 
         renderer.drawEllipse(
-            color,
+            colorToUse,
             (mass1.position.x + mass2.position.x) / 2.0,
             (mass1.position.y + mass2.position.y) / 2.0,
             MUSCLE_MARKER_SIZE,
             MUSCLE_MARKER_SIZE
         )
+        hasCollided = false
     }
 
     companion object {

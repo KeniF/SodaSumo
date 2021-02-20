@@ -277,6 +277,8 @@ class CollisionsResolver {
             massesToRevert.add(mass)
             massesToRevert.add(spring.mass1)
             massesToRevert.add(spring.mass2)
+            mass.hasCollided = true
+            spring.hasCollided = true
         }
 
         private fun isLeftOfLine(x: Double, y: Double, yInter: Double, slope: Double): Int {

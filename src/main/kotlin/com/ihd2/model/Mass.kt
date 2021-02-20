@@ -11,6 +11,7 @@ class Mass(val id: Int): Renderable {
     val lastPosition = Vector2()
     val velocity = Vector2()
     val lastVelocity = Vector2()
+    var hasCollided = false
 
     fun setPosition(x: Double, y: Double) {
         lastPosition.x = position.x
@@ -44,7 +45,7 @@ class Mass(val id: Int): Renderable {
 
     override fun render(color: Color, renderer: GraphicsRenderer) {
         val colorToUse = when (renderer.isDebug()) {
-            true -> Color.GRAY
+            true -> if (hasCollided) Color.RED else Color.GRAY
             false -> color
         }
         renderer.drawEllipse(colorToUse, position.x, position.y, MASS_DIAMETER, MASS_DIAMETER)
@@ -54,6 +55,7 @@ class Mass(val id: Int): Renderable {
             position.x.toInt(),
             position.y.toInt(),
             "$id")
+        hasCollided = false
     }
 
     companion object {

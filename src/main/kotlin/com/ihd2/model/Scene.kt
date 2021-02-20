@@ -22,8 +22,8 @@ class Scene(
     }
 
     fun render(renderer: GraphicsRenderer) {
-        leftModel.render(Color.BLUE.darker(), renderer)
-        rightModel.render(Color.RED.darker(), renderer)
+        leftModel.render(if (renderer.isDebug()) Color.BLACK else Color.BLUE.darker(), renderer)
+        rightModel.render(if (renderer.isDebug()) Color.BLACK else Color.RED.darker(), renderer)
     }
 
     companion object {
