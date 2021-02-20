@@ -122,7 +122,10 @@ class GameDraw: JComponent() {
         renderer.drawDebugText(Color.GRAY,
             2,
             288,
-            "Frames: ${physicalWorld.gameFrames} Frames_m1: ${model1.noOfFrames} Frames_m2: ${model2.noOfFrames}")
+            "Frames: ${physicalWorld.gameFrames} " +
+                    "Frames_m1: ${model1.noOfFrames} " +
+                    "Frames_m2: ${model2.noOfFrames} "
+        )
     }
 
 

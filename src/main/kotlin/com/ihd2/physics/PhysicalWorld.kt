@@ -1,6 +1,10 @@
 package com.ihd2.physics
 
+import com.ihd2.DEBUG
 import com.ihd2.graphics.GraphicsRenderer
+import com.ihd2.log.Logger
+import com.ihd2.log.NoopLogger
+import com.ihd2.log.SystemLogger
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
 
@@ -10,10 +14,12 @@ class PhysicalWorld {
         private set
     private var scene: Scene = EMPTY_SCENE
     private lateinit var config: PhysicsConfig
+    private val logger: Logger = if (DEBUG) SystemLogger() else NoopLogger()
 
     var firstCollisionInfo: CollisionInfo = CollisionInfo()
 
     fun generateNextFrame() {
+        logger.d("Frame $gameFrames >>>>>>>>>>>>>")
         accelerateAndMoveSprings()
         resolveCollisions()
         scene.incrementTimeStep(STEP_SIZE)
@@ -41,7 +47,9 @@ class PhysicalWorld {
         val collisionInfo = CollisionsResolver.resolveCollisions(
             scene.leftModel,
             scene.rightModel,
-            config)
+            config,
+            logger
+        )
 
         if (!firstCollisionInfo.collided && collisionInfo.collided) {
             firstCollisionInfo = collisionInfo
