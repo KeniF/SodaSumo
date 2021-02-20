@@ -295,7 +295,7 @@ Supervised by Dr. Mary McGee Wood""",
         val times = arrayOf("5", "10", "15", "20", "25", "30", "60")
         boxTime = JComboBox(times)
         boxTime.maximumRowCount = 10
-        boxTime.selectedItem = "15"
+        boxTime.selectedItem = if (DEBUG) "60" else "15"
         boxTime.isEditable = false
         boxTime.addActionListener(this)
         boxTime.toolTipText = "Set Time Limit"
