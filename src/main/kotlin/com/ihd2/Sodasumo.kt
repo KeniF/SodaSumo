@@ -64,8 +64,7 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         when {
             e.source === box1 -> box1.showPopup()
             e.source === box2 -> box2.showPopup()
-            e.source === boxTime -> gameDraw.setTimeLimit(
-                (boxTime.selectedItem?.toString()?.toLong() ?: 0) * 1000L)
+            e.source === boxTime -> gameDraw.setTimeLimit(boxTime.selectedItem?.toString()!!)
         }
     }
 
@@ -296,6 +295,7 @@ Supervised by Dr. Mary McGee Wood""",
         boxTime = JComboBox(times)
         boxTime.maximumRowCount = 10
         boxTime.selectedItem = if (DEBUG) "60" else "15"
+        gameDraw.setTimeLimit(boxTime.selectedItem?.toString()!!)
         boxTime.isEditable = false
         boxTime.addActionListener(this)
         boxTime.toolTipText = "Set Time Limit"

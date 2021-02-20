@@ -69,8 +69,8 @@ class GameDraw: JComponent() {
         paused = false
     }
 
-    fun setTimeLimit(milliseconds: Long) {
-        timeLimitMs = milliseconds
+    fun setTimeLimit(milliseconds: String) {
+        timeLimitMs = milliseconds.toLong() * 1000L
     }
 
     fun startDraw() {
