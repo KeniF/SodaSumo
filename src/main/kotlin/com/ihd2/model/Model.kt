@@ -9,7 +9,6 @@ import java.lang.Double.min
 class Model: Renderable {
     val masses = LinkedHashSet<Mass>()
     val springs = LinkedHashSet<Spring>()
-    val muscles = LinkedHashSet<Muscle>()
     var friction = 0.0
     var gravity = 0.0
     var springyness = 0.0
@@ -61,14 +60,6 @@ class Model: Renderable {
             return boundingRectangle
         }
 
-    fun addSpring(s: Spring) {
-        springs.add(s)
-    }
-
-    fun addMuscle(m: Muscle) {
-        muscles.add(m)
-    }
-
     fun incrementTimeStep(stepSize: Double) {
         when (!flipModel) {
             true -> noOfFrames += stepSize
@@ -78,9 +69,7 @@ class Model: Renderable {
 
     fun shiftRight(shift: Double) {
         for (mass in masses) {
-            mass.position.apply {
-                x += shift
-            }
+            mass.position.x += shift
         }
     }
 
@@ -90,9 +79,6 @@ class Model: Renderable {
         }
         for (spring in springs) {
             spring.render(color, renderer)
-        }
-        for (muscle in muscles) {
-            muscle.render(color, renderer)
         }
     }
 }

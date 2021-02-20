@@ -72,7 +72,7 @@
               <ref refid="Mass#1" />
             </field>
             <field name="restLength">
-              <double>199.73617544495946</double>
+              <double>200.0</double>
             </field>
           </object>
         </list>

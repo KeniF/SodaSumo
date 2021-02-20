@@ -1,20 +1,18 @@
 package com.ihd2.physics
 
 import com.ihd2.model.Model
-import com.ihd2.model.Spring
 import org.dyn4j.geometry.Vector2
 
 class SpringAccelerator {
 
     companion object {
         fun accelerateAndMove(model: Model, config: PhysicsConfig) {
-            accelerateSprings(model, model.springs)
-            accelerateSprings(model, model.muscles)
+            accelerateSprings(model)
             moveMasses(model, config)
         }
 
-        private fun accelerateSprings(model: Model, springs: Set<Spring>) {
-            for (spring in springs) {
+        private fun accelerateSprings(model: Model) {
+            for (spring in model.springs) {
                 val mass1 = spring.mass1
                 val mass2 = spring.mass2
                 val length = mass1.position.distance(mass2.position)
@@ -53,8 +51,7 @@ class SpringAccelerator {
                         newPy = config.groundHeight
                         newVx *= config.surfaceFriction
                     }
-                    setVx(newVx)
-                    setVy(newVy)
+                    setVelocity(newVx, newVy)
                     setPosition(newPx, newPy)
                     model.adjustBoundRect(mass)
                     clearAccelerations()

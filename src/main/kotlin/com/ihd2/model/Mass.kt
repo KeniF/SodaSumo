@@ -20,17 +20,14 @@ class Mass(val id: Int): Renderable {
         position.y = y
     }
 
-    fun setVx(vx: Double) {
+    fun setVelocity(vx: Double, vy: Double) {
         lastVelocity.x = velocity.x
         velocity.x = vx
-    }
-
-    fun setVy(vy: Double) {
         lastVelocity.y = velocity.y
         velocity.y = vy
     }
 
-    fun revertPoints() {
+    fun revertToLastPosition() {
         position.x = lastPosition.x
         position.y = lastPosition.y
     }

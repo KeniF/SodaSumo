@@ -14,6 +14,6 @@ enum class PhysicsConfig(
         surfaceReflection = -0.75,
         modelReflection = -0.75,
         speedLimit = 10.0,
-        energyLeft = 0.95
+        energyLeft = 0.9
     )
 }
