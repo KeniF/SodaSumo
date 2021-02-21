@@ -14,8 +14,7 @@ import kotlin.math.sqrt
 class CollisionsResolver {
 
     companion object {
-        private val LINE_LAST by lazy { Line2D.Double() }
-        private val LINE_CURRENT by lazy { Line2D.Double() }
+        private val SPRING_LINE by lazy { Line2D.Double() }
         private val MASS_LINE by lazy { Line2D.Double() }
         private val Y_AXIS = Vector2(0.0, 1.0)
 
@@ -49,40 +48,60 @@ class CollisionsResolver {
                 mass.apply {
                     MASS_LINE.setLine(position.x, position.y, lastPosition.x, lastPosition.y)
                 }
+                var collided = false
                 spring.apply {
-                    LINE_LAST.setLine(
+                    SPRING_LINE.setLine(
                         mass1.lastPosition.x,
                         mass1.lastPosition.y,
                         mass2.lastPosition.x,
-                        mass2.lastPosition.y)
-                    LINE_CURRENT.setLine(
-                        mass1.position.x,
-                        mass1.position.y,
-                        mass2.position.x,
-                        mass2.position.y)
-                }
-                var collided = false
-                if (LINE_CURRENT.intersectsLine(MASS_LINE)) {
-                    collided = true
-                    logCollision("a", logger, isLeftReferenceMass, mass, spring)
-                } else if (LINE_LAST.intersectsLine(MASS_LINE)) {
-                    collided = true
-                    logCollision("b", logger, isLeftReferenceMass, mass, spring)
-                } else {
-                    val pointOnSpringClosestToMass = Segment.getPointOnLineClosestToPoint(
-                        mass.position,
-                        spring.mass1.position,
-                        spring.mass2.position
+                        mass2.lastPosition.y
                     )
-                    if (hasChangedSideOverTime(mass, spring) &&
-                        hasChangedSideWithinSegment(
-                            pointOnSpringClosestToMass,
-                            spring,
-                            logger) &&
-                        !isTooFarToCollide(pointOnSpringClosestToMass, mass, spring)
-                    ) {
+                    if (SPRING_LINE.intersectsLine(MASS_LINE)) {
                         collided = true
-                        logCollision("c", logger, isLeftReferenceMass, mass, spring)
+                        logCollision("a", logger, isLeftReferenceMass, mass, spring)
+                    } else {
+                        SPRING_LINE.setLine(
+                            mass1.position.x,
+                            mass1.position.y,
+                            mass2.position.x,
+                            mass2.position.y
+                        )
+                        if (SPRING_LINE.intersectsLine(MASS_LINE)) {
+                            collided = true
+                            logCollision("b", logger, isLeftReferenceMass, mass, spring)
+                        } else {
+                            // Pretend mass 1 is stationary
+                            val mass1Movement = spring.mass1.lastPosition.difference(spring.mass1.position)
+                            val newMass = mass.position.sum(mass1Movement)
+                            val newMass2 = spring.mass2.position.sum(mass1Movement)
+                            MASS_LINE.setLine(mass.position.x, mass.position.y, newMass.x, newMass.y)
+                            SPRING_LINE.setLine(
+                                mass1.lastPosition.x,
+                                mass1.lastPosition.y,
+                                newMass2.x,
+                                newMass2.y
+                            )
+                            if (SPRING_LINE.intersectsLine(MASS_LINE)) {
+                                collided = true
+                                logCollision("c", logger, isLeftReferenceMass, mass, spring)
+                            } else {
+                                // Pretend mass 2 is stationary
+                                val mass2Movement = spring.mass2.lastPosition.difference(spring.mass2.position)
+                                val newMassb = mass.position.sum(mass2Movement)
+                                val newMass1 = spring.mass1.position.sum(mass2Movement)
+                                MASS_LINE.setLine(mass.position.x, mass.position.y, newMassb.x, newMassb.y)
+                                SPRING_LINE.setLine(
+                                    mass2.lastPosition.x,
+                                    mass2.lastPosition.y,
+                                    newMass1.x,
+                                    newMass1.y
+                                )
+                                if (SPRING_LINE.intersectsLine(MASS_LINE)) {
+                                    collided = true
+                                    logCollision("d", logger, isLeftReferenceMass, mass, spring)
+                                }
+                            }
+                        }
                     }
                 }
                 if (collided) {
