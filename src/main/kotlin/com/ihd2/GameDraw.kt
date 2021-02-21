@@ -15,7 +15,7 @@ import java.lang.InterruptedException
 import kotlin.math.*
 
 class GameDraw: JComponent() {
-    private var timeLimitMs = 15000L
+    private var timeLimitMs = 0L
 
     private var physicsThread: Thread? = null
     private var model1: Model = Model()

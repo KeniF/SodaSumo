@@ -291,15 +291,15 @@ Supervised by Dr. Mary McGee Wood""",
         val label = JLabel("   Time Limit")
         cPanel.add(label)
 
-        val times = arrayOf("5", "10", "15", "20", "25", "30", "60")
+        val times = arrayOf("5", "10", "15", "20", "25", "30", "60", "120")
         boxTime = JComboBox(times)
         boxTime.maximumRowCount = 10
-        boxTime.selectedItem = if (DEBUG) "60" else "15"
+        boxTime.selectedItem = if (DEBUG) "120" else "15"
         gameDraw.setTimeLimit(boxTime.selectedItem?.toString()!!)
         boxTime.isEditable = false
         boxTime.addActionListener(this)
         boxTime.toolTipText = "Set Time Limit"
-        boxTime.prototypeDisplayValue = "30"
+        boxTime.prototypeDisplayValue = "300"
         cPanel.add(boxTime)
         defaultCloseOperation = EXIT_ON_CLOSE
         setLocationRelativeTo(null)
