@@ -12,7 +12,7 @@ enum class PhysicsConfig(
         groundHeight = 0.0,
         surfaceFriction = 0.1,
         surfaceReflection = -0.75,
-        modelReflection = -0.75,
+        modelReflection = 0.75,
         speedLimit = 10.0,
         energyLeft = 0.9
     )
