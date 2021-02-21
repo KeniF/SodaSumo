@@ -86,7 +86,7 @@ class CollisionsResolver {
                     }
                 }
                 if (collided) {
-                    collisionResponse2(mass, spring, config)
+                    collisionResponse(mass, spring, config)
                     saveCollisionInfo(massesToRevert, info, mass, spring)
                 }
             }
@@ -106,7 +106,7 @@ class CollisionsResolver {
             }
         }
 
-        private fun collisionResponse2(mass: Mass, spring: Spring, config: PhysicsConfig) {
+        private fun collisionResponse(mass: Mass, spring: Spring, config: PhysicsConfig) {
             val vector12 = Vector2(spring.mass2.lastPosition).difference(Vector2(spring.mass1.lastPosition))
             val angleFromYAxis = Y_AXIS.getAngleBetween(vector12)
             spring.apply {
