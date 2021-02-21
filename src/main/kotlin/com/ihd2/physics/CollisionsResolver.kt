@@ -64,10 +64,10 @@ class CollisionsResolver {
                 var collided = false
                 if (LINE_CURRENT.intersectsLine(MASS_LINE)) {
                     collided = true
-                    logger.d("a $isLeftReferenceMass / ${mass.id} + ${spring.mass1.id}--${spring.mass2.id}")
+                    logCollision("a", logger, isLeftReferenceMass, mass, spring)
                 } else if (LINE_LAST.intersectsLine(MASS_LINE)) {
                     collided = true
-                    logger.d("b $isLeftReferenceMass / ${mass.id} + ${spring.mass1.id}--${spring.mass2.id}")
+                    logCollision("b", logger, isLeftReferenceMass, mass, spring)
                 } else {
                     val pointOnSpringClosestToMass = Segment.getPointOnLineClosestToPoint(
                         mass.position,
@@ -82,13 +82,27 @@ class CollisionsResolver {
                         !isTooFarToCollide(pointOnSpringClosestToMass, mass, spring)
                     ) {
                         collided = true
-                        logger.d("c $isLeftReferenceMass / ${mass.id} + ${spring.mass1.id}--${spring.mass2.id}")
+                        logCollision("c", logger, isLeftReferenceMass, mass, spring)
                     }
                 }
                 if (collided) {
                     collisionResponse2(mass, spring, config)
                     saveCollisionInfo(massesToRevert, info, mass, spring)
                 }
+            }
+        }
+
+        private fun logCollision(
+            type: String,
+            logger: Logger,
+            isLeftReferenceMass: Boolean,
+            mass: Mass,
+            spring: Spring
+        ) {
+            if (isLeftReferenceMass) {
+                logger.d("$type ${mass.id} -> ${spring.mass1.id}--${spring.mass2.id}")
+            } else {
+                logger.d("$type ${spring.mass1.id}--${spring.mass2.id} <- ${mass.id}")
             }
         }
 
