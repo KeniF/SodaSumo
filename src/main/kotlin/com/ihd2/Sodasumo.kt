@@ -34,7 +34,7 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
     private fun loadDirectory() {
         try {
             val currentDir = System.getProperty("user.dir")
-            val dir = File(currentDir)
+            val dir = File(currentDir + File.separator + XML_FOLDER)
             val filter = FilenameFilter { _, name: String -> name.endsWith(".xml") }
             xmlFiles = dir.list(filter)
             if (xmlFiles.isEmpty()) throw Exception()
@@ -121,10 +121,10 @@ class Sodasumo private constructor() : JFrame(), MouseListener, ItemListener, Ac
         box2.isEnabled = false
 
         val xmlFile1 = box1.selectedItem?.toString() ?: ""
-        xp1 = XmlParser("$xmlFile1.xml")
+        xp1 = XmlParser(XML_FOLDER + File.separator + "$xmlFile1.xml")
         if (xp1!!.verified != 2) throw Exception("Model 1 cannot be verified!")
         val xmlFile2 = box2.selectedItem?.toString() ?: ""
-        xp2 = XmlParser("$xmlFile2.xml")
+        xp2 = XmlParser(XML_FOLDER + File.separator + "$xmlFile2.xml")
         if (xp2!!.verified != 2) throw Exception("Model 2 cannot be verified!")
         val model1 = xp1!!.model
         model1.name = box1.selectedItem?.toString() ?: ""
