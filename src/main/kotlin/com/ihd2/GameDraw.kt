@@ -11,6 +11,7 @@ import com.ihd2.model.Model
 import com.ihd2.model.Scene
 import com.ihd2.physics.PhysicalWorld
 import com.ihd2.physics.PhysicsConfig
+import com.ihd2.physics.SpringAccelerator
 import java.lang.InterruptedException
 import kotlin.math.*
 
@@ -22,7 +23,7 @@ class GameDraw: JComponent() {
     private var model2: Model = Model()
     private var resultMessage = ""
     private val renderer = JavaAwtRenderer(DEBUG)
-    private val physicalWorld = PhysicalWorld()
+    private val physicalWorld = PhysicalWorld(SpringAccelerator())
 
     @Volatile
     var paused = false

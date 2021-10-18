@@ -8,7 +8,7 @@ import com.ihd2.log.SystemLogger
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
 
-class PhysicalWorld {
+class PhysicalWorld(val accelerable: Accelerable) {
 
     var gameFrames = 0.0
         private set
@@ -39,8 +39,8 @@ class PhysicalWorld {
     }
 
     private fun accelerateAndMoveSprings() {
-        SpringAccelerator.accelerateAndMove(scene.leftModel, config)
-        SpringAccelerator.accelerateAndMove(scene.rightModel, config)
+        accelerable.accelerateAndMove(scene.leftModel, config)
+        accelerable.accelerateAndMove(scene.rightModel, config)
     }
 
     private fun resolveCollisions() {
