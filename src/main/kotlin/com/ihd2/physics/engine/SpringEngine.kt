@@ -1,11 +1,12 @@
-package com.ihd2.physics
+package com.ihd2.physics.engine
 
 import com.ihd2.model.Model
+import com.ihd2.physics.PhysicsConfig
 import org.dyn4j.geometry.Vector2
 
-class SpringAccelerator: Accelerable {
+class SpringEngine: Engine {
 
-    override fun accelerateAndMove(model: Model, config: PhysicsConfig) {
+    override fun move(model: Model, config: PhysicsConfig) {
         accelerateSprings(model)
         moveMasses(model, config)
     }

@@ -7,8 +7,9 @@ import com.ihd2.log.NoopLogger
 import com.ihd2.log.SystemLogger
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
+import com.ihd2.physics.engine.Engine
 
-class PhysicalWorld(val accelerable: Accelerable) {
+class PhysicalWorld(private val springMover: Engine) {
 
     var gameFrames = 0.0
         private set
@@ -39,8 +40,8 @@ class PhysicalWorld(val accelerable: Accelerable) {
     }
 
     private fun accelerateAndMoveSprings() {
-        accelerable.accelerateAndMove(scene.leftModel, config)
-        accelerable.accelerateAndMove(scene.rightModel, config)
+        springMover.move(scene.leftModel, config)
+        springMover.move(scene.rightModel, config)
     }
 
     private fun resolveCollisions() {
