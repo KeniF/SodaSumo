@@ -35,6 +35,12 @@ class JavaAwtRenderer(private val isDebugging: Boolean): GraphicsRenderer {
         gfx2d.draw(g2dLine)
     }
 
+    override fun drawLine(color: Color, line: Line2D) {
+        gfx2d.color = color
+        g2dLine.setLine(line.x1, height - line.y1, line.x2, height - line.y2)
+        gfx2d.draw(g2dLine)
+    }
+
     override fun drawEllipse(color: Color, x: Double, y: Double, heightX: Double, heightY: Double) {
         gfx2d.color = color
         g2dEllipse.setFrame(

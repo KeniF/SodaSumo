@@ -13,14 +13,14 @@ class Mass(val id: Int): Renderable {
     val lastVelocity = Vector2()
     var hasCollided = false
 
-    fun setPosition(x: Double, y: Double) {
+    fun setAndCacheLastPosition(x: Double, y: Double) {
         lastPosition.x = position.x
         position.x = x
         lastPosition.y = position.y
         position.y = y
     }
 
-    fun setVelocity(vx: Double, vy: Double) {
+    fun setAndCacheLastVelocity(vx: Double, vy: Double) {
         lastVelocity.x = velocity.x
         velocity.x = vx
         lastVelocity.y = velocity.y

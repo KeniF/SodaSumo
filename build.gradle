@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.dyn4j:dyn4j:4.1.0"
+    implementation "org.dyn4j:dyn4j:4.2.0"
     implementation "org.jogamp.jogl:jogl-all:2.3.2"
     implementation "org.jogamp.gluegen:gluegen-rt:2.3.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib"

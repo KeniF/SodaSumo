@@ -5,7 +5,8 @@ import java.awt.Color
 
 class Scene(
     val leftModel: Model,
-    val rightModel: Model)
+    val rightModel: Model,
+    private val terrain: Terrain)
 {
 
     fun incrementTimeStep(stepSize: Double) {
@@ -22,11 +23,12 @@ class Scene(
     }
 
     fun render(renderer: GraphicsRenderer) {
+        terrain.render(Color.BLACK.brighter(), renderer)
         leftModel.render(if (renderer.isDebug()) Color.BLACK else Color.BLUE.darker(), renderer)
         rightModel.render(if (renderer.isDebug()) Color.BLACK else Color.RED.darker(), renderer)
     }
 
     companion object {
-        val EMPTY_SCENE = Scene(Model(), Model())
+        val EMPTY_SCENE = Scene(Model(), Model(), Terrain())
     }
 }

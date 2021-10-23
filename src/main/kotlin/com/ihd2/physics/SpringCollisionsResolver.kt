@@ -11,7 +11,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
-class CollisionsResolver {
+class SpringCollisionsResolver {
 
     companion object {
         private val LINE_LAST by lazy { Line2D.Double() }
@@ -208,9 +208,11 @@ class CollisionsResolver {
             }
             mass.hasCollided = true
             spring.hasCollided = true
-            massesToRevert.add(mass)
-            massesToRevert.add(spring.mass1)
-            massesToRevert.add(spring.mass2)
+            massesToRevert.apply {
+                add(mass)
+                add(spring.mass1)
+                add(spring.mass2)
+            }
         }
     }
 }

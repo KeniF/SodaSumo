@@ -7,15 +7,19 @@ import com.ihd2.log.NoopLogger
 import com.ihd2.log.SystemLogger
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
-import com.ihd2.physics.engine.Engine
+import com.ihd2.physics.engine.ConstantSpeedEngine
+import com.ihd2.physics.engine.SpringEngine
+import org.dyn4j.geometry.Vector2
 
-class PhysicalWorld(private val springMover: Engine) {
+class PhysicalWorld {
 
     var gameFrames = 0.0
         private set
     private var scene: Scene = EMPTY_SCENE
     private lateinit var config: PhysicsConfig
     private val logger: Logger = if (DEBUG) SystemLogger() else NoopLogger()
+    private val springEngine = SpringEngine()
+    private val horizontalEngine = ConstantSpeedEngine(Vector2(5.0, 0.0))
 
     var firstCollisionInfo: CollisionInfo = CollisionInfo()
 
@@ -40,12 +44,12 @@ class PhysicalWorld(private val springMover: Engine) {
     }
 
     private fun accelerateAndMoveSprings() {
-        springMover.move(scene.leftModel, config)
-        springMover.move(scene.rightModel, config)
+        springEngine.move(scene.leftModel, config)
+        springEngine.move(scene.rightModel, config)
     }
 
     private fun resolveCollisions() {
-        val collisionInfo = CollisionsResolver.resolveCollisions(
+        val collisionInfo = SpringCollisionsResolver.resolveCollisions(
             scene.leftModel,
             scene.rightModel,
             config,

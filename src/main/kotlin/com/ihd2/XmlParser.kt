@@ -101,7 +101,7 @@ class XmlParser(path: String?) : ContentHandler {
                         mode = ParseMode.NONE
                     }
                     ParseMode.Y -> {
-                        currentMass.setPosition(x, readCh.toDouble())
+                        currentMass.setAndCacheLastPosition(x, readCh.toDouble())
                         model.addMass(currentMass)
                         masses[currentMass.id] = currentMass
                         mode = ParseMode.NONE

@@ -51,8 +51,8 @@ class SpringEngine: Engine {
                     newPy = config.groundHeight
                     newVx *= config.surfaceFriction
                 }
-                setVelocity(newVx, newVy)
-                setPosition(newPx, newPy)
+                setAndCacheLastVelocity(newVx, newVy)
+                setAndCacheLastPosition(newPx, newPy)
                 model.adjustBoundRect(mass)
                 clearAccelerations()
             }
