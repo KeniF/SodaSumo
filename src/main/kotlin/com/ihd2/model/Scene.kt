@@ -6,7 +6,7 @@ import java.awt.Color
 class Scene(
     val leftModel: Model,
     val rightModel: Model,
-    private val terrain: Terrain)
+    val terrain: Terrain)
 {
 
     fun incrementTimeStep(stepSize: Double) {
@@ -17,9 +17,11 @@ class Scene(
     fun moveToStartPosition(width: Int) {
         val m1ShiftRight = width / 2.0 - leftModel.boundingRectangle[3] - 10.0
         leftModel.shiftRight(m1ShiftRight)
+        leftModel.shiftUp(UP_SHIFT)
 
         val m2ShiftRight = width / 2.0 - rightModel.boundingRectangle[2] + 10.0
         rightModel.shiftRight(m2ShiftRight)
+        rightModel.shiftUp(UP_SHIFT)
     }
 
     fun render(renderer: GraphicsRenderer) {
@@ -30,5 +32,6 @@ class Scene(
 
     companion object {
         val EMPTY_SCENE = Scene(Model(), Model(), Terrain())
+        private const val UP_SHIFT = 70.0
     }
 }

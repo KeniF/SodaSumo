@@ -211,8 +211,8 @@ Supervised by Dr. Mary McGee Wood""",
     override fun mouseReleased(e: MouseEvent) {}
 
     companion object {
-        private val GAME_DIMENSION = Dimension(1000, 350)
-        private val SIDE_PANEL_DIMENSION = Dimension(150, 320)
+        private val GAME_DIMENSION = Dimension(WINDOW_WIDTH, WINDOW_HEIGHT)
+        private val SIDE_PANEL_DIMENSION = Dimension(PANEL_WIDTH, PANEL_HEIGHT)
 
         @JvmStatic
         fun main(args: Array<String>) {

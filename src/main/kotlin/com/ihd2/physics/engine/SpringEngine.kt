@@ -38,19 +38,13 @@ class SpringEngine: Engine {
                 var newVx = velocity.x + acceleration.x
                 newVx *= (1.0 - model.friction)
                 var newVy = velocity.y + acceleration.y
-                newVy -= model.gravity
                 newVy *= (1.0 - model.friction)
+                newVy -= config.gravity
                 newVy = newVy.coerceIn(-config.speedLimit, config.speedLimit)
                 newVx = newVx.coerceIn(-config.speedLimit, config.speedLimit)
                 val newPx = position.x + newVx
-                var newPy = position.y + newVy
+                val newPy = position.y + newVy
 
-                //if goes through ground
-                if (newPy <= config.groundHeight) {
-                    if (newVy < 0) newVy *= config.surfaceReflection
-                    newPy = config.groundHeight
-                    newVx *= config.surfaceFriction
-                }
                 setAndCacheLastVelocity(newVx, newVy)
                 setAndCacheLastPosition(newPx, newPy)
                 model.adjustBoundRect(mass)

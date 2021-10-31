@@ -1,9 +1,10 @@
-package com.ihd2.physics
+package com.ihd2.physics.collision
 
 import com.ihd2.log.Logger
 import com.ihd2.model.Mass
 import com.ihd2.model.Model
 import com.ihd2.model.Spring
+import com.ihd2.physics.PhysicsConfig
 import org.dyn4j.geometry.Segment
 import org.dyn4j.geometry.Vector2
 import java.awt.geom.Line2D

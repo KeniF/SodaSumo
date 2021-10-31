@@ -21,10 +21,7 @@ class Muscle(id: Int) : Spring(id), Renderable {
     }
 
     override fun render(color: Color, renderer: GraphicsRenderer) {
-        val colorToUse = when (renderer.isDebug()) {
-            true -> if (hasCollided) Color.RED else color
-            false -> color
-        }
+        val colorToUse = if (renderer.isDebug() && hasCollided) Color.RED else color
         renderer.drawLine(
             colorToUse,
             mass1.position.x,

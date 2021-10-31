@@ -73,6 +73,12 @@ class Model: Renderable {
         }
     }
 
+    fun shiftUp(shift: Double) {
+        for (mass in masses) {
+            mass.position.y += shift
+        }
+    }
+
     override fun render(color: Color, renderer: GraphicsRenderer) {
         for (mass in masses) {
             mass.render(color, renderer)

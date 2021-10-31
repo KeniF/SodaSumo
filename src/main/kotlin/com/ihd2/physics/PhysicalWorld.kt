@@ -7,6 +7,9 @@ import com.ihd2.log.NoopLogger
 import com.ihd2.log.SystemLogger
 import com.ihd2.model.Scene
 import com.ihd2.model.Scene.Companion.EMPTY_SCENE
+import com.ihd2.physics.collision.CollisionInfo
+import com.ihd2.physics.collision.SpringCollisionsResolver
+import com.ihd2.physics.collision.TerrainCollisionsResolver
 import com.ihd2.physics.engine.ConstantSpeedEngine
 import com.ihd2.physics.engine.SpringEngine
 import org.dyn4j.geometry.Vector2
@@ -26,7 +29,8 @@ class PhysicalWorld {
     fun generateNextFrame() {
         logger.d("Frame $gameFrames >>>>>>>>>>>>>")
         accelerateAndMoveSprings()
-        resolveCollisions()
+        resolveTerrainCollisions()
+        resolveModelCollisions()
         scene.incrementTimeStep(STEP_SIZE)
         gameFrames += STEP_SIZE
     }
@@ -48,7 +52,18 @@ class PhysicalWorld {
         springEngine.move(scene.rightModel, config)
     }
 
-    private fun resolveCollisions() {
+    private fun resolveTerrainCollisions() {
+        TerrainCollisionsResolver.resolveCollisions(
+            scene.leftModel,
+            scene.terrain,
+            config)
+        TerrainCollisionsResolver.resolveCollisions(
+            scene.rightModel,
+            scene.terrain,
+            config)
+    }
+
+    private fun resolveModelCollisions() {
         val collisionInfo = SpringCollisionsResolver.resolveCollisions(
             scene.leftModel,
             scene.rightModel,

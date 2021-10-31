@@ -5,13 +5,13 @@ import com.ihd2.graphics.Renderable
 import org.dyn4j.geometry.Vector2
 import java.awt.Color
 
-class Mass(val id: Int): Renderable {
+data class Mass(val id: Int): Renderable {
     val acceleration = Vector2()
     val position = Vector2()
     val lastPosition = Vector2()
     val velocity = Vector2()
-    val lastVelocity = Vector2()
     var hasCollided = false
+    private val lastVelocity = Vector2()
 
     fun setAndCacheLastPosition(x: Double, y: Double) {
         lastPosition.x = position.x

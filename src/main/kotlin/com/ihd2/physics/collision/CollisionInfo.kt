@@ -1,4 +1,4 @@
-package com.ihd2.physics
+package com.ihd2.physics.collision
 
 data class CollisionInfo (
     var collided: Boolean = false,

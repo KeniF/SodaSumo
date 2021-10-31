@@ -38,7 +38,7 @@ class GameDraw: JComponent() {
         this.model1 = model1
         this.model2 = model2
 
-        val scene = Scene(model1, model2, Terrain.BASIC_GROUND)
+        val scene = Scene(model1, model2, Terrain.BASIC_TRIANGLE)
         physicalWorld.reset(scene, PhysicsConfig.CLASSIC, width)
     }
 
