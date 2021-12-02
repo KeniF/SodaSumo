@@ -36,7 +36,7 @@ class SpringCollisionsResolver {
             return collisionInfo
         }
 
-        private fun checkForSpringCollisions(
+        fun checkForSpringCollisions(
             mass: Mass,
             model: Model,
             massesToRevert: MutableSet<Mass>,
